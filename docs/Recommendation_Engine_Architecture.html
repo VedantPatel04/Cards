@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card Recommendation Engine Pipeline</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #0288d1;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #555;
+            margin-top: 30px;
+        }
+        .mermaid {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .stages {
+            margin-top: 40px;
+        }
+        .stage {
+            margin: 15px 0;
+            padding: 10px;
+            background: #f9f9f9;
+            border-left: 4px solid #0288d1;
+            border-radius: 4px;
+        }
+        .stage strong {
+            color: #0288d1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Card Recommendation Engine Pipeline</h1>
+        
+        <h2>Visual Flowchart</h2>
+        <div class="mermaid">
+flowchart TD
+    A["TRANSACTION ANALYSIS<br/>━━━━━━━━━━━━━━━━━━<br/>• Category totals<br/>• Annualized estimates<br/>• Other / uncategorized %"]
+    
+    B["CARD VALIDATION GATE<br/>━━━━━━━━━━━━━━━━━━<br/><br/>Hard Fail:<br/>• Missing issuer/name<br/>• Missing reward rules<br/>• Invalid category/rate<br/>• Inactive card<br/>• Excluded class<br/><br/>Soft Warning:<br/>• Missing cap data<br/>• Unclear APR details<br/>• Unclear restrictions"]
+    
+    C["SCORE CALCULATOR<br/>━━━━━━━━━━━━━━━━━━<br/>• spending_score<br/>• signup_bonus_score<br/>• apr_score (small/optional)<br/>• total_score"]
+    
+    D["TIE-BREAK LOGIC<br/>━━━━━━━━━━━━━━━━━━<br/>1. Higher total_score<br/>2. Higher spending_score<br/>3. More top-category coverage<br/>4. Lower annual fee<br/>5. Simpler card structure<br/>6. Stable alphabetical fallback"]
+    
+    E["CONFIDENCE CHECK<br/>━━━━━━━━━━━━━━━━━━<br/>• Categorized spend %<br/>• Other/uncategorized %<br/>• Sparse data check<br/>• Refund distortion check"]
+    
+    F["OUTPUT<br/>━━━━━━━━━━━━━━━━━━<br/>Top 3 recommended cards<br/>• Score breakdown<br/>• Explanation<br/>• Confidence level"]
+    
+    A --> B --> C --> D --> E --> F
+    
+    style A fill:#e1f5ff,stroke:#0288d1,stroke-width:3px,color:#000
+    style B fill:#fff3e0,stroke:#f57c00,stroke-width:3px,color:#000
+    style C fill:#f3e5f5,stroke:#8e24aa,stroke-width:3px,color:#000
+    style D fill:#e8f5e9,stroke:#43a047,stroke-width:3px,color:#000
+    style E fill:#fff9c4,stroke:#fbc02d,stroke-width:3px,color:#000
+    style F fill:#c8e6c9,stroke:#2e7d32,stroke-width:3px,color:#000
+        </div>
+
+        <div class="stages">
+            <h2>Pipeline Stages</h2>
+            
+            <div class="stage">
+                <strong>1. Transaction Analysis</strong> (Blue) - Analyzes spending patterns and categorizes transactions
+            </div>
+            
+            <div class="stage">
+                <strong>2. Card Validation Gate</strong> (Orange) - Validates card data quality with hard fails and soft warnings
+            </div>
+            
+            <div class="stage">
+                <strong>3. Score Calculator</strong> (Purple) - Computes personalized scores for each card
+            </div>
+            
+            <div class="stage">
+                <strong>4. Tie-Break Logic</strong> (Light Green) - Applies deterministic ranking rules
+            </div>
+            
+            <div class="stage">
+                <strong>5. Confidence Check</strong> (Yellow) - Evaluates recommendation reliability
+            </div>
+            
+            <div class="stage">
+                <strong>6. Output</strong> (Dark Green) - Returns top 3 recommendations with explanations
+            </div>
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+</body>
+</html>
