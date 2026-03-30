@@ -10,8 +10,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'cards_db',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
+        'USER': 'vedan',
+        'PASSWORD': 'VPatel',
         'HOST': 'localhost',
         'PORT': '5432',
     }
