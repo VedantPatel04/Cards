@@ -51,6 +51,9 @@
 - `MCC` — PK: code (not id) → contains MCC mapping
 - `TRANSACTIONS` — PK: id, FK: upload_id + user_card_id + mcc_code
 
+**Registration Endpoint**
+- creates new user by calling `create_user()`
+
 **Constraints:**
 - `REWARD_RULES`: unique per `(card_product, category)`
 - `TRANSACTIONS`: unique per `(upload, row)` or equivalent
@@ -60,7 +63,8 @@
 
 **Deliverable:**  
 - Migrations created + applied  
-- Model tests passing  
+- Model tests passing
+- Endpoint successfull creates new user upon request  
 - Constraints verified
 
 ---
