@@ -6,7 +6,6 @@ from rest_framework import status
 # Create your views here.
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-
 def is_Authenticated(request):
     content = {
         "message": "You are authenticated brother",
