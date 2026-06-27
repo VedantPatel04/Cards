@@ -146,4 +146,7 @@
 - Idempotency enforced by DB constraints (not just code)
 - Service layer for parsing/aggregation/scoring (views stay thin)
 - Tests written as you go (not at the end)
+- [ ] `django-cors-headers` installed + CORS_ALLOWED_ORIGINS set before Sprint 2 begins
+- [ ] Secrets moved to `.env` (SECRET_KEY, DB creds) — `.env` added to `.gitignore`
+- [ ] User_cards endpoints (add/remove/list cards in wallet) — required for upload → recommendation flow
 - Postman demo flow works by sprint end
