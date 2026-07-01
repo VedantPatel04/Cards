@@ -1,0 +1,60 @@
+[
+  {
+    "name": "Sapphire Preferred",
+    "issuer": "Chase",
+    "network": "Visa",
+    "card_type": "credit",
+    "annual_fee": "95.00",
+    "base_reward_rate": "1.00",
+    "signup_bonus": "750.00",
+    "signup_bonus_required_spending": "4000.00",
+    "reward_rules": [
+      { "category": "dining",        "reward_unit": "points", "reward_rate": "3.00" },
+      { "category": "groceries",     "reward_unit": "points", "reward_rate": "3.00" },
+      { "category": "entertainment", "reward_unit": "points", "reward_rate": "3.00" },
+      { "category": "travel",        "reward_unit": "points", "reward_rate": "2.00" }
+    ]
+  },
+  {
+    "name": "Freedom Unlimited",
+    "issuer": "Chase",
+    "network": "Visa",
+    "card_type": "credit",
+    "annual_fee": "0.00",
+    "base_reward_rate": "1.50",
+    "signup_bonus": "200.00",
+    "signup_bonus_required_spending": "500.00",
+    "reward_rules": [
+      { "category": "dining",   "reward_unit": "cash_back", "reward_rate": "3.00" },
+      { "category": "shopping", "reward_unit": "cash_back", "reward_rate": "3.00" },
+      { "category": "travel",   "reward_unit": "cash_back", "reward_rate": "5.00" }
+    ]
+  },
+  {
+    "name": "Blue Cash Preferred",
+    "issuer": "American Express",
+    "network": "Amex",
+    "card_type": "credit",
+    "annual_fee": "95.00",
+    "base_reward_rate": "1.00",
+    "signup_bonus": "250.00",
+    "signup_bonus_required_spending": "3000.00",
+    "reward_rules": [
+      { "category": "groceries",     "reward_unit": "cash_back", "reward_rate": "6.00" },
+      { "category": "entertainment", "reward_unit": "cash_back", "reward_rate": "6.00" },
+      { "category": "gas",           "reward_unit": "cash_back", "reward_rate": "3.00" },
+      { "category": "travel",        "reward_unit": "cash_back", "reward_rate": "3.00" }
+    ]
+  },
+  {
+    "name": "Active Cash",
+    "issuer": "Wells Fargo",
+    "network": "Visa",
+    "card_type": "credit",
+    "annual_fee": "0.00",
+    "base_reward_rate": "2.00",
+    "signup_bonus": "200.00",
+    "signup_bonus_required_spending": "500.00",
+    "reward_rules": []
+  }
+]

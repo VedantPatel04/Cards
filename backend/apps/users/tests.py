@@ -29,7 +29,7 @@ class RegisterEndpointTests(APITestCase):
         # must be a regular account, not a superuser/admin
         self.assertFalse(user.is_superuser)
         self.assertFalse(user.is_staff)
-
+        
     def test_password_is_hashed_not_stored_plaintext(self):
         self.client.post(self.url, self.payload, format="json")
         user = CustomUser.objects.get(username="alice") # fetch alice from the DB to inspect the stored password field directly
