@@ -1,7 +1,8 @@
 # Sprint 1 Timeline (1 week · 2–3 hrs/day)
 
-**Project:** Django + DRF REST API  
-**Key constraints:** SimpleJWT auth, idempotent ingestion + uploads, tests baked in, API-only demo via Postman.
+**Project:** Django + DRF REST API — backend for a live product with real users.  
+**Sprint 1 scope:** Backend API only. Frontend (React) is Sprint 2.  
+**Key constraints:** SimpleJWT auth, user registration endpoint, idempotent ingestion + uploads, tests baked in, API verified via Postman before frontend begins.
 
 ---
 
@@ -28,11 +29,12 @@
 - Django project + DRF configured
 - Postgres wired up
 - SimpleJWT installed and issuing tokens
+- `POST /api/register/` — creates a regular (non-superuser) user account
 - Protected “ping” endpoint proves auth works
 - Test harness working (pytest or Django test runner)
 
 **Deliverable:**  
-- Auth flow working in Postman  
+- Auth flow working in Postman (register → login → access protected endpoint)
 - Baseline tests passing
 
 ---
@@ -40,15 +42,29 @@
 ## Day 2 — Data Models + Migrations (Idempotency Designed In)
 **Checkpoint:** Database enforces correctness (not “careful coding”).
 
-- Create models: `Card`, `RewardRule`, `Upload`, `Transaction`
-- Add unique constraints for:
-  - Reward rule uniqueness per `(card, category)`
-  - Transaction uniqueness per `(upload, row)` (or equivalent)
+**Tables (in dependency order):**
+- `USERS` — PK: id (via AbstractUser)
+- `CARD_PRODUCTS` — PK: id
+- `REWARD_RULES` — PK: id, FK: card_product_id
+- `USER_CARDS` — PK: id, FK: user_id + card_product_id
+- `UPLOADS` — PK: id, FK: user_id → idempotent ingestion
+- `MCC` — PK: code (not id) → contains MCC mapping
+- `TRANSACTIONS` — PK: id, FK: upload_id + user_card_id + mcc_code
+
+**Registration Endpoint**
+- creates new user by calling `create_user()`
+
+**Constraints:**
+- `REWARD_RULES`: unique per `(card_product, category)`
+- `TRANSACTIONS`: unique per `(upload, row)` or equivalent
+- `USER_CARDS`: referenced by `REWARD_RULES` in a minor manner
+
 - Seed a tiny test dataset for fast testing
 
 **Deliverable:**  
 - Migrations created + applied  
-- Model tests passing  
+- Model tests passing
+- Endpoint successfull creates new user upon request  
 - Constraints verified
 
 ---
@@ -130,4 +146,7 @@
 - Idempotency enforced by DB constraints (not just code)
 - Service layer for parsing/aggregation/scoring (views stay thin)
 - Tests written as you go (not at the end)
+- [ ] `django-cors-headers` installed + CORS_ALLOWED_ORIGINS set before Sprint 2 begins
+- [ ] Secrets moved to `.env` (SECRET_KEY, DB creds) — `.env` added to `.gitignore`
+- [ ] User_cards endpoints (add/remove/list cards in wallet) — required for upload → recommendation flow
 - Postman demo flow works by sprint end
