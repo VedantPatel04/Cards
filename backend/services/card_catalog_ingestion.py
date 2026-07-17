@@ -8,7 +8,6 @@ CATALOG_PATH = os.path.join(settings.BASE_DIR, 'data', 'card_catalog', 'card_cat
 
 def load_card_catalog():
     # single place that knows the file location + shape; ingestion AND tests both call this,
-    # so there is only one source of truth for "what's in the catalog snapshot"
     with open(CATALOG_PATH, 'r') as file:
         return json.load(file)
 
