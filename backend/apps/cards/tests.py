@@ -1,4 +1,6 @@
+import copy
 from decimal import Decimal
+from unittest.mock import patch
 
 from django.db import IntegrityError, transaction
 from django.test import TestCase
@@ -111,3 +113,89 @@ class CardProductIngestionTests(TestCase):
         self.assertEqual(
             Reward_Rules.objects.filter(card_product=card, category=rule_entry["category"]).count(), 1
         )
+
+
+class CardIngestionValidationTests(TestCase):
+    def _catalog_without(self, key):
+        # helper: returns a deep copy of the real catalog with one key removed from the first card
+        catalog = copy.deepcopy(load_card_catalog())
+        del catalog[0][key]
+        return catalog
+
+    def test_missing_required_card_key_raises(self):
+        bad_catalog = self._catalog_without("annual_fee")
+        with patch("services.card_catalog_ingestion.load_card_catalog", return_value=bad_catalog):
+            with self.assertRaises(ValueError) as ctx:
+                ingest_card_catalog()
+        self.assertIn("annual_fee", str(ctx.exception))
+
+    def test_invalid_decimal_raises(self):
+        catalog = copy.deepcopy(load_card_catalog())
+        catalog[0]["annual_fee"] = "not_a_number"
+        with patch("services.card_catalog_ingestion.load_card_catalog", return_value=catalog):
+            with self.assertRaises(ValueError) as ctx:
+                ingest_card_catalog()
+        self.assertIn("annual_fee", str(ctx.exception))
+
+    def test_empty_catalog_raises(self):
+        with patch("services.card_catalog_ingestion.load_card_catalog", return_value=[]):
+            with self.assertRaises(ValueError) as ctx:
+                ingest_card_catalog()
+        self.assertIn("empty", str(ctx.exception))
+
+    def test_validation_failure_leaves_db_unchanged(self):
+        # the atomic wrapper means a validation failure must roll back — nothing written to the DB
+        bad_catalog = self._catalog_without("network")
+        with patch("services.card_catalog_ingestion.load_card_catalog", return_value=bad_catalog):
+            with self.assertRaises(ValueError):
+                ingest_card_catalog()
+        self.assertEqual(Card_Products.objects.count(), 0)
+
+
+class CardIngestionReconciliationTests(TestCase):
+    def test_deactivates_card_removed_from_snapshot(self):
+        ingest_card_catalog() #sapphire card is present in DB
+        catalog = load_card_catalog()
+        # build a trimmed snapshot with the first card removed
+        trimmed = [c for c in catalog if not (c["name"] == catalog[0]["name"] and c["issuer"] == catalog[0]["issuer"])]
+        with patch("services.card_catalog_ingestion.load_card_catalog", return_value=trimmed):
+            ingest_card_catalog() #sapphire card is now fed into ingest_card_catalog() --> set to inactive now since new snapshot is trimmed
+        removed = Card_Products.objects.get(name=catalog[0]["name"], issuer=catalog[0]["issuer"])
+        self.assertFalse(removed.is_active)  # soft-deleted, not hard-deleted
+
+    def test_removed_card_row_still_exists_for_fk_safety(self):
+        # User_cards may reference removed cards — hard-delete would break that FK
+        ingest_card_catalog()
+        catalog = load_card_catalog()
+        trimmed = [c for c in catalog if not (c["name"] == catalog[0]["name"] and c["issuer"] == catalog[0]["issuer"])]
+        with patch("services.card_catalog_ingestion.load_card_catalog", return_value=trimmed):
+            ingest_card_catalog()
+        self.assertTrue(
+            Card_Products.objects.filter(name=catalog[0]["name"], issuer=catalog[0]["issuer"]).exists()
+        )
+
+    def test_stale_reward_rule_deleted_when_category_removed_from_snapshot(self):
+        ingest_card_catalog()
+        catalog = load_card_catalog()
+        # find the first card with at least 2 reward rules so we can drop one
+        entry = next(e for e in catalog if len(e["reward_rules"]) >= 2)
+        card = Card_Products.objects.get(name=entry["name"], issuer=entry["issuer"])
+        rules_before = Reward_Rules.objects.filter(card_product=card).count()
+
+        # build a snapshot where this card is missing its last reward rule
+        trimmed_catalog = copy.deepcopy(catalog)
+        for c in trimmed_catalog:
+            if c["name"] == entry["name"] and c["issuer"] == entry["issuer"]:
+                c["reward_rules"] = c["reward_rules"][:-1]  # drop the last rule
+        with patch("services.card_catalog_ingestion.load_card_catalog", return_value=trimmed_catalog):
+            ingest_card_catalog()
+
+        rules_after = Reward_Rules.objects.filter(card_product=card).count()
+        self.assertEqual(rules_after, rules_before - 1)
+
+    def test_summary_dict_returned(self):
+        summary = ingest_card_catalog()
+        for key in ("cards_created", "cards_updated", "cards_deactivated",
+                    "rules_created", "rules_updated", "rules_deleted"):
+            self.assertIn(key, summary)
+        self.assertEqual(summary["cards_created"], len(load_card_catalog()))
