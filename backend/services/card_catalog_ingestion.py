@@ -101,7 +101,7 @@ def ingest_card_catalog():
         #reward rules: upsert what's in the snapshot
         snapshot_categories = set()
         for rule in card_product["reward_rules"]:
-            _, rule_created = Reward_Rules.objects.update_or_create(
+            _,  rule_created = Reward_Rules.objects.update_or_create(
                 card_product=card_obj,
                 category=rule["category"],
                 defaults={

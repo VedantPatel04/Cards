@@ -154,12 +154,12 @@ class CardIngestionValidationTests(TestCase):
 
 class CardIngestionReconciliationTests(TestCase):
     def test_deactivates_card_removed_from_snapshot(self):
-        ingest_card_catalog()
+        ingest_card_catalog() #sapphire card is present in DB
         catalog = load_card_catalog()
         # build a trimmed snapshot with the first card removed
         trimmed = [c for c in catalog if not (c["name"] == catalog[0]["name"] and c["issuer"] == catalog[0]["issuer"])]
         with patch("services.card_catalog_ingestion.load_card_catalog", return_value=trimmed):
-            ingest_card_catalog()
+            ingest_card_catalog() #sapphire card is now fed into ingest_card_catalog() --> set to inactive now since new snapshot is trimmed
         removed = Card_Products.objects.get(name=catalog[0]["name"], issuer=catalog[0]["issuer"])
         self.assertFalse(removed.is_active)  # soft-deleted, not hard-deleted
 
