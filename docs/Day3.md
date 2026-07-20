@@ -100,3 +100,7 @@ manual curation / future feed  →  card_catalog.json  →  seed_cards command  
 - Reward rates with annual caps (e.g. Amex Blue Cash Preferred 6% groceries capped at $6k/year) are stored as flat rates for MVP — cap logic deferred to a later sprint
 - Always clean up manually-ingested dev DB rows after hand verification — `Card_Products.objects.filter(...).delete()` cascades to `Reward_Rules` automatically
 - `is_active=True` is set explicitly in `update_or_create` defaults — this re-activates a previously deactivated card if it comes back in the snapshot
+
+**Additional Thoughts**
+------------------------
+- Rewire ingestion logic to automatically consume currently available cards using GitHub jobs, maybe add scraping logic ...
