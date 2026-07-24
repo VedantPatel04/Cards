@@ -1,0 +1,148 @@
+{
+  "info": {
+    "_postman_id": "b1f7c2a4-9d3e-4a21-8c5f-cards-api-0001",
+    "name": "Cards API",
+    "description": "Register -> Token -> protected endpoints. The token request auto-saves access/refresh into collection variables, and protected requests inherit Bearer {{access_token}} automatically, so you never copy-paste tokens.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      { "key": "token", "value": "{{access_token}}", "type": "string" }
+    ]
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://127.0.0.1:8000", "type": "string" },
+    { "key": "username", "value": "tester", "type": "string" },
+    { "key": "email", "value": "tester@example.com", "type": "string" },
+    { "key": "password", "value": "SomeStrongPass123", "type": "string" },
+    { "key": "access_token", "value": "", "type": "string" },
+    { "key": "refresh_token", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "1. Register",
+      "request": {
+        "auth": { "type": "noauth" },
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"{{username}}\",\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\",\n  \"password2\": \"{{password}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register/",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "register", ""]
+        },
+        "description": "Public. Creates a normal user. Expect 201. Safe to get 400 if the user already exists."
+      }
+    },
+    {
+      "name": "2. Get Token (login)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "  const res = pm.response.json();",
+              "  if (res.access)  pm.collectionVariables.set('access_token', res.access);",
+              "  if (res.refresh) pm.collectionVariables.set('refresh_token', res.refresh);",
+              "  console.log('Saved access + refresh tokens to collection variables.');",
+              "} else {",
+              "  console.log('Token request failed:', pm.response.code, pm.response.text());",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "auth": { "type": "noauth" },
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"{{password}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/token/",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "token", ""]
+        },
+        "description": "Public. Returns access + refresh. The Tests script auto-saves both into collection variables."
+      }
+    },
+    {
+      "name": "3. Is Authenticated (protected)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/isAuthenticated/",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "isAuthenticated", ""]
+        },
+        "description": "Protected. Inherits Bearer {{access_token}} from the collection. Expect 200; 401 if you have no valid token."
+      }
+    },
+    {
+      "name": "4. Upload Transactions (protected)",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": [],
+              "description": "Select backend/data/sample_uploads/Chase Transaction Statement.csv"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/upload/",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "upload", ""]
+        },
+        "description": "Protected. Inherits Bearer {{access_token}}. Body is form-data with a File field named 'file'. Returns 501 until process_upload is implemented."
+      }
+    },
+    {
+      "name": "5. Refresh Token",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "  const res = pm.response.json();",
+              "  if (res.access) pm.collectionVariables.set('access_token', res.access);",
+              "  console.log('Refreshed access token.');",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "auth": { "type": "noauth" },
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"refresh\": \"{{refresh_token}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/token/refresh/",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "token", "refresh", ""]
+        },
+        "description": "Public. Exchanges the saved refresh token for a fresh access token (auto-saved by the Tests script)."
+      }
+    }
+  ]
+}
