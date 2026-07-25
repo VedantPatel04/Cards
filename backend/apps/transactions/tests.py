@@ -1,7 +1,8 @@
 from django.db import IntegrityError, transaction
-from django.test import TestCase
+from django.test import SimpleTestCase, TestCase
 
 from apps.transactions.models import MCC_Codes, Transactions
+from services.merchant_normalize import merchant_key
 
 import seeds
 
@@ -50,3 +51,55 @@ class MCCCodesTests(TestCase):
         with self.assertRaises(ProtectedError):
             with transaction.atomic():
                 mcc.delete()
+
+
+class MerchantKeyTests(SimpleTestCase):
+    """Pure unit tests — no DB. merchant_key must stay deterministic forever."""
+
+    def test_chase_sample_rows(self):
+        cases = [
+            ("WAL-MART #2297", "WAL MART"),
+            ("PERUSALL E-BOOK", "PERUSALL E BOOK"),
+            ("MCDONALD'S F31398", "MCDONALDS"),
+            ("MCDONALD'S F25696", "MCDONALDS"),
+            ("PMUSA 304046 JERSEY CI", "PMUSA JERSEY CI"),
+            ("MTA*NYCT PAYGO", "MTA"),
+            ("LYFT   *AIRPORT 07-06", "LYFT"),
+            ("LYFT   *WAITSAVE 07-06", "LYFT"),
+            ("FOREIGN TRANSACTION FEE", "FOREIGN TRANSACTION FEE"),
+            ("DOMINOS PIZZA #10278", "DOMINOS PIZZA"),
+        ]
+        for raw, expected in cases:
+            with self.subTest(raw=raw):
+                self.assertEqual(merchant_key(raw), expected)
+
+    def test_store_variants_collapse(self):
+        """Same merchant, different store numbers → identical key (cache hit)."""
+        self.assertEqual(
+            merchant_key("MCDONALD'S F31398"),
+            merchant_key("MCDONALD'S F25696"),
+        )
+        self.assertEqual(
+            merchant_key("WAL-MART #2297"),
+            merchant_key("WAL-MART #0001"),
+        )
+
+    def test_star_and_hash_cut_processor_noise(self):
+        self.assertEqual(merchant_key("MTA*NYCT PAYGO"), "MTA")
+        self.assertEqual(merchant_key("LYFT*RIDE HELP.LYFT.COM"), "LYFT")
+        self.assertEqual(merchant_key("SQ *COFFEE SHOP"), "SQ")
+        self.assertEqual(merchant_key("AMZN*MARKETPLACE"), "AMZN")
+
+    def test_lowercase_and_whitespace_normalized(self):
+        self.assertEqual(merchant_key("  mcdonald's   f99  "), "MCDONALDS")
+        self.assertEqual(merchant_key("wal-mart"), "WAL MART")
+
+    def test_empty_and_garbage_inputs(self):
+        """Never raise — empty key is a valid miss for later tiers."""
+        self.assertEqual(merchant_key(""), "")
+        self.assertEqual(merchant_key("   "), "")
+        self.assertEqual(merchant_key("***"), "")
+        self.assertEqual(merchant_key("###"), "")
+        self.assertEqual(merchant_key("12345"), "")
+        self.assertEqual(merchant_key(None), "")
+        self.assertEqual(merchant_key(123), "")  # type: ignore[arg-type]
