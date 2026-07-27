@@ -1,6 +1,9 @@
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
+import os
+from dotenv import load_dotenv
+load_dotenv(BASE_DIR / ".env")
 
 SECRET_KEY = 'changeme'
 
@@ -80,3 +83,10 @@ USE_TZ = True
 STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
+MERCHANT_CACHE_TTL = int(os.environ.get("MERCHANT_CACHE_TTL", 60 * 60 * 24 * 30))  # 30 days
+
+LLM_ENABLED = os.environ.get("LLM_ENABLED", "false").lower() == "true"
+LLM_API_KEY = os.environ.get("LLM_API_KEY", "")
+LLM_MODEL = os.environ.get("LLM_MODEL", "gpt-4o-mini")
+LLM_MAX_CALLS_PER_UPLOAD = int(os.environ.get("LLM_MAX_CALLS_PER_UPLOAD", "25"))

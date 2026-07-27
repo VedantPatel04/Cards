@@ -10,3 +10,6 @@ DATABASES = {
         'NAME': ':memory:',
     }
 }
+
+# Central test package (backend/tests/) — keep app tests.py stubs empty.
+INSTALLED_APPS = [*INSTALLED_APPS, 'tests.apps.TestsConfig']

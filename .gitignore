@@ -24,6 +24,7 @@ coverage.xml
 
 # Environment / secrets
 .env
+backend/.env
 .env.*
 
 # OS / editor cruft
