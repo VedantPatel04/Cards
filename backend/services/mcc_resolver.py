@@ -17,9 +17,7 @@ Tier order:
 import json
 import os
 from django.conf import settings
-
-# TODO: import the pieces you'll need as you build each tier
-# from services.merchant_normalize import merchant_key
+from services.merchant_normalize import merchant_key
 # from services.merchant_cache import cache_get, cache_set
 # from services.llm_client import llm_lookup_mcc
 from apps.transactions.models import MCC_Codes, MerchantResolution
@@ -53,7 +51,7 @@ SOURCE_CATEGORY_MAP = {
     "Fees & Adjustments": "other",
 }
 
-
+known_mcc_codes_cache = None
 def known_mcc_codes() -> set[str]:
     """
     Return the set of valid MCC codes (from MCC_Codes). Used by Tier 1 and to
@@ -64,13 +62,13 @@ def known_mcc_codes() -> set[str]:
         known_mcc_codes_cache = set(MCC_Codes.objects.values_list("code", flat=True))
     return known_mcc_codes_cache
 
-
+merchant_rules = None
 def _load_merchant_rules() -> dict:
     """Load and memoize merchant_rules.json ({KEYWORD: MCC})."""
-    # TODO: read MERCHANT_RULES_PATH once, cache in a module-level variable
-    global merchant_rules = None
-    with open(MERCHANT_RULES_PATH, "r") as file:        
-        merchant_rules = json.load(file)
+    global merchant_rules
+    if merchant_rules is None:
+        with open(MERCHANT_RULES_PATH, "r") as file:        
+            merchant_rules = json.load(file)
     return merchant_rules
 
 def resolve_mcc(row: dict, budget=None) -> str | None:
@@ -88,12 +86,23 @@ def resolve_mcc(row: dict, budget=None) -> str | None:
 
     Returns a valid MCC code string, or None.
     """
-    # Tier 1: row.get("mcc") if it is a real known code
-    # Tier 2: _load_merchant_rules().get(merchant_key(row["raw_description"]))
-    # Tier 3: cache_get -> MerchantResolution row (warm cache on DB hit)
-    # Tier 4: if budget and budget.allows(): llm_lookup_mcc(...) then persist
-    #         to MerchantResolution + cache_set
-    # Tier 5: REPRESENTATIVE_MCC[SOURCE_CATEGORY_MAP.get(source_category)]
-    # Tier 6: return None
-    # TODO: implement the tiers in order
-    raise NotImplementedError
+    if row.get("mcc") in known_mcc_codes(): # tier 1
+        return row.get("mcc")
+
+    key = merchant_key(row.get("raw_description")) # tier 2
+    rule_mcc = _load_merchant_rules().get(key)
+    if rule_mcc is not None:
+        return rule_mcc
+
+    # Tier 3/4: Redis + LLM — Phase 6 add later
+
+    # Tier 5: Chase (or adapter) category text → canonical category →
+    #         one representative MCC for that bucket.
+    # Example: "Groceries" → "groceries" → "5411"
+    #          "Fees & Adjustments" → "other" → None
+    canonical = SOURCE_CATEGORY_MAP.get(row.get("source_category")) # tier 5
+    if canonical is not None:
+        return REPRESENTATIVE_MCC.get(canonical)
+
+    # Tier 6: nothing matched
+    return None
