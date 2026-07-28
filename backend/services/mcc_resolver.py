@@ -68,8 +68,10 @@ def known_mcc_codes() -> set[str]:
 def _load_merchant_rules() -> dict:
     """Load and memoize merchant_rules.json ({KEYWORD: MCC})."""
     # TODO: read MERCHANT_RULES_PATH once, cache in a module-level variable
-    raise NotImplementedError
-
+    global merchant_rules = None
+    with open(MERCHANT_RULES_PATH, "r") as file:        
+        merchant_rules = json.load(file)
+    return merchant_rules
 
 def resolve_mcc(row: dict, budget=None) -> str | None:
     """
