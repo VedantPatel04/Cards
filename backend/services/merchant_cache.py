@@ -12,14 +12,12 @@ Design decisions to implement:
   - Sentinel:       store "" to represent a cached "known-unknown" so we do
                     not re-hit the LLM for a merchant it already failed on
 """
-
+import redis
 from django.conf import settings
 
-# TODO: build one module-level client from settings.REDIS_URL
-#   import redis
-#   _client = redis.from_url(settings.REDIS_URL, decode_responses=True)
-_client = None
-
+# MODULE-LEVEL REDIS CLIENT
+redis_client = redis.Redis.from_url(settings.REDUS_URL, decode_responses=True) # project-level scope
+# creates an object to connect to redis using REDIS_URL from settings.py typeshi
 
 def cache_get(merchant_key: str) -> str | None:
     """
@@ -32,8 +30,10 @@ def cache_get(merchant_key: str) -> str | None:
     """
     # TODO: GET f"merchant:{merchant_key}" inside try/except (RedisError -> None)
     raise NotImplementedError
-
-
+    try: 
+        return redis_client.get(f"merchant:{merchant_key}")
+    except redis.RedisError:  
+      return None
 def cache_set(merchant_key: str, mcc_code: str) -> None:
     """
     Cache an MCC code (or "" for known-unknown) with the configured TTL.
