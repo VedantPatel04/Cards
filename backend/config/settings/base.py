@@ -3,7 +3,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 import os
 from dotenv import load_dotenv
-load_dotenv(BASE_DIR / ".env")
+load_dotenv(BASE_DIR / ".env") # loads environment variables from backend/.env
 
 SECRET_KEY = 'changeme'
 
@@ -75,6 +75,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
 }
+
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
@@ -83,7 +84,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
+REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0") # (URL, redis default URL with host: localhost,  port: 6379)
 MERCHANT_CACHE_TTL = int(os.environ.get("MERCHANT_CACHE_TTL", 60 * 60 * 24 * 30))  # 30 days
 
 LLM_ENABLED = os.environ.get("LLM_ENABLED", "false").lower() == "true"

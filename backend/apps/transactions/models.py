@@ -26,11 +26,10 @@ class Transactions(models.Model):
 # Anything the LLM ever resolves is stored here so you never pay for the same
 # merchant twice (Redis is the volatile L1 in front of this).
 # TODO: add the fields, then `makemigrations transactions` + `migrate`.
-#   merchant_key  CharField(primary_key=True, max_length=255)   # normalized key
-#   mcc_code      ForeignKey(MCC_Codes, on_delete=PROTECT, null=True, blank=True)
-#   category      CharField(max_length=32, blank=True, default="")
-#   source        CharField(max_length=16)   # 'rule' | 'llm' | 'manual'
-#   confidence    FloatField(default=0.0)
-#   created_at    DateTimeField(auto_now_add=True)
 class MerchantResolution(models.Model):
-    pass
+    merchant_key = models.CharField(primary_key=True, max_length=255)
+    mcc_code = models.ForeignKey(MCC_Codes, on_delete=models.PROTECT, null=True, blank=True)
+    category = models.CharField(max_length=32, blank=True, default="")
+    source = models.CharField(max_length=16)   # 'rule',  'llm' or 'manual'
+    confidence = models.FloatField(default=0.0)
+    created_at = models.DateTimeField(auto_now_add=True)
