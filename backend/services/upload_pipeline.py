@@ -1,5 +1,5 @@
 """
-Phase 7 — Upload orchestrator.
+Upload orchestrator.
 
 Ties the pieces together: adapter (csv_parser) -> resolver (mcc_resolver) ->
 idempotent DB write of Transactions. Views stay thin and call process_upload.

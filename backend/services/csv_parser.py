@@ -1,5 +1,5 @@
 """
-Phase 7 — CSV adapter.
+CSV adapter.
 
 The ONLY place that knows a specific bank's column names. Its job is to turn
 raw file bytes into a list of normalized row dicts that the pipeline and
@@ -9,6 +9,8 @@ nothing downstream changes.
 
 import csv
 import io
+from datetime import datetime
+from decimal import Decimal
 
 
 def normalize_csv(file_bytes: bytes) -> list[dict]:
@@ -26,6 +28,25 @@ def normalize_csv(file_bytes: bytes) -> list[dict]:
       row_index       : int   (0-based position in the file, for idempotency)
 
     Note: does NOT assign mcc — resolution happens later via resolve_mcc().
+
+    Sign convention: Chase marks spend as negative; our Transactions model
+    uses positive = spend / negative = refund. We negate Chase amounts here
+    so the rest of the pipeline never sees bank-specific sign rules.
     """
-    # TODO: decode bytes -> csv.DictReader; map columns -> canonical keys
-    raise NotImplementedError
+    csv_string = file_bytes.decode("utf-8")  # raw string of decoded csv bytes
+    string_file = io.StringIO(csv_string)  #transforms csv_string into a file-like object that can be fed into DictReader properly
+    reader = csv.DictReader(string_file)
+    structured_data = []
+
+    for row_index, row in enumerate(reader):
+        chase_amount = Decimal(row["Amount"])
+        structured_data.append({
+            "raw_description": row["Description"],
+            "source_category": row["Category"],
+            "amount": -chase_amount, #negates chase amount so it's positive in the model
+            "transaction_date": datetime.strptime(
+                row["Transaction Date"], "%m/%d/%Y"
+            ).date(),
+            "row_index": row_index,
+        })
+    return structured_data
