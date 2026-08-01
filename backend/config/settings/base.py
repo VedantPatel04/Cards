@@ -83,7 +83,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
+# LOAD environment variables
 REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0") # (URL, redis default URL with host: localhost,  port: 6379)
 MERCHANT_CACHE_TTL = int(os.environ.get("MERCHANT_CACHE_TTL", 60 * 60 * 24 * 30))  # 30 days
 

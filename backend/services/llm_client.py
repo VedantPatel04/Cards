@@ -8,6 +8,9 @@ is a one-file change. The public surface is a single function that returns a
 """
 
 from django.conf import settings
+from openai import OpenAI
+import json
+from services.mcc_resolver import known_mcc_codes
 
 
 def llm_lookup_mcc(merchant_key: str) -> str | None:
@@ -26,5 +29,23 @@ def llm_lookup_mcc(merchant_key: str) -> str | None:
 
     Returns a valid MCC code string, or None.
     """
-    # TODO: implement per docstring
-    raise NotImplementedError
+    if not settings.LLM_ENABLED or not settings.LLM_API_KEY:
+      return None
+    try:
+      client = OpenAI(api_key = settings.LLM_API_KEY, timeout = 10)
+      response = client.responses.create(
+      model = settings.LLM_MODEL,
+      input = f'Return JSON only, e.g. {{"mcc":"5814"}}. What is the most likely Visa MCC for this merchant? Merchant: {merchant_key}',
+      temperature = 0.0,
+      max_output_tokens=30
+      )
+      text = response.output_text
+
+      data = json.loads(text) # dict {"mcc": "4111"}
+      mcc = str(data.get("mcc"))
+
+      if mcc and mcc in known_mcc_codes():
+        return mcc
+        
+    except Exception:
+      return None
