@@ -41,11 +41,13 @@ def llm_lookup_mcc(merchant_key: str) -> str | None:
       )
       text = response.output_text
 
-      data = json.loads(text) # dict {"mcc": "4111"}
-      mcc = str(data.get("mcc"))
-
-      if mcc and mcc in known_mcc_codes():
+      data = json.loads(text)  # e.g. {"mcc": "4111"}
+      raw = data.get("mcc")
+      if raw is None:
+        return None
+      mcc = str(raw)
+      if mcc in known_mcc_codes():
         return mcc
-        
+      return None
     except Exception:
       return None

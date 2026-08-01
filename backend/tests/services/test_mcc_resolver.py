@@ -1,21 +1,19 @@
 """
-Phase 2 — resolve_mcc tests (Tiers 1, 2, 5, 6).
+resolve_mcc tests.
 
-Tiers 3/4 (Redis + LLM) are not implemented yet; tests stub them out
-by simply not providing a budget, which keeps Phase 2 free / no external deps.
-
-DB is required only for Tier 1 (known_mcc_codes() queries MCC_Codes).
-Tiers 2/5/6 are data-driven (JSON + dicts); they can run in a TestCase too.
+Tiers 1, 2, 5, 6 (budget=None keeps Tier 4 off).
+Tiers 3a/3b/4 with mocked Redis + LLM (no real network).
 """
 
 import json
 import os
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 from django.test import TestCase
 
 import seeds
 import services.mcc_resolver as resolver_module
+from apps.transactions.models import MerchantResolution
 from services.mcc_resolver import (
     REPRESENTATIVE_MCC,
     SOURCE_CATEGORY_MAP,
@@ -23,6 +21,7 @@ from services.mcc_resolver import (
     known_mcc_codes,
     resolve_mcc,
 )
+from services.upload_pipeline import UploadBudget
 
 
 # ---------------------------------------------------------------------------
@@ -196,6 +195,10 @@ class ResolveMccTier2Tests(TestCase):
 class ResolveMccTier5Tests(TestCase):
     def setUp(self):
         _reset_module_caches()
+        # Fall-through must not depend on whatever is in a local Redis.
+        self._cache_patch = patch.object(resolver_module, "cache_get", return_value=None)
+        self._cache_patch.start()
+        self.addCleanup(self._cache_patch.stop)
 
     def test_groceries_category_returns_5411(self):
         row = {"raw_description": "TOTALLY UNKNOWN STORE", "source_category": "Groceries"}
@@ -246,6 +249,9 @@ class ResolveMccTier5Tests(TestCase):
 class ResolveMccTier6Tests(TestCase):
     def setUp(self):
         _reset_module_caches()
+        self._cache_patch = patch.object(resolver_module, "cache_get", return_value=None)
+        self._cache_patch.start()
+        self.addCleanup(self._cache_patch.stop)
 
     def test_no_mcc_no_rule_no_category_returns_none(self):
         row = {"raw_description": "COMPLETELY UNKNOWN @@@"}
@@ -275,10 +281,14 @@ class ResolveMccTier6Tests(TestCase):
 class ResolveMccChaseRowTests(TestCase):
     """
     End-to-end: feed normalized rows from the sample Chase CSV and assert
-    correct tier resolution. Mirrors the Phase 2 checkpoint in the plan.
+    correct tier resolution.
     """
     def setUp(self):
         _reset_module_caches()
+        # Unknown merchants (PMUSA / fees) must hit Tier 5, not a dirty Redis.
+        self._cache_patch = patch.object(resolver_module, "cache_get", return_value=None)
+        self._cache_patch.start()
+        self.addCleanup(self._cache_patch.stop)
 
     def test_mcdonalds_f31398(self):
         row = {"raw_description": "MCDONALD'S F31398", "source_category": "Food & Drink"}
@@ -321,3 +331,149 @@ class ResolveMccChaseRowTests(TestCase):
         """Fee → 'other' → None."""
         row = {"raw_description": "FOREIGN TRANSACTION FEE", "source_category": "Fees & Adjustments"}
         self.assertIsNone(resolve_mcc(row))  # Tier 5 returns None for "other"
+
+
+# ---------------------------------------------------------------------------
+# Tier 3a — Redis
+# ---------------------------------------------------------------------------
+
+class ResolveMccTier3aRedisTests(TestCase):
+    """Unknown merchant (no Tier 2 rule) so Redis is actually consulted."""
+
+    UNKNOWN = {"raw_description": "WEIRD UNKNOWN CAFE XYZ", "source_category": "Food & Drink"}
+
+    def setUp(self):
+        _reset_module_caches()
+
+    @patch.object(resolver_module, "cache_get", return_value="5814")
+    @patch.object(resolver_module, "cache_set")
+    @patch("services.llm_client.llm_lookup_mcc")
+    def test_redis_hit_returns_mcc_and_skips_llm(self, mock_llm, mock_set, mock_get):
+        budget = UploadBudget(5)
+        self.assertEqual(resolve_mcc(self.UNKNOWN, budget=budget), "5814")
+        mock_get.assert_called_once()
+        mock_set.assert_not_called()
+        mock_llm.assert_not_called()
+        self.assertEqual(budget.remaining, 5)  # must not spend on cache hit
+
+    @patch.object(resolver_module, "cache_get", return_value="")
+    @patch.object(resolver_module, "cache_set")
+    @patch("services.llm_client.llm_lookup_mcc")
+    def test_redis_sentinel_returns_none_skips_llm_and_tier5(self, mock_llm, mock_set, mock_get):
+        """'' means known-unknown — return None, do not fall to Tier 5 dining."""
+        budget = UploadBudget(5)
+        result = resolve_mcc(self.UNKNOWN, budget=budget)
+        self.assertIsNone(result)
+        mock_llm.assert_not_called()
+        mock_set.assert_not_called()
+
+
+# ---------------------------------------------------------------------------
+# Tier 3b — MerchantResolution DB
+# ---------------------------------------------------------------------------
+
+class ResolveMccTier3bDbTests(TestCase):
+    UNKNOWN = {"raw_description": "WEIRD UNKNOWN CAFE XYZ", "source_category": "Food & Drink"}
+
+    def setUp(self):
+        _reset_module_caches()
+        seeds.make_mcc(code="5814", category="dining")
+
+    @patch.object(resolver_module, "cache_get", return_value=None)
+    @patch.object(resolver_module, "cache_set")
+    def test_db_hit_returns_mcc_and_warms_redis(self, mock_set, mock_get):
+        from services.merchant_normalize import merchant_key as mk
+        key = mk(self.UNKNOWN["raw_description"])
+        MerchantResolution.objects.create(
+            merchant_key=key, mcc_code_id="5814", source="llm"
+        )
+        self.assertEqual(resolve_mcc(self.UNKNOWN), "5814")
+        mock_set.assert_called_once_with(key, "5814")
+
+    @patch.object(resolver_module, "cache_get", return_value=None)
+    @patch.object(resolver_module, "cache_set")
+    def test_db_hit_with_null_mcc_warms_sentinel(self, mock_set, mock_get):
+        from services.merchant_normalize import merchant_key as mk
+        key = mk(self.UNKNOWN["raw_description"])
+        MerchantResolution.objects.create(
+            merchant_key=key, mcc_code=None, source="llm"
+        )
+        self.assertIsNone(resolve_mcc(self.UNKNOWN))
+        mock_set.assert_called_once_with(key, "")
+
+    @patch.object(resolver_module, "cache_get", return_value=None)
+    @patch("services.llm_client.llm_lookup_mcc")
+    def test_db_hit_skips_llm_even_with_budget(self, mock_llm, mock_get):
+        from services.merchant_normalize import merchant_key as mk
+        key = mk(self.UNKNOWN["raw_description"])
+        MerchantResolution.objects.create(
+            merchant_key=key, mcc_code_id="5814", source="llm"
+        )
+        budget = UploadBudget(5)
+        with patch.object(resolver_module, "cache_set"):
+            self.assertEqual(resolve_mcc(self.UNKNOWN, budget=budget), "5814")
+        mock_llm.assert_not_called()
+        self.assertEqual(budget.remaining, 5)
+
+
+# ---------------------------------------------------------------------------
+# Tier 4 — LLM + budget
+# ---------------------------------------------------------------------------
+
+class ResolveMccTier4LlmTests(TestCase):
+    UNKNOWN = {"raw_description": "WEIRD UNKNOWN CAFE XYZ", "source_category": "Food & Drink"}
+
+    def setUp(self):
+        _reset_module_caches()
+        seeds.make_mcc(code="5814", category="dining")
+
+    @patch.object(resolver_module, "cache_get", return_value=None)
+    @patch.object(resolver_module, "cache_set")
+    @patch("services.llm_client.llm_lookup_mcc", return_value="5814")
+    def test_cold_miss_with_budget_calls_llm_persists_and_caches(
+        self, mock_llm, mock_set, mock_get
+    ):
+        from services.merchant_normalize import merchant_key as mk
+        key = mk(self.UNKNOWN["raw_description"])
+        budget = UploadBudget(3)
+
+        self.assertEqual(resolve_mcc(self.UNKNOWN, budget=budget), "5814")
+        mock_llm.assert_called_once_with(key)
+        self.assertEqual(budget.remaining, 2)
+
+        stored = MerchantResolution.objects.get(merchant_key=key)
+        self.assertEqual(stored.mcc_code_id, "5814")
+        self.assertEqual(stored.source, "llm")
+        mock_set.assert_called_once_with(key, "5814")
+
+    @patch.object(resolver_module, "cache_get", return_value=None)
+    @patch.object(resolver_module, "cache_set")
+    @patch("services.llm_client.llm_lookup_mcc", return_value=None)
+    def test_llm_none_still_persists_and_caches_sentinel(
+        self, mock_llm, mock_set, mock_get
+    ):
+        from services.merchant_normalize import merchant_key as mk
+        key = mk(self.UNKNOWN["raw_description"])
+        budget = UploadBudget(1)
+
+        self.assertIsNone(resolve_mcc(self.UNKNOWN, budget=budget))
+        stored = MerchantResolution.objects.get(merchant_key=key)
+        self.assertIsNone(stored.mcc_code_id)
+        mock_set.assert_called_once_with(key, "")
+        self.assertEqual(budget.remaining, 0)
+
+    @patch.object(resolver_module, "cache_get", return_value=None)
+    @patch("services.llm_client.llm_lookup_mcc")
+    def test_budget_none_or_exhausted_skips_llm_falls_to_tier5(self, mock_llm, mock_get):
+        self.assertEqual(resolve_mcc(self.UNKNOWN, budget=None), "5812")
+        self.assertEqual(resolve_mcc(self.UNKNOWN, budget=UploadBudget(0)), "5812")
+        mock_llm.assert_not_called()
+
+    @patch.object(resolver_module, "cache_get", return_value=None)
+    @patch("services.llm_client.llm_lookup_mcc")
+    def test_tier2_rule_beats_cache_and_llm(self, mock_llm, mock_get):
+        budget = UploadBudget(5)
+        row = {"raw_description": "MCDONALD'S F31398", "source_category": "Food & Drink"}
+        self.assertEqual(resolve_mcc(row, budget=budget), "5814")
+        mock_llm.assert_not_called()
+        mock_get.assert_not_called()

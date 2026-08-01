@@ -1,5 +1,5 @@
 """
-Phase 4 — merchant_cache tests.
+merchant_cache tests.
 
 Strategy: mock the module-level _client so tests never need a real Redis
 server. This lets us verify all behaviour — hits, misses, sentinel, TTL,

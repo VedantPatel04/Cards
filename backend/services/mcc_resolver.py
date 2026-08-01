@@ -18,9 +18,9 @@ import json
 import os
 from django.conf import settings
 from services.merchant_normalize import merchant_key
-# from services.merchant_cache import cache_get, cache_set
-# from services.llm_client import llm_lookup_mcc
+from services.merchant_cache import cache_get, cache_set
 from apps.transactions.models import MCC_Codes, MerchantResolution
+# llm_lookup_mcc imported inside Tier 4 to avoid circular import with known_mcc_codes
 
 MERCHANT_RULES_PATH = os.path.join(
     settings.BASE_DIR, "data", "card_catalog", "merchant_rules.json"
@@ -41,7 +41,7 @@ REPRESENTATIVE_MCC = {
 }
 
 # Chase-specific: maps the text in Chase's "Category" column to our canonical
-# category vocabulary. Will moves to the Chase adapter once
+# category vocabulary. Will move to the Chase adapter once
 # Plaid is added (each adapter will own its own mapping).
 SOURCE_CATEGORY_MAP = {
     "Groceries": "groceries",
@@ -67,7 +67,7 @@ def _load_merchant_rules() -> dict:
     """Load and memoize merchant_rules.json ({KEYWORD: MCC})."""
     global merchant_rules
     if merchant_rules is None:
-        with open(MERCHANT_RULES_PATH, "r") as file:        
+        with open(MERCHANT_RULES_PATH, "r") as file:
             merchant_rules = json.load(file)
     return merchant_rules
 
@@ -94,8 +94,33 @@ def resolve_mcc(row: dict, budget=None) -> str | None:
     if rule_mcc is not None:
         return rule_mcc
 
-    # Tier 3/4: Redis + LLM — Phase 6 add later
+    # Tier 3a — Redis L1. "" = known-unknown sentinel.
+    hit = cache_get(key)
+    if hit is not None:
+        return hit or None
 
+    # Tier 3b — durable L2; warm Redis on hit.
+    stored = MerchantResolution.objects.filter(merchant_key=key).first()
+    if stored is not None:
+        mcc = stored.mcc_code_id
+        cache_set(key, mcc or "")
+        return mcc
+    
+    # Tier 4: LLM
+    if budget is not None and budget.allows():
+        from services.llm_client import llm_lookup_mcc
+
+        mcc = llm_lookup_mcc(key)
+        budget.spend()
+        MerchantResolution.objects.update_or_create(
+            merchant_key=key,
+            defaults={
+                "mcc_code_id": mcc,
+                "source": "llm",
+            },
+        )
+        cache_set(key, mcc or "")
+        return mcc
     # Tier 5: Chase (or adapter) category text → canonical category →
     #         one representative MCC for that bucket.
     # Example: "Groceries" → "groceries" → "5411"

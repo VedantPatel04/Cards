@@ -30,12 +30,11 @@ class UploadBudget:
         self.remaining = remaining
 
     def allows(self) -> bool:
-        # TODO: return self.remaining > 0
-        raise NotImplementedError
+        return self.remaining > 0
 
     def spend(self) -> None:
-        # TODO: decrement remaining
-        raise NotImplementedError
+        if self.remaining > 0:
+            self.remaining -= 1
 
 
 @transaction.atomic
