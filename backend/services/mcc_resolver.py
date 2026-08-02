@@ -1,5 +1,5 @@
 """
-Phases 2 & 6 — Tiered Approach to the MCC resolver.
+MCC resolver.
 
 Takes an already-normalized row (produced by the CSV adapter) and returns an
 MCC code that exists in MCC_Codes, or None. The adapter decides the file
@@ -12,15 +12,22 @@ Tier order:
   4. LLM call (only if budget remains) -> write both
   5. source_category -> representative MCC
   6. None
+
+Every tier decision is logged at DEBUG under the "services.mcc_resolver"
+logger, so `manage.py demo_upload` (or any log config) can show the ladder.
 """
 
 import json
+import logging
 import os
 from django.conf import settings
+from services.csv_parser import CHASE_CATEGORY_MAP
 from services.merchant_normalize import merchant_key
 from services.merchant_cache import cache_get, cache_set
 from apps.transactions.models import MCC_Codes, MerchantResolution
 # llm_lookup_mcc imported inside Tier 4 to avoid circular import with known_mcc_codes
+
+logger = logging.getLogger(__name__)
 
 MERCHANT_RULES_PATH = os.path.join(
     settings.BASE_DIR, "data", "card_catalog", "merchant_rules.json"
@@ -40,16 +47,15 @@ REPRESENTATIVE_MCC = {
     "other": None,
 }
 
-# Chase-specific: maps the text in Chase's "Category" column to our canonical
-# category vocabulary. Will move to the Chase adapter once
-# Plaid is added (each adapter will own its own mapping).
-SOURCE_CATEGORY_MAP = {
-    "Groceries": "groceries",
-    "Food & Drink": "dining",
-    "Travel": "travel",
-    "Shopping": "shopping",
-    "Fees & Adjustments": "other",
-}
+# Legacy path only. Adapters now emit a canonical "category" on every row, so
+# the resolver never needs a provider's vocabulary. This alias keeps rows that
+# were hand-built with only Chase's raw "source_category" working; delete it
+# once nothing constructs rows that way.
+SOURCE_CATEGORY_MAP = CHASE_CATEGORY_MAP
+
+# Confidence we record on an LLM-sourced resolution. Rules and manual edits are
+# ground truth (1.0); the model is a good guess we would override on conflict.
+LLM_CONFIDENCE = 0.7
 
 known_mcc_codes_cache = None
 def known_mcc_codes() -> set[str]:
@@ -64,12 +70,16 @@ def known_mcc_codes() -> set[str]:
 
 merchant_rules = None
 def _load_merchant_rules() -> dict:
-    """Load and memoize merchant_rules.json ({KEYWORD: MCC})."""
+    """Load and memoize merchant_rules.json ({MERCHANT KEY: MCC})."""
     global merchant_rules
     if merchant_rules is None:
         with open(MERCHANT_RULES_PATH, "r") as file:
-            merchant_rules = json.load(file)
+            loaded = json.load(file)
+        if not isinstance(loaded, dict):
+            raise ValueError("merchant_rules.json must be a JSON object of key -> MCC")
+        merchant_rules = loaded
     return merchant_rules
+
 
 def resolve_mcc(row: dict, budget=None) -> str | None:
     """
@@ -84,19 +94,45 @@ def resolve_mcc(row: dict, budget=None) -> str | None:
     .allows() / .spend() gate the paid Tier 4 call. When None, treat Tier 4
     as disabled.
 
-    Returns a valid MCC code string, or None.
+    Returns a code that is guaranteed to exist in MCC_Codes, or None. That
+    guarantee matters: Transactions.mcc_code is a FK, so returning a code the
+    table doesn't have would fail the whole upload's write.
     """
-    if row.get("mcc") in known_mcc_codes(): # tier 1
-        return row.get("mcc")
+    mcc = _resolve_tiers(row, budget)
+    if mcc is not None and mcc not in known_mcc_codes():
+        logger.warning(
+            "discarding unknown MCC %r for %r (not in MCC_Codes)",
+            mcc, row.get("raw_description"),
+        )
+        return None
+    return mcc
 
-    key = merchant_key(row.get("raw_description")) # tier 2
+
+def _resolve_tiers(row: dict, budget=None) -> str | None:
+    """The tier ladder. Callers should use resolve_mcc(), which validates."""
+    row_mcc = str(row.get("mcc") or "").strip()
+    if row_mcc in known_mcc_codes():  # tier 1
+        logger.debug("tier1 row-mcc %s for %r", row_mcc, row.get("raw_description")) # aids in logging when tier 1 resolves an MCC
+        return row_mcc
+
+    key = merchant_key(row.get("raw_description"))  # shared by tiers 2-4
+
+    # An unusable description (digits/symbols only) normalizes to "". Every such
+    # row would otherwise share one cache entry and one MerchantResolution row,
+    # so skip straight to the category fallback.
+    if not key:
+        logger.debug("empty merchant key for %r, skipping tiers 2-4", row.get("raw_description"))
+        return _tier5_category_fallback(row)
+
     rule_mcc = _load_merchant_rules().get(key)
-    if rule_mcc is not None:
+    if rule_mcc is not None:  # tier 2
+        logger.debug("tier2 rule hit %s -> %s", key, rule_mcc)
         return rule_mcc
 
     # Tier 3a — Redis L1. "" = known-unknown sentinel.
     hit = cache_get(key)
     if hit is not None:
+        logger.debug("tier3a cache hit %s -> %r", key, hit)
         return hit or None
 
     # Tier 3b — durable L2; warm Redis on hit.
@@ -104,30 +140,71 @@ def resolve_mcc(row: dict, budget=None) -> str | None:
     if stored is not None:
         mcc = stored.mcc_code_id
         cache_set(key, mcc or "")
+        logger.debug("tier3b db hit %s -> %r (redis warmed)", key, mcc)
         return mcc
-    
-    # Tier 4: LLM
-    if budget is not None and budget.allows():
-        from services.llm_client import llm_lookup_mcc
 
-        mcc = llm_lookup_mcc(key)
+    # Tier 4: LLM , if LLM is off/unkeyed we must NOT enter this branch
+    llm_ready = bool(settings.LLM_ENABLED and settings.LLM_API_KEY)
+    if budget is not None and budget.allows() and llm_ready:
+        from services.llm_client import LLMUnavailable, llm_lookup_mcc
+
+        try:
+            mcc = llm_lookup_mcc(key)
+        except LLMUnavailable:
+            budget.spend()
+            logger.warning("tier4 llm unavailable for %s, falling back to tier5", key)
+            return _tier5_category_fallback(row)
+
         budget.spend()
         MerchantResolution.objects.update_or_create(
             merchant_key=key,
             defaults={
                 "mcc_code_id": mcc,
+                "category": _category_for(mcc),
                 "source": "llm",
+                "confidence": LLM_CONFIDENCE if mcc else 0.0,
             },
         )
         cache_set(key, mcc or "")
+        logger.debug("tier4 llm %s -> %r (persisted + cached)", key, mcc)
         return mcc
-    # Tier 5: Chase (or adapter) category text → canonical category →
-    #         one representative MCC for that bucket.
-    # Example: "Groceries" → "groceries" → "5411"
-    #          "Fees & Adjustments" → "other" → None
-    canonical = SOURCE_CATEGORY_MAP.get(row.get("source_category")) # tier 5
-    if canonical is not None:
-        return REPRESENTATIVE_MCC.get(canonical)
 
-    # Tier 6: nothing matched
+    return _tier5_category_fallback(row)
+
+
+def _category_for(mcc: str | None) -> str:
+    """
+    Denormalize the MCC's category onto the resolution row.
+
+    Reward matching works in categories, not codes, so storing it here saves a
+    join on the hot path. Only runs on a cold miss, so the extra query is rare.
+    """
+    if not mcc:
+        return ""
+    return (
+        MCC_Codes.objects.filter(code=mcc)
+        .values_list("category", flat=True)
+        .first()
+        or ""
+    )
+
+
+def _tier5_category_fallback(row: dict) -> str | None:
+    """
+    Tier 5: canonical category → one representative MCC for that bucket.
+    Tier 6 (nothing matched) is the None on the way out.
+
+    Example: "groceries" → "5411"
+             "other" → None
+
+    The adapter is what knows a provider's category words, so it hands us a
+    canonical name. Rows built without one still work via the legacy Chase map.
+    """
+    canonical = row.get("category") or SOURCE_CATEGORY_MAP.get(row.get("source_category"))
+    if canonical in REPRESENTATIVE_MCC:
+        mcc = REPRESENTATIVE_MCC[canonical]
+        logger.debug("tier5 category %r -> %r", canonical, mcc)
+        return mcc
+
+    logger.debug("tier6 unresolved %r", row.get("raw_description"))
     return None

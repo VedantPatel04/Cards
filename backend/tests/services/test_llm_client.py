@@ -10,7 +10,7 @@ from unittest.mock import MagicMock, patch
 from django.test import SimpleTestCase, override_settings
 
 import services.llm_client as llm_module
-from services.llm_client import llm_lookup_mcc
+from services.llm_client import LLMUnavailable, llm_lookup_mcc
 
 
 def _mock_response(text: str):
@@ -88,9 +88,35 @@ class LlmLookupFailOpenTests(SimpleTestCase):
 
     @override_settings(LLM_ENABLED=True, LLM_API_KEY="sk-test", LLM_MODEL="gpt-test")
     @patch.object(llm_module, "OpenAI")
-    def test_network_error_returns_none_without_raising(self, mock_openai_cls):
+    def test_network_error_raises_llm_unavailable(self, mock_openai_cls):
+        """
+        'We could not ask' is not 'the answer is unknown'. The caller persists
+        None forever, so an outage has to be a different signal than a miss.
+        """
         client = MagicMock()
         client.responses.create.side_effect = RuntimeError("timeout")
+        mock_openai_cls.return_value = client
+        with self.assertRaises(LLMUnavailable):
+            llm_lookup_mcc("X")
+
+    @override_settings(LLM_ENABLED=True, LLM_API_KEY="sk-test", LLM_MODEL="gpt-test")
+    @patch.object(llm_module, "known_mcc_codes", return_value={"5814"})
+    @patch.object(llm_module, "OpenAI")
+    def test_markdown_fenced_json_is_tolerated(self, mock_openai_cls, _known):
+        """Models wrap JSON in ```json fences constantly; that is still an answer."""
+        client = MagicMock()
+        client.responses.create.return_value = _mock_response(
+            '```json\n{"mcc": "5814"}\n```'
+        )
+        mock_openai_cls.return_value = client
+        self.assertEqual(llm_lookup_mcc("SHAKE SHACK"), "5814")
+
+    @override_settings(LLM_ENABLED=True, LLM_API_KEY="sk-test", LLM_MODEL="gpt-test")
+    @patch.object(llm_module, "known_mcc_codes", return_value={"5814"})
+    @patch.object(llm_module, "OpenAI")
+    def test_empty_reply_returns_none(self, mock_openai_cls, _known):
+        client = MagicMock()
+        client.responses.create.return_value = _mock_response("")
         mock_openai_cls.return_value = client
         self.assertIsNone(llm_lookup_mcc("X"))
 
