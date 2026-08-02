@@ -8,6 +8,14 @@ this value, so it must be deterministic and dependency-free.
 """
 
 import re
+
+# MerchantResolution.merchant_key is the varchar(255) primary key, and this
+# value also becomes a Redis key, so the normalizer is the one place that has
+# to bound it. Truncation stays idempotent: cutting an already-cut key is a
+# no-op, so the same description always produces the same key.
+MAX_KEY_CHARS = 255
+
+
 def merchant_key(description: str | None) -> str:
     """
     Normalize a raw transaction description into a canonical merchant key.
@@ -38,4 +46,4 @@ def merchant_key(description: str | None) -> str:
     key = re.sub(r"[^A-Z]+", " ", key)
 
 
-    return " ".join(key.split())
+    return " ".join(key.split())[:MAX_KEY_CHARS].strip()

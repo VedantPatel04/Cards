@@ -1,5 +1,5 @@
 """
-Phase 1 — merchant_key thorough tests.
+merchant_key thorough tests.
 
 Pure function (no DB, no Redis, no LLM). Every later tier keys off these
 tokens, so behavior here must stay frozen and deterministic.
@@ -10,8 +10,8 @@ from django.test import SimpleTestCase
 from services.merchant_normalize import merchant_key
 
 
-class MerchantKeyPhase1SpecTests(SimpleTestCase):
-    """Green-bar cases from the Phase 1 normalizer checklist."""
+class MerchantKeySpecTests(SimpleTestCase):
+    """Green-bar cases from the normalizer checklist."""
 
     def test_mcdonalds_rows_collapse_to_mcdonalds(self):
         self.assertEqual(merchant_key("MCDONALD'S F31398"), "MCDONALDS")
