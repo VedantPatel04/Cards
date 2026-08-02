@@ -5,7 +5,7 @@ Usage (from backend/):
   python manage.py demo_upload
   python manage.py demo_upload --clear   # wipe prior demo MerchantResolutions + txs
 
-Shows, per distinct merchant: Redis / DB / LLM / Tier-5 path, then a second
+Shows the tier used to resolve each distinct merchant: Redis/DB/LLM/Tier-5 path, then a second
 pass that should make zero LLM calls.
 """
 
