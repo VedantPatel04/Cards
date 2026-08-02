@@ -25,7 +25,8 @@ from services.csv_parser import CHASE_CATEGORY_MAP
 from services.merchant_normalize import merchant_key
 from services.merchant_cache import cache_get, cache_set
 from apps.transactions.models import MCC_Codes, MerchantResolution
-# llm_lookup_mcc imported inside Tier 4 to avoid circular import with known_mcc_codes
+
+#llm_lookup_mcc imported inside Tier 4 to avoid circular import with known_mcc_codes
 
 logger = logging.getLogger(__name__)
 
@@ -33,10 +34,7 @@ MERCHANT_RULES_PATH = os.path.join(
     settings.BASE_DIR, "data", "card_catalog", "merchant_rules.json"
 )
 
-# Tier 5 fallback: broadest/catch-all code inside each category bucket per
-# mcc_category_map.json. Used when we know *what kind* of merchant it is
-# but not the exact MCC (e.g. Chase gives "Travel" but not "Airlines" vs
-# "Parking"). "other" maps to None -> mcc_code stays NULL on the transaction.
+# Tier 5 fallback CATEGORY MAP, "other" maps to None -> mcc_code stays NULL on the transaction.
 REPRESENTATIVE_MCC = {
     "groceries": "5411",      # Grocery Stores and Supermarkets
     "dining": "5812",         # Eating Places and Restaurants (broadest sit-down)
@@ -47,14 +45,10 @@ REPRESENTATIVE_MCC = {
     "other": None,
 }
 
-# Legacy path only. Adapters now emit a canonical "category" on every row, so
-# the resolver never needs a provider's vocabulary. This alias keeps rows that
-# were hand-built with only Chase's raw "source_category" working; delete it
-# once nothing constructs rows that way.
+# Temporary alias for legacy rows using "source_category". Safe to remove once all rows have "category".
 SOURCE_CATEGORY_MAP = CHASE_CATEGORY_MAP
 
-# Confidence we record on an LLM-sourced resolution. Rules and manual edits are
-# ground truth (1.0); the model is a good guess we would override on conflict.
+# Confidence of llm lookup, rules and hardcoded information has a confidence level of 1.0
 LLM_CONFIDENCE = 0.7
 
 known_mcc_codes_cache = None
@@ -129,13 +123,13 @@ def _resolve_tiers(row: dict, budget=None) -> str | None:
         logger.debug("tier2 rule hit %s -> %s", key, rule_mcc)
         return rule_mcc
 
-    # Tier 3a — Redis L1. "" = known-unknown sentinel.
+    # Tier 3a — Redis L1. "" = known-unknown sentinel
     hit = cache_get(key)
     if hit is not None:
         logger.debug("tier3a cache hit %s -> %r", key, hit)
         return hit or None
 
-    # Tier 3b — durable L2; warm Redis on hit.
+    # Tier 3b — durable L2; warm up redis on a hit
     stored = MerchantResolution.objects.filter(merchant_key=key).first()
     if stored is not None:
         mcc = stored.mcc_code_id
@@ -153,7 +147,7 @@ def _resolve_tiers(row: dict, budget=None) -> str | None:
         except LLMUnavailable:
             budget.spend()
             logger.warning("tier4 llm unavailable for %s, falling back to tier5", key)
-            return _tier5_category_fallback(row)
+            return _tier5_category_fallback(row) # calls our tier 5 fallback if LLM lookup returns with an error
 
         budget.spend()
         MerchantResolution.objects.update_or_create(
@@ -191,12 +185,9 @@ def _category_for(mcc: str | None) -> str:
 
 def _tier5_category_fallback(row: dict) -> str | None:
     """
-    Tier 5: canonical category → one representative MCC for that bucket.
-    Tier 6 (nothing matched) is the None on the way out.
-
+    Tier 5 + Tier 6
     Example: "groceries" → "5411"
              "other" → None
-
     The adapter is what knows a provider's category words, so it hands us a
     canonical name. Rows built without one still work via the legacy Chase map.
     """
