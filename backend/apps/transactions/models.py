@@ -30,6 +30,6 @@ class MerchantResolution(models.Model):
     merchant_key = models.CharField(primary_key=True, max_length=255)
     mcc_code = models.ForeignKey(MCC_Codes, on_delete=models.PROTECT, null=True, blank=True)
     category = models.CharField(max_length=32, blank=True, default="")
-    source = models.CharField(max_length=16)   # 'rule',  'llm' or 'manual'
+    source = models.CharField(max_length=16)   # 'rule' or 'llm'
     confidence = models.FloatField(default=0.0)
     created_at = models.DateTimeField(auto_now_add=True)

@@ -1,9 +1,10 @@
 """
-Run the Chase sample CSV through process_upload twice and print the ladder.
+Run Chase sample CSVs through process_upload twice and print the ladder.
 
 Usage (from backend/):
   python manage.py demo_upload
-  python manage.py demo_upload --clear   # wipe prior demo MerchantResolutions + txs
+  python manage.py demo_upload --file "Chase_MAY_Transactions.csv"
+  python manage.py demo_upload --file "Chase_MAY_Transactions.csv" --clear
 
 Shows the tier used to resolve each distinct merchant: Redis/DB/LLM/Tier-5 path, then a second
 pass that should make zero LLM calls.
@@ -27,8 +28,6 @@ from services.merchant_cache import cache_get
 from services.merchant_normalize import merchant_key
 from services.upload_pipeline import process_upload
 
-SAMPLE = Path(settings.BASE_DIR) / "data" / "sample_uploads" / "Chase Transaction Statement.csv"
-
 
 class _TierTraceFilter(logging.Filter):
     """Keep only mcc_resolver DEBUG lines so the demo stays readable."""
@@ -42,6 +41,11 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
+            "--file",
+            default = "Chase Transaction Statement.csv",
+            help = "Filename inside data/sample_uploads/ to process."
+        )
+        parser.add_argument(
             "--clear",
             action="store_true",
             help="Delete prior demo upload rows / MerchantResolutions for sample keys first.",
@@ -53,12 +57,13 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        if not SAMPLE.is_file():
-            self.stderr.write(self.style.ERROR(f"Sample CSV not found: {SAMPLE}"))
+        sample = Path(settings.BASE_DIR)/"data"/"sample_uploads"/options["file"]
+        if not sample.is_file():
+            self.stderr.write(self.style.ERROR(f"Sample CSV not found: {sample}"))
             return
 
         self._configure_logging()
-        self._print_env(force_no_llm=options["no_llm"])
+        self._print_env(force_no_llm=options["no_llm"], sample=sample)
         redis_ok = self._probe_redis()
 
         if options["no_llm"]:
@@ -77,7 +82,7 @@ class Command(BaseCommand):
         self.stdout.write(f"MCC_Codes seeded: {mcc_count} rows")
         self.stdout.write(f"merchant_rules.json entries: {len(resolver_module._load_merchant_rules())}")
 
-        file_bytes = SAMPLE.read_bytes()
+        file_bytes = sample.read_bytes()
         rows = normalize_csv(file_bytes)
         distinct = {}
         for row in rows:
@@ -85,15 +90,16 @@ class Command(BaseCommand):
             distinct.setdefault(key, row)
 
         if options["clear"]:
-            self._clear_demo_state(list(distinct))
+            #Pass sample.name so --clear only wipes THIS file's upload row,
+            self._clear_demo_state(list(distinct), file_hash=sample.name)
 
         self._print_preflight(distinct, redis_ok)
 
         user, user_card = self._demo_wallet()
         upload, _ = Uploads.objects.update_or_create(
             user=user,
-            file_hash="demo-chase-sample",
-            defaults={"filename": SAMPLE.name, "status": "pending"},
+            file_hash=sample.name,
+            defaults={"filename": sample.name, "status": "pending"},
         )
 
         self.stdout.write(self.style.MIGRATE_HEADING("\n=== RUN 1 (cold / warm path) ==="))
@@ -164,7 +170,7 @@ class Command(BaseCommand):
         root.setLevel(logging.DEBUG)
         root.propagate = False
 
-    def _print_env(self, force_no_llm: bool):
+    def _print_env(self, force_no_llm: bool, sample: Path):
         self.stdout.write(self.style.MIGRATE_HEADING("Environment"))
         self.stdout.write(f"  REDIS_URL={settings.REDIS_URL}")
         self.stdout.write(f"  MERCHANT_CACHE_TTL={settings.MERCHANT_CACHE_TTL}")
@@ -172,7 +178,7 @@ class Command(BaseCommand):
         self.stdout.write(f"  LLM_MODEL={settings.LLM_MODEL}")
         self.stdout.write(f"  LLM_API_KEY set={bool(settings.LLM_API_KEY)}")
         self.stdout.write(f"  LLM_MAX_CALLS_PER_UPLOAD={settings.LLM_MAX_CALLS_PER_UPLOAD}")
-        self.stdout.write(f"  sample={SAMPLE}")
+        self.stdout.write(f"  sample={sample}")
 
     def _probe_redis(self) -> bool:
         self.stdout.write(self.style.MIGRATE_HEADING("\nRedis"))
@@ -192,9 +198,9 @@ class Command(BaseCommand):
             ))
             return False
 
-    def _clear_demo_state(self, keys: list[str]):
+    def _clear_demo_state(self, keys: list[str], file_hash: str):
         deleted_res = MerchantResolution.objects.filter(merchant_key__in=keys).delete()
-        Uploads.objects.filter(file_hash="demo-chase-sample").delete()
+        Uploads.objects.filter(file_hash=file_hash).delete()
         self.stdout.write(f"Cleared prior demo state (resolutions delete={deleted_res})")
         try:
             client = redis.from_url(settings.REDIS_URL, decode_responses=True, socket_connect_timeout=1)
