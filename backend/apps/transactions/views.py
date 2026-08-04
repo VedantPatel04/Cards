@@ -30,6 +30,7 @@ logger = logging.getLogger(__name__)
 
 # One statement should not be able to open thousands of questions.
 MAX_REVIEW_ITEMS = 200
+MAX_TRANSACTION_ITEMS = 500
 
 CENTS = Decimal("0.01")
 
@@ -47,6 +48,45 @@ def _money(value) -> str:
     25), and the API contract should not change with the database.
     """
     return str((value or Decimal("0")).quantize(CENTS, rounding=ROUND_HALF_UP))
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def transaction_list(request):
+    """
+    GET /api/transactions/
+
+    This user's transactions, newest first. card_name / issuer are joined from
+    the wallet -> catalog product; the FK (user_card_id) is kept for uploads.
+    """
+    rows = (
+        _user_transactions(request.user)
+        .select_related("user_card__card")
+        .order_by("-transaction_date", "-id")[:MAX_TRANSACTION_ITEMS]
+    )
+
+    items = [
+        {
+            "id": row.pk,
+            "user_card_id": row.user_card_id,
+            "card_name": row.user_card.card.name,
+            "issuer": row.user_card.card.issuer,
+            "transaction_date": row.transaction_date.isoformat(),
+            "amount": _money(row.amount),
+            "description": row.description,
+            "normalized_description": row.normalized_description,
+            "merchant_key": row.merchant_key,
+            "category": row.category,
+            "resolution_source": row.resolution_source,
+            "confidence": row.confidence,
+        }
+        for row in rows
+    ]
+
+    return Response(
+        {"count": len(items), "transactions": items},
+        status=status.HTTP_200_OK,
+    )
 
 
 @api_view(["GET"])

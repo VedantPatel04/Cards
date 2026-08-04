@@ -89,6 +89,7 @@ def ingest_card_catalog():
                 "signup_bonus": card_product["signup_bonus"],
                 "signup_bonus_required_spending": card_product["signup_bonus_required_spending"],
                 "is_active": True,  # re-activates card previously inactive
+                "is_catalog": True,
             }
         )
         if created:

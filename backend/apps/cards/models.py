@@ -8,7 +8,10 @@ class Card_Products(models.Model):
     network = models.CharField(max_length = 255)
     card_type = models.CharField(max_length = 255)
     is_active = models.BooleanField(default = True)
-    
+    # True = seeded/recommendable catalog product
+    # False -> reserved for future non-catalog wallet cards that should not enter Day 5 scoring.
+    is_catalog = models.BooleanField(default = True)
+
     annual_fee = models.DecimalField(max_digits = 10, decimal_places = 2)
     base_reward_rate = models.DecimalField(max_digits = 10, decimal_places = 2)
     signup_bonus = models.DecimalField(max_digits = 10, decimal_places = 2)
