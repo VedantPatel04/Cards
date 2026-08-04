@@ -59,8 +59,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'config.wsgi.application'
-AUTH_USER_MODEL = 'users.CustomUser' # Points Django to user CustomUser model instead of 
-                                     # default Django User class
+AUTH_USER_MODEL = 'users.CustomUser' # Points Django to user CustomUser model instead of  the default User class
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -68,7 +67,7 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES':(
+    'DEFAULT_AUTHENTICATION_CLASSES':( #used simplyjwt here
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES':(
@@ -86,8 +85,3 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # LOAD environment variables
 REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0") # (URL, redis default URL with host: localhost,  port: 6379)
 MERCHANT_CACHE_TTL = int(os.environ.get("MERCHANT_CACHE_TTL", 60 * 60 * 24 * 30))  # 30 days
-
-LLM_ENABLED = os.environ.get("LLM_ENABLED", "false").lower() == "true"
-LLM_API_KEY = os.environ.get("LLM_API_KEY", "")
-LLM_MODEL = os.environ.get("LLM_MODEL", "gpt-4o-mini")
-LLM_MAX_CALLS_PER_UPLOAD = int(os.environ.get("LLM_MAX_CALLS_PER_UPLOAD", "25"))

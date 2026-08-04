@@ -1,0 +1,855 @@
+Merchant Name,category
+McDonald's,dining
+Burger King,dining
+Wendy's,dining
+Taco Bell,dining
+KFC,dining
+Subway,dining
+Chick-fil-A,dining
+Domino's Pizza,dining
+Pizza Hut,dining
+Dunkin',dining
+Starbucks,dining
+Chipotle Mexican Grill,dining
+Panera Bread,dining
+Olive Garden,dining
+Applebee's,dining
+Chili's,dining
+The Cheesecake Factory,dining
+Outback Steakhouse,dining
+IHOP,dining
+Denny's,dining
+Generic bar / lounge / nightclub,dining
+DoorDash / Uber Eats / Grubhub order,dining
+United Airlines,travel
+American Airlines,travel
+British Airways,travel
+Lufthansa,travel
+Air Canada,travel
+Emirates,travel
+Delta Air Lines,travel
+Southwest Airlines,travel
+Singapore Airlines,travel
+Frontier Airlines,travel
+JetBlue Airways,travel
+Hawaiian Airlines,travel
+Alaska Airlines,travel
+Spirit Airlines,travel
+Ryanair,travel
+Smaller/unlisted airline,travel
+Hertz,travel
+Avis,travel
+Budget Rent-A-Car,travel
+Enterprise Rent-A-Car,travel
+National Car Rental,travel
+Alamo Rent-A-Car,travel
+Dollar Rent-A-Car,travel
+Thrifty Car Rental,travel
+Sixt,travel
+Generic / unlisted rental agency,travel
+Hilton Hotels,travel
+Marriott,travel
+Best Western,travel
+Sheraton,travel
+Holiday Inn,travel
+Hyatt Hotels,travel
+Ritz-Carlton,travel
+Motel 6,travel
+Days Inn,travel
+"Generic / unlisted hotel, motel, resort",travel
+Regal Cinemas,entertainment
+AMC Theatres,entertainment
+Cinemark,entertainment
+Alamo Drafthouse Cinema,entertainment
+Netflix,entertainment
+Spotify,entertainment
+Disney+ / Hulu / Max,entertainment
+Bowling alley,entertainment
+Amusement park (e.g. Six Flags),entertainment
+Ticketmaster / event ticketing,entertainment
+Walmart (Supercenter / general merchandise),shopping
+Walmart Neighborhood Market,shopping
+Target,shopping
+Costco Wholesale,groceries
+Sam's Club,groceries
+BJ's Wholesale Club,groceries
+Dollar General,shopping
+Dollar Tree / Family Dollar,shopping
+Kohl's,shopping
+Macy's,shopping
+Nordstrom,shopping
+JCPenney,shopping
+Dillard's,shopping
+TJ Maxx / Marshalls / Ross,shopping
+Kroger,groceries
+Safeway,groceries
+Publix,groceries
+Whole Foods Market,groceries
+Trader Joe's,groceries
+Albertsons / Safeway,groceries
+Aldi,groceries
+Best Buy,shopping
+Apple Store (retail),shopping
+GameStop,shopping
+Micro Center,shopping
+The Home Depot,shopping
+Lowe's,shopping
+Ace Hardware,shopping
+CVS Pharmacy,shopping
+Walgreens,shopping
+Rite Aid,shopping
+Shell,gas
+Chevron,gas
+ExxonMobil,gas
+BP,gas
+Pay-at-the-pump fuel purchase,gas
+Staples,shopping
+Office Depot / OfficeMax,shopping
+Barnes & Noble,shopping
+Dick's Sporting Goods,shopping
+PetSmart,shopping
+Petco,shopping
+Michaels (crafts),shopping
+Sephora / Ulta Beauty,shopping
+Amazon.com (general purchase),shopping
+eBay,shopping
+Auto dealership (new/used sales & service),other
+AutoZone / O'Reilly / Advance Auto Parts,other
+Discount Tire,other
+Jiffy Lube (auto repair),other
+Uber (rides),travel
+Lyft,travel
+UPS,other
+FedEx,other
+USPS,other
+Amtrak (passenger rail),travel
+Local public transit / commuter rail,travel
+"Cruise line (e.g. Royal Caribbean, Carnival)",travel
+Parking garage / lot,travel
+Toll road / bridge fee,travel
+AT&T (wireless/internet service),other
+Verizon,other
+T-Mobile,other
+Electric / gas / water utility bill,other
+Auto/home/life insurance premium payment,other
+Gym / fitness club membership,other
+Dry cleaner,other
+United Airlines,travel
+American Airlines,travel
+Pan American World Airways,travel
+Eurofly,travel
+Dragon Airlines,travel
+British Airways,travel
+Japan Air Lines,travel
+Air France,travel
+Lufthansa German Airlines,travel
+Air Canada,travel
+Royal Dutch Airlines (KLM),travel
+Aeroflot,travel
+Qantas,travel
+Alitalia,travel
+Saudi Arabian Airlines,travel
+Swiss International Air Lines,travel
+Scandinavian Airline System (SAS),travel
+South African Airways,travel
+Varig (Brazil),travel
+Germanwings,travel
+Air India,travel
+Air Algerie,travel
+Philippine Airlines,travel
+Mexicana,travel
+Pakistan International Airlines,travel
+Air New Zealand,travel
+Emirates Airlines,travel
+Union de Transports Aeriens (UTA),travel
+Air Malta,travel
+SN Brussels Airlines,travel
+Aerolineas Argentinas,travel
+Olympic Airways,travel
+El Al,travel
+Ansett Airlines,travel
+Etihad Airways,travel
+TAP Air Portugal,travel
+Viacao Aerea Sao Paulo (VASP),travel
+EgyptAir,travel
+Kuwait Airways,travel
+Avianca,travel
+Gulf Air (Bahrain),travel
+Balkan-Bulgarian Airlines,travel
+Finnair,travel
+Aer Lingus,travel
+Air Lanka,travel
+Nigeria Airways,travel
+Cruzeiro Do Sul,travel
+Turkish Airlines (THY),travel
+Royal Air Maroc,travel
+Tunis Air,travel
+Icelandair,travel
+Austrian Airlines,travel
+LAN Airlines,travel
+"Aviacion Y Comercio (AVIACO, Spain)",travel
+"Linea Aerea Del Cobre (LADECO, Chile)",travel
+Lloyd Aero Boliviano (LAB),travel
+Jet Airways,travel
+Virgin America,travel
+Delta Air Lines,travel
+DBA Airline,travel
+Northwest Airlines,travel
+Continental Airlines,travel
+Hapag-Lloyd Express,travel
+US Airways,travel
+Adria Airways,travel
+Airinter,travel
+Southwest Airlines,travel
+Vanguard Airlines,travel
+Air Astana,travel
+Sun Country Airlines,travel
+Air British Columbia,travel
+Cebu Pacific Airlines,travel
+Singapore Airlines,travel
+Aeromexico,travel
+Thai Airways,travel
+China Airlines,travel
+Jetstar Airways,travel
+NordAir,travel
+Korean Air,travel
+Air Afrique,travel
+EVA Airways,travel
+Midwest Express Airlines,travel
+Carnival Airlines,travel
+Metro Airlines,travel
+Croatia Airlines,travel
+Transaero,travel
+Uni Airways Corporation,travel
+Zambia Airways,travel
+Air Zimbabwe,travel
+Spanair,travel
+Asiana Airlines,travel
+Cathay Pacific,travel
+Malaysia Airlines,travel
+Iberia,travel
+Garuda Indonesia,travel
+Braathens S.A.F.E.,travel
+Wings Airways,travel
+British Midland,travel
+Windward Island Airways,travel
+Tower Air,travel
+Venezolana International De Aviacion,travel
+Valley Airlines,travel
+TAN-SAHSA,travel
+Talair PTY Ltd.,travel
+TACA International,travel
+Surinam Airways,travel
+Sunworld International,travel
+VLM Airlines,travel
+Frontier Airlines,travel
+Sunbelt Airlines,travel
+Sudan Airways,travel
+Qatar Airways,travel
+Singleton,travel
+Simmons Airlines,travel
+Scenic Airlines,travel
+Virgin Atlantic,travel
+San Juan Airlines,travel
+Luxair,travel
+Air Littoral S.A.,travel
+Air Zaire,travel
+Princeville Airways,travel
+Go Fly Ltd.,travel
+Provincetown-Boston Airways,travel
+All Nippon Airways,travel
+Norontair,travel
+New York Helicopter,travel
+Aero Continente,travel
+Mount Cook Airline,travel
+Canadian Airlines International,travel
+Nationair,travel
+JetBlue Airways,travel
+Middle East Airlines,travel
+Metroflight Airlines,travel
+AirTran Airways,travel
+Mesa Air,travel
+WestJet Airlines,travel
+Malev,travel
+LOT Polish Airlines,travel
+Oman Air,travel
+LIAT,travel
+Linea Aeropostal Venezolana (LAV),travel
+Lineas Aereas Paraguayas (LAP),travel
+LACSA (Costa Rica),travel
+Virgin Express,travel
+JAT (Jugoslav Air),travel
+Island Airlines,travel
+Indian Airlines,travel
+Hawaiian Airlines,travel
+Havasu Airlines,travel
+Guyana Airways,travel
+Golden Pacific Air,travel
+Freedom Airlines,travel
+China Eastern Airlines,travel
+Norwegian Air Shuttle,travel
+Dominicana De Aviacion,travel
+Malmo Aviation,travel
+Dan-Air Services,travel
+Cumberland Airlines,travel
+Ceskoslovenske Aerolinie (CSA),travel
+Crown Air,travel
+Compania Panamena De Aviacion (COPA),travel
+Compania Faucett,travel
+Transportes Aeros Militares,travel
+Command Airways,travel
+Comair,travel
+Skyways,travel
+Cayman Airways,travel
+SAETA (Sociedad Ecuatoriana De Transportes Aereos),travel
+SAHSA (Servicio Aereo De Honduras),travel
+Capitol Air,travel
+Caribbean Airlines,travel
+Brockway Air,travel
+Air Arabia,travel
+Bemidji Aviation,travel
+Bar Harbor Airlines,travel
+Bahamasair,travel
+Aviateca,travel
+Avensa,travel
+Austrian Air Service,travel
+EasyJet,travel
+Ryanair,travel
+Gol Airlines,travel
+TAM Airlines,travel
+Aloha Airlines,travel
+Antillean Airlines (ALM),travel
+America West Airlines,travel
+U.S. Air Shuttle,travel
+Alaska Airlines,travel
+American Trans Air,travel
+Spirit Airlines,travel
+Air China,travel
+Reno Air,travel
+Aero Servicio Carabobo,travel
+Air Seychelles,travel
+Air Panama International,travel
+Air Jamaica,travel
+Air Djibouti,travel
+Aero Virgin Islands,travel
+Aero Peru,travel
+Aero Nicaraguenses,travel
+Aero Coach Aviation,travel
+Cyprus Airways,travel
+Ecuatoriana,travel
+Ethiopian Airlines,travel
+Kenya Airways,travel
+Air Berlin,travel
+TAROM Romanian Air Transport,travel
+Air Mauritius,travel
+Wideroes Flyveselskap,travel
+Holiday Inns,travel
+Best Western,travel
+Sheraton,travel
+Hilton,travel
+Trusthouse Forte,travel
+Golden Tulip,travel
+Friendship Inns International,travel
+Quality International,travel
+Marriott,travel
+Days Inns of America,travel
+Arabella Hotels,travel
+InterContinental,travel
+Westin Hotels,travel
+AmeriSuites,travel
+Rodeway Inns International,travel
+La Quinta Motor Inns,travel
+Americana Hotels Corporation,travel
+Sol Hotels,travel
+PLM/ETAP International,travel
+Meridien,travel
+Crest Hotels,travel
+Tokyo Group,travel
+Peninsula Hotels,travel
+Welcomgroup,travel
+Dunfey Hotels,travel
+Prince Hotels,travel
+Downtowner Passport,travel
+Thunderbird/Red Lion,travel
+CP (Canadian Pacific),travel
+Renaissance Hotels,travel
+Kauai Coconut Beach Resort,travel
+Royal Kona Resort,travel
+Park Inn by Radisson,travel
+Southern Pacific Hotel,travel
+Hilton International,travel
+AMFAC Hotels,travel
+ANA Hotels,travel
+Concorde Hotels,travel
+Summerfield Suites Hotel,travel
+Iberotel,travel
+Hotel Okura,travel
+Royal Hotels,travel
+Four Seasons,travel
+CIGA Hotels,travel
+Shangri-La International,travel
+Hotel Sierra,travel
+Breakers Resort,travel
+Hotels Melia,travel
+Auberge Des Governeurs,travel
+Regal 8 Inns,travel
+Mirage Hotel and Casino,travel
+Coast Hotels,travel
+Parks Inns International,travel
+Pinehurst Resort,travel
+Treasure Island Hotel and Casino,travel
+Barton Creek Resort,travel
+Manhattan East Suite Hotels,travel
+Jolly Hotels,travel
+Candlewood Suites,travel
+Aladdin Resort and Casino,travel
+Golden Nugget,travel
+Comfort Hotel International,travel
+Journeys End Motels,travel
+Sam's Town Hotel and Casino,travel
+Relax Inns,travel
+Garden Place Hotel,travel
+Soho Grand Hotel,travel
+Ladbroke Hotels,travel
+Tribeca Grand Hotel,travel
+Grand Met Forum Hotels,travel
+Grand Wailea Resort,travel
+Miyako Hotel/Kintetsu,travel
+Sandman Hotels,travel
+Venture Inn,travel
+Vagabond Hotels,travel
+La Quinta Resort,travel
+Mandarin International,travel
+Frankenmuth Bavarian,travel
+Hotel Mercure,travel
+Hotel Del Coronado,travel
+Delta Hotels,travel
+California Hotel and Casino,travel
+Radisson BLU,travel
+Princess Hotels International,travel
+Hungar Hotels,travel
+Sokos Hotel,travel
+Doral Hotels,travel
+Helmsley Hotels,travel
+Doral Golf Resort,travel
+Fairmont Hotels,travel
+Sonesta International Hotels,travel
+Omni Hotels,travel
+Cunard Hotels,travel
+Arizona Biltmore,travel
+Hospitality Inns,travel
+Wynn Las Vegas,travel
+Riverside Resort and Casino,travel
+Regent Hotels,travel
+Pannonia Hotels,travel
+Saddlebrook Resort - Tampa,travel
+Tradewinds Resort,travel
+Hudson Hotel,travel
+Noah's Hotel (Melbourne),travel
+Hilton Garden Inn,travel
+Jurys Doyle Hotel Group,travel
+Jefferson Hotel,travel
+Fontainebleau Resort,travel
+Gaylord Opryland,travel
+Gaylord Palms,travel
+Gaylord Texan,travel
+Moevenpick,travel
+Microtel Inn and Suites,travel
+AmericInn,travel
+Travelodge Motels,travel
+Hermitage Hotels,travel
+America's Best Value Inn,travel
+Great Wolf Lodge,travel
+Aloft,travel
+Binion's Horseshoe Club,travel
+Extended Stay,travel
+Merlin Hotel (Perth),travel
+Dorint Hotels,travel
+Lady Luck Hotel and Casino,travel
+Hotel Universal,travel
+Studio Plus,travel
+Extended Stay America,travel
+Excalibur Hotel and Casino,travel
+Dan Hotels,travel
+Extended Stay Deluxe,travel
+Sleep Inn,travel
+The Phoenician,travel
+Rank Hotels,travel
+Swissotel,travel
+Reso Hotels,travel
+Sarova Hotels,travel
+Ramada Inns,travel
+Howard Johnson,travel
+Mount Charlotte Hotels,travel
+Hyatt Hotels/International,travel
+Sofitel Hotels,travel
+Novotel (Accor),travel
+Steigenberger,travel
+Econo-Travel Motor Hotel,travel
+Queens Moat Houses,travel
+Swallow Hotels,travel
+Grupo Hotels HUSA SA,travel
+De Vere Hotels,travel
+Radisson,travel
+Red Roof Inns,travel
+Imperial London Hotels,travel
+Embassy Hotels,travel
+Penta Hotels,travel
+Loews Hotels,travel
+Scandic Hotels,travel
+Sara Hotels,travel
+Oberoi Hotels,travel
+New Otani Hotels,travel
+Taj Hotels International,travel
+Knights Inn,travel
+Metropole Hotels,travel
+Circus Circus Hotel and Casino,travel
+Hoteles El Presidente,travel
+Flag Inns,travel
+Hampton Inns,travel
+Stakis Hotels,travel
+Luxor Hotel and Casino,travel
+Maritim,travel
+Eldorado Hotel and Casino,travel
+Arcade Hotels,travel
+Arctia Hotels,travel
+Campanile,travel
+Ibusz Hotels,travel
+Rantasipi Hotels,travel
+Interhotel Cedok,travel
+Monte Carlo Hotel and Casino,travel
+Climat De France,travel
+Cumulus Hotels,travel
+Silver Legacy Hotel and Casino,travel
+Hoteis Othon,travel
+Adam's Mark,travel
+Sahara Hotel and Casino,travel
+Bradbury Suites,travel
+Budget Host Inns,travel
+Budgetel,travel
+Suisse Chalet,travel
+Clarion Hotel,travel
+Compri Hotel,travel
+Consort Hotels,travel
+Courtyard by Marriott,travel
+Dillon Inn,travel
+DoubleTree,travel
+Drury Inn,travel
+Economy Inns of America,travel
+Embassy Suites,travel
+Excel Inn,travel
+Fairfield Hotel,travel
+Harley Hotel,travel
+Midway Motor Lodge,travel
+Motel 6,travel
+La Mansion Del Rio,travel
+Registry Hotels,travel
+Residence Inn,travel
+Royce Hotel,travel
+Sandman Inn,travel
+Shilo Inn,travel
+Shoney's Inn,travel
+Virgin River Hotel and Casino,travel
+Super 8 Motel,travel
+Ritz-Carlton,travel
+Flag Inns (Australia),travel
+Buffalo Bill's Hotel and Casino,travel
+Quality Pacific Hotel,travel
+Four Seasons (Australia),travel
+Fairfield Inn,travel
+Carlton Hotels,travel
+City Lodge Hotels,travel
+Karos Hotels,travel
+Protea Hotels,travel
+Southern Sun Hotels,travel
+Conrad Hotels,travel
+Wyndham,travel
+Sea Pines Resort,travel
+Rio Suites,travel
+Broadmoor Hotel,travel
+Bally's Hotel and Casino,travel
+John Ascuaga's Nugget,travel
+MGM Grand Hotel,travel
+Harrah's Hotels and Casinos,travel
+Opryland Hotel,travel
+Boca Raton Resort,travel
+Harvey Bristol Hotels,travel
+Masters Economy Inns,travel
+Colorado Belle/Edgewater Resort,travel
+Riviera Hotel and Casino,travel
+Tropicana Resort and Casino,travel
+Woodside Hotels and Resorts,travel
+TownePlace Suites,travel
+Millennium Broadway Hotel,travel
+Club Med,travel
+Biltmore Hotel and Suites,travel
+Carefree Resorts,travel
+St. Regis Hotel,travel
+The Eliot Hotel,travel
+Club Corporation/Club Resorts,travel
+Wellesley Inns,travel
+Beverly Hills Hotel,travel
+Crowne Plaza Hotels,travel
+Homewood Suites,travel
+Peabody Hotels,travel
+Greenbriar Resorts,travel
+Amelia Island Plantation,travel
+Homestead,travel
+Canyon Ranch,travel
+Kahala Mandarin Oriental Hotel,travel
+Orchid at Mauna Lani,travel
+Halekulani Hotel/Waikiki Parc,travel
+Primadonna Hotel and Casino,travel
+Whiskey Pete's Hotel and Casino,travel
+Chateau Elan Winery and Resort,travel
+Beau Rivage Hotel and Casino,travel
+Bellagio,travel
+Fremont Hotel and Casino,travel
+Main Street Station Hotel and Casino,travel
+Silver Star Hotel and Casino,travel
+Stratosphere Hotel and Casino,travel
+SpringHill Suites,travel
+Caesars Hotel and Casino,travel
+Nemacolin Woodlands,travel
+Venetian Resort Hotel and Casino,travel
+New York-New York Hotel and Casino,travel
+Sands Resort,travel
+Nevele Grande Resort and Country Club,travel
+Mandalay Bay Resort,travel
+Four Points Hotels,travel
+W Hotels,travel
+Disneyland Resorts,travel
+Patricia Grand Resort Hotels,travel
+Rosen Hotel and Resorts,travel
+Town and Country Resort and Convention Center,travel
+First Hospitality Hotels,travel
+Outrigger Hotels and Resorts,travel
+Ohana Hotels of Hawaii,travel
+Caribe Royal Resort Suites and Villas,travel
+Ala Moana Hotel,travel
+Smugglers' Notch Resort,travel
+Raffles Hotels,travel
+Staybridge Suites,travel
+Claridge Casino Hotel,travel
+The Flamingo Hotels,travel
+Grand Casino Hotels,travel
+Paris Las Vegas Hotel,travel
+Peppermill Hotel Casino,travel
+Atlantic City Hilton,travel
+Embassy Vacation Resort,travel
+Hale Koa Hotel,travel
+Homestead Suites,travel
+Wilderness Hotel and Resort,travel
+The Palace Hotel,travel
+The Wigwam Golf Resort and Spa,travel
+The Diplomat Country Club and Spa,travel
+The Atlantic,travel
+Princeville Resort,travel
+Element,travel
+LXR (Luxury Resorts),travel
+Settle Inn,travel
+La Costa Resort,travel
+Premier Travel Inns,travel
+Hyatt Place,travel
+Hotel Indigo,travel
+The Roosevelt Hotel NY,travel
+Nickelodeon Family Suites by Holiday Inn,travel
+Home2 Suites,travel
+Affinia,travel
+MainStay Suites,travel
+Oxford Suites,travel
+Jumeirah Essex House,travel
+Caribe Royale,travel
+Crossland,travel
+Grand Sierra Resort,travel
+Aria,travel
+Vdara,travel
+Autograph Collection,travel
+Galt House,travel
+Cosmopolitan of Las Vegas,travel
+Country Inn by Carlson,travel
+Park Plaza Hotel,travel
+Waldorf Astoria,travel
+Affiliated Auto Rental,travel
+American International,travel
+Brooks Rent-A-Car,travel
+Action Auto Rental,travel
+Sixt Car Rental,travel
+Hertz,travel
+Payless Car Rental,travel
+Snappy Car Rental,travel
+Airways Rent-A-Car,travel
+Altra Auto Rental,travel
+Agency Rent-A-Car,travel
+Budget Rent-A-Car,travel
+Holiday Rent-A-Car,travel
+Rent-A-Wreck,travel
+Accent Rent-A-Car,travel
+Ajax Rent-A-Car,travel
+Triangle Rent-A-Car,travel
+Europcar,travel
+Tropical Rent-A-Car,travel
+Showcase Rental Cars,travel
+Alamo Rent-A-Car,travel
+Merchants Rent-A-Car,travel
+Avis Rent-A-Car,travel
+Dollar Rent-A-Car,travel
+Europe by Car,travel
+National Car Rental,travel
+Kemwell Group,travel
+Thrifty Car Rental,travel
+Tilden Rent-A-Car,travel
+Econo-Car Rent-A-Car,travel
+Auto Host Rental Cars,travel
+Enterprise Rent-A-Car,travel
+General Rent-A-Car,travel
+A1 Rent-A-Car,travel
+Godfrey National,travel
+Ansa International,travel
+Allstate Rent-A-Car,travel
+AVCAR,travel
+Automate,travel
+Avon Rent-A-Car,travel
+Carey,travel
+Insurance Rent-A-Car,travel
+Major Rent-A-Car,travel
+Replacement Rent-A-Car,travel
+Reserve Rent-A-Car,travel
+Ugly Duckling Rent-A-Car,travel
+USA Rent-A-Car,travel
+Value Rent-A-Car,travel
+Autohansa,travel
+Cite,travel
+Interent,travel
+Milleville,travel
+Advantage Rent-A-Car,travel
+In-N-Out Burger,dining
+Five Guys,dining
+Shake Shack,dining
+Whataburger,dining
+Jack in the Box,dining
+Sonic Drive-In,dining
+El Pollo Loco,dining
+Wingstop,dining
+Raising Cane's Chicken Fingers,dining
+Popeyes Louisiana Kitchen,dining
+Little Caesars Pizza,dining
+Papa John's Pizza,dining
+Jersey Mike's Subs,dining
+Jimmy John's,dining
+Firehouse Subs,dining
+Culver's,dining
+Del Taco,dining
+Zaxby's,dining
+Arby's,dining
+Carl's Jr. / Hardee's,dining
+Dairy Queen,dining
+Panda Express,dining
+Steak 'n Shake,dining
+Bojangles',dining
+Church's Chicken,dining
+Qdoba Mexican Grill,dining
+Checkers / Rally's,dining
+Potbelly Sandwich Shop,dining
+Noodles & Company,dining
+Habit Burger Grill,dining
+Moe's Southwest Grill,dining
+Sweetgreen,dining
+Cava,dining
+Texas Roadhouse,dining
+Red Lobster,dining
+Buffalo Wild Wings,dining
+LongHorn Steakhouse,dining
+Red Robin,dining
+Cracker Barrel,dining
+TGI Fridays,dining
+Bob Evans,dining
+P.F. Chang's,dining
+Waffle House,dining
+Carrabba's Italian Grill,dining
+Bonefish Grill,dining
+Benihana,dining
+Yard House,dining
+First Watch,dining
+Golden Corral,dining
+Perkins Restaurant & Bakery,dining
+Buca di Beppo,dining
+Maggiano's Little Italy,dining
+Dave & Buster's,dining
+OpenAI,shopping
+Anthropic (Claude),shopping
+GitHub,shopping
+Adobe Creative Cloud,shopping
+Microsoft 365 / Office 365,shopping
+Slack,shopping
+Zoom,shopping
+Figma,shopping
+Notion,shopping
+Canva,shopping
+Dropbox,shopping
+DocuSign,shopping
+HubSpot,shopping
+Shopify,shopping
+Squarespace,shopping
+Wix,shopping
+Mailchimp,shopping
+Vercel,shopping
+Netlify,shopping
+DigitalOcean,shopping
+Amazon Web Services (AWS),shopping
+Google Cloud Platform (GCP),shopping
+Microsoft Azure,shopping
+Atlassian (Jira / Confluence),shopping
+GitLab,shopping
+Cloudflare,shopping
+Twilio,shopping
+Linear,shopping
+Airtable,shopping
+Monday.com,shopping
+Asana,shopping
+Zendesk,shopping
+Webflow,shopping
+Datadog,shopping
+Sentry,shopping
+Cursor,shopping
+1Password,shopping
+LastPass,shopping
+Bitwarden,shopping
+Postman,shopping
+Render,shopping
+PlanetScale,shopping
+Supabase,shopping
+Intercom,shopping
+Grammarly,shopping
+Loom,shopping
+Expedia,travel
+Booking.com,travel
+Hotels.com,travel
+Priceline,travel
+Kayak,travel
+Orbitz,travel
+Travelocity,travel
+TripAdvisor,travel
+Hopper,travel
+Skyscanner,travel
+Google Flights,travel
+GetYourGuide,travel
+Viator,travel
+Airbnb,travel
+VRBO,travel
+IHG Hotels & Resorts,travel
+Accor Hotels,travel
+Choice Hotels International,travel
+Sonesta Hotels,travel
+Breeze Airways,travel
+Avelo Airlines,travel
+Allegiant Air,travel
+Flair Airlines,travel
+Volaris,travel
+VivaAerobus,travel
+Wizz Air,travel
+Transavia,travel
+IndiGo Airlines,travel
+Air Asia,travel
+Scoot,travel
+Vueling Airlines,travel

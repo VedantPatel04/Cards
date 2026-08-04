@@ -14,10 +14,5 @@ DATABASES = {
 # Central test package (backend/tests/) — keep app tests.py stubs empty.
 INSTALLED_APPS = [*INSTALLED_APPS, 'tests.apps.TestsConfig']
 
-
-LLM_ENABLED = False
-LLM_API_KEY = ''
-
-# Point at a scratch Redis database so a developer machine with a real Redis
-# never has its warm merchant cache read or overwritten by the suite.
+# Point at a scratch Redis database so a developer machine with the real Redis instance never has its merchant cache read or overwritten.
 REDIS_URL = 'redis://localhost:6379/15'

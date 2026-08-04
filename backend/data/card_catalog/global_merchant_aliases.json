@@ -1,0 +1,4302 @@
+[
+  {
+    "merchant_key": "APPLEBEES",
+    "canonical_name": "Applebee's",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "ARBYS",
+    "canonical_name": "Arby's",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "BENIHANA",
+    "canonical_name": "Benihana",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "BOB EVANS",
+    "canonical_name": "Bob Evans",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "BOJANGLES",
+    "canonical_name": "Bojangles'",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "BONEFISH GRILL",
+    "canonical_name": "Bonefish Grill",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "BUCA DI BEPPO",
+    "canonical_name": "Buca di Beppo",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "BUFFALO WILD WINGS",
+    "canonical_name": "Buffalo Wild Wings",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "BURGER KING",
+    "canonical_name": "Burger King",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "CARLS JR",
+    "canonical_name": "Carl's Jr.",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "CARRABBAS ITALIAN GRILL",
+    "canonical_name": "Carrabba's Italian Grill",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "CAVA",
+    "canonical_name": "Cava",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "CHECKERS",
+    "canonical_name": "Checkers",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "CHICK FIL A",
+    "canonical_name": "Chick-fil-A",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "CHILIS",
+    "canonical_name": "Chili's",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "CHIPOTLE",
+    "canonical_name": "Chipotle",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "CHIPOTLE MEXICAN GRILL",
+    "canonical_name": "Chipotle Mexican Grill",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "CHURCHS CHICKEN",
+    "canonical_name": "Church's Chicken",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "CRACKER BARREL",
+    "canonical_name": "Cracker Barrel",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "CULVERS",
+    "canonical_name": "Culver's",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "DAIRY QUEEN",
+    "canonical_name": "Dairy Queen",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "DAVE BUSTERS",
+    "canonical_name": "Dave & Buster's",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "DEL TACO",
+    "canonical_name": "Del Taco",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "DENNYS",
+    "canonical_name": "Denny's",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "DOMINOS PIZZA",
+    "canonical_name": "Domino's Pizza",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "DOORDASH",
+    "canonical_name": "DoorDash",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "DUNKIN",
+    "canonical_name": "Dunkin'",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "EL POLLO LOCO",
+    "canonical_name": "El Pollo Loco",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "FIREHOUSE SUBS",
+    "canonical_name": "Firehouse Subs",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "FIRST WATCH",
+    "canonical_name": "First Watch",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "FIVE GUYS",
+    "canonical_name": "Five Guys",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "GOLDEN CORRAL",
+    "canonical_name": "Golden Corral",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "GRUBHUB",
+    "canonical_name": "Grubhub",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "HABIT BURGER GRILL",
+    "canonical_name": "Habit Burger Grill",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "HARDEES",
+    "canonical_name": "Hardee's",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "IHOP",
+    "canonical_name": "IHOP",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "IN N OUT BURGER",
+    "canonical_name": "In-N-Out Burger",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "JACK IN THE BOX",
+    "canonical_name": "Jack in the Box",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "JERSEY MIKES SUBS",
+    "canonical_name": "Jersey Mike's Subs",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "JIMMY JOHNS",
+    "canonical_name": "Jimmy John's",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "KFC",
+    "canonical_name": "KFC",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "LITTLE CAESARS PIZZA",
+    "canonical_name": "Little Caesars Pizza",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "LONGHORN STEAKHOUSE",
+    "canonical_name": "LongHorn Steakhouse",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "MAGGIANOS LITTLE ITALY",
+    "canonical_name": "Maggiano's Little Italy",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "MCDONALDS",
+    "canonical_name": "McDonald's",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "MOES SOUTHWEST GRILL",
+    "canonical_name": "Moe's Southwest Grill",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "NOODLES COMPANY",
+    "canonical_name": "Noodles & Company",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "OLIVE GARDEN",
+    "canonical_name": "Olive Garden",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "OUTBACK STEAKHOUSE",
+    "canonical_name": "Outback Steakhouse",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "P F CHANGS",
+    "canonical_name": "P.F. Chang's",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "PANDA EXPRESS",
+    "canonical_name": "Panda Express",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "PANERA",
+    "canonical_name": "Panera Bread",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "PANERA BREAD",
+    "canonical_name": "Panera Bread",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "PAPA JOHNS PIZZA",
+    "canonical_name": "Papa John's Pizza",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "PERKINS RESTAURANT BAKERY",
+    "canonical_name": "Perkins Restaurant & Bakery",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "PIZZA HUT",
+    "canonical_name": "Pizza Hut",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "POPEYES",
+    "canonical_name": "Popeyes",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "POPEYES LOUISIANA KITCHEN",
+    "canonical_name": "Popeyes Louisiana Kitchen",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "POTBELLY SANDWICH SHOP",
+    "canonical_name": "Potbelly Sandwich Shop",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "QDOBA MEXICAN GRILL",
+    "canonical_name": "Qdoba Mexican Grill",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "RAISING CANES CHICKEN FINGERS",
+    "canonical_name": "Raising Cane's Chicken Fingers",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "RALLYS",
+    "canonical_name": "Rally's",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "RED LOBSTER",
+    "canonical_name": "Red Lobster",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "RED ROBIN",
+    "canonical_name": "Red Robin",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "SEAMLESS",
+    "canonical_name": "Seamless",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "SHAKE SHACK",
+    "canonical_name": "Shake Shack",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "SONIC DRIVE IN",
+    "canonical_name": "Sonic Drive-In",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "STARBUCKS",
+    "canonical_name": "Starbucks",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "STEAK N SHAKE",
+    "canonical_name": "Steak 'n Shake",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "SUBWAY",
+    "canonical_name": "Subway",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "SWEETGREEN",
+    "canonical_name": "Sweetgreen",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "TACO BELL",
+    "canonical_name": "Taco Bell",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "TEXAS ROADHOUSE",
+    "canonical_name": "Texas Roadhouse",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "TGI FRIDAYS",
+    "canonical_name": "TGI Fridays",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "THE CHEESECAKE FACTORY",
+    "canonical_name": "The Cheesecake Factory",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "UBER EATS",
+    "canonical_name": "Uber Eats",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "WAFFLE HOUSE",
+    "canonical_name": "Waffle House",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "WENDYS",
+    "canonical_name": "Wendy's",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "WHATABURGER",
+    "canonical_name": "Whataburger",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "WINGSTOP",
+    "canonical_name": "Wingstop",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "YARD HOUSE",
+    "canonical_name": "Yard House",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "ZAXBYS",
+    "canonical_name": "Zaxby's",
+    "category": "dining"
+  },
+  {
+    "merchant_key": "ALBERTSONS",
+    "canonical_name": "Albertsons",
+    "category": "groceries"
+  },
+  {
+    "merchant_key": "ALDI",
+    "canonical_name": "Aldi",
+    "category": "groceries"
+  },
+  {
+    "merchant_key": "BJS WHOLESALE CLUB",
+    "canonical_name": "BJ's Wholesale Club",
+    "category": "groceries"
+  },
+  {
+    "merchant_key": "COSTCO",
+    "canonical_name": "Costco",
+    "category": "groceries"
+  },
+  {
+    "merchant_key": "COSTCO WHOLESALE",
+    "canonical_name": "Costco Wholesale",
+    "category": "groceries"
+  },
+  {
+    "merchant_key": "FOOD LION",
+    "canonical_name": "Food Lion",
+    "category": "groceries"
+  },
+  {
+    "merchant_key": "GIANT",
+    "canonical_name": "Giant",
+    "category": "groceries"
+  },
+  {
+    "merchant_key": "HEB",
+    "canonical_name": "H-E-B",
+    "category": "groceries"
+  },
+  {
+    "merchant_key": "INSTACART",
+    "canonical_name": "Instacart",
+    "category": "groceries"
+  },
+  {
+    "merchant_key": "KROGER",
+    "canonical_name": "Kroger",
+    "category": "groceries"
+  },
+  {
+    "merchant_key": "PUBLIX",
+    "canonical_name": "Publix",
+    "category": "groceries"
+  },
+  {
+    "merchant_key": "SAFEWAY",
+    "canonical_name": "Safeway",
+    "category": "groceries"
+  },
+  {
+    "merchant_key": "SAMS CLUB",
+    "canonical_name": "Sam's Club",
+    "category": "groceries"
+  },
+  {
+    "merchant_key": "STOP SHOP",
+    "canonical_name": "Stop & Shop",
+    "category": "groceries"
+  },
+  {
+    "merchant_key": "TRADER JOES",
+    "canonical_name": "Trader Joe's",
+    "category": "groceries"
+  },
+  {
+    "merchant_key": "WAL MART",
+    "canonical_name": "Walmart",
+    "category": "groceries"
+  },
+  {
+    "merchant_key": "WHOLE FOODS MARKET",
+    "canonical_name": "Whole Foods Market",
+    "category": "groceries"
+  },
+  {
+    "merchant_key": "WHOLEFDS",
+    "canonical_name": "Whole Foods",
+    "category": "groceries"
+  },
+  {
+    "merchant_key": "BP",
+    "canonical_name": "BP",
+    "category": "gas"
+  },
+  {
+    "merchant_key": "CHEVRON",
+    "canonical_name": "Chevron",
+    "category": "gas"
+  },
+  {
+    "merchant_key": "CIRCLE K",
+    "canonical_name": "Circle K",
+    "category": "gas"
+  },
+  {
+    "merchant_key": "EXXON",
+    "canonical_name": "Exxon",
+    "category": "gas"
+  },
+  {
+    "merchant_key": "EXXONMOBIL",
+    "canonical_name": "ExxonMobil",
+    "category": "gas"
+  },
+  {
+    "merchant_key": "MARATHON",
+    "canonical_name": "Marathon",
+    "category": "gas"
+  },
+  {
+    "merchant_key": "MOBIL",
+    "canonical_name": "Mobil",
+    "category": "gas"
+  },
+  {
+    "merchant_key": "PAY AT THE PUMP FUEL PURCHASE",
+    "canonical_name": "Pay-at-the-pump fuel purchase",
+    "category": "gas"
+  },
+  {
+    "merchant_key": "SHELL",
+    "canonical_name": "Shell",
+    "category": "gas"
+  },
+  {
+    "merchant_key": "SHELL OIL",
+    "canonical_name": "Shell",
+    "category": "gas"
+  },
+  {
+    "merchant_key": "SPEEDWAY",
+    "canonical_name": "Speedway",
+    "category": "gas"
+  },
+  {
+    "merchant_key": "SUNOCO",
+    "canonical_name": "Sunoco",
+    "category": "gas"
+  },
+  {
+    "merchant_key": "WAWA",
+    "canonical_name": "Wawa",
+    "category": "gas"
+  },
+  {
+    "merchant_key": "ACCENT RENT A CAR",
+    "canonical_name": "Accent Rent-A-Car",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ACCOR HOTELS",
+    "canonical_name": "Accor Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ACTION AUTO RENTAL",
+    "canonical_name": "Action Auto Rental",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ADAMS MARK",
+    "canonical_name": "Adam's Mark",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ADRIA AIRWAYS",
+    "canonical_name": "Adria Airways",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ADVANTAGE RENT A CAR",
+    "canonical_name": "Advantage Rent-A-Car",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AER LINGUS",
+    "canonical_name": "Aer Lingus",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AERO COACH AVIATION",
+    "canonical_name": "Aero Coach Aviation",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AERO CONTINENTE",
+    "canonical_name": "Aero Continente",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AERO NICARAGUENSES",
+    "canonical_name": "Aero Nicaraguenses",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AERO PERU",
+    "canonical_name": "Aero Peru",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AERO SERVICIO CARABOBO",
+    "canonical_name": "Aero Servicio Carabobo",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AERO VIRGIN ISLANDS",
+    "canonical_name": "Aero Virgin Islands",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AEROFLOT",
+    "canonical_name": "Aeroflot",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AEROLINEAS ARGENTINAS",
+    "canonical_name": "Aerolineas Argentinas",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AEROMEXICO",
+    "canonical_name": "Aeromexico",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AFFILIATED AUTO RENTAL",
+    "canonical_name": "Affiliated Auto Rental",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AFFINIA",
+    "canonical_name": "Affinia",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AGENCY RENT A CAR",
+    "canonical_name": "Agency Rent-A-Car",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AIR AFRIQUE",
+    "canonical_name": "Air Afrique",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AIR ALGERIE",
+    "canonical_name": "Air Algerie",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AIR ARABIA",
+    "canonical_name": "Air Arabia",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AIR ASIA",
+    "canonical_name": "Air Asia",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AIR ASTANA",
+    "canonical_name": "Air Astana",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AIR BERLIN",
+    "canonical_name": "Air Berlin",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AIR BRITISH COLUMBIA",
+    "canonical_name": "Air British Columbia",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AIR CANADA",
+    "canonical_name": "Air Canada",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AIR CHINA",
+    "canonical_name": "Air China",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AIR DJIBOUTI",
+    "canonical_name": "Air Djibouti",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AIR FRANCE",
+    "canonical_name": "Air France",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AIR INDIA",
+    "canonical_name": "Air India",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AIR JAMAICA",
+    "canonical_name": "Air Jamaica",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AIR LANKA",
+    "canonical_name": "Air Lanka",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AIR LITTORAL S A",
+    "canonical_name": "Air Littoral S.A.",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AIR MALTA",
+    "canonical_name": "Air Malta",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AIR MAURITIUS",
+    "canonical_name": "Air Mauritius",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AIR NEW ZEALAND",
+    "canonical_name": "Air New Zealand",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AIR PANAMA INTERNATIONAL",
+    "canonical_name": "Air Panama International",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AIR SEYCHELLES",
+    "canonical_name": "Air Seychelles",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AIR ZAIRE",
+    "canonical_name": "Air Zaire",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AIR ZIMBABWE",
+    "canonical_name": "Air Zimbabwe",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AIRBNB",
+    "canonical_name": "Airbnb",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AIRINTER",
+    "canonical_name": "Airinter",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AIRTRAN AIRWAYS",
+    "canonical_name": "AirTran Airways",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AIRWAYS RENT A CAR",
+    "canonical_name": "Airways Rent-A-Car",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AJAX RENT A CAR",
+    "canonical_name": "Ajax Rent-A-Car",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ALA MOANA HOTEL",
+    "canonical_name": "Ala Moana Hotel",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ALADDIN RESORT AND CASINO",
+    "canonical_name": "Aladdin Resort and Casino",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ALAMO RENT A CAR",
+    "canonical_name": "Alamo Rent-A-Car",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ALASKA AIRLINES",
+    "canonical_name": "Alaska Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ALITALIA",
+    "canonical_name": "Alitalia",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ALL NIPPON AIRWAYS",
+    "canonical_name": "All Nippon Airways",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ALLEGIANT AIR",
+    "canonical_name": "Allegiant Air",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ALLSTATE RENT A CAR",
+    "canonical_name": "Allstate Rent-A-Car",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ALOFT",
+    "canonical_name": "Aloft",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ALOHA AIRLINES",
+    "canonical_name": "Aloha Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ALTRA AUTO RENTAL",
+    "canonical_name": "Altra Auto Rental",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AMELIA ISLAND PLANTATION",
+    "canonical_name": "Amelia Island Plantation",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AMERICA WEST AIRLINES",
+    "canonical_name": "America West Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AMERICAN AIRLINES",
+    "canonical_name": "American Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AMERICAN INTERNATIONAL",
+    "canonical_name": "American International",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AMERICAN TRANS AIR",
+    "canonical_name": "American Trans Air",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AMERICANA HOTELS CORPORATION",
+    "canonical_name": "Americana Hotels Corporation",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AMERICAS BEST VALUE INN",
+    "canonical_name": "America's Best Value Inn",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AMERICINN",
+    "canonical_name": "AmericInn",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AMERISUITES",
+    "canonical_name": "AmeriSuites",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AMFAC HOTELS",
+    "canonical_name": "AMFAC Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AMTRAK",
+    "canonical_name": "Amtrak",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ANA HOTELS",
+    "canonical_name": "ANA Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ANSA INTERNATIONAL",
+    "canonical_name": "Ansa International",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ANSETT AIRLINES",
+    "canonical_name": "Ansett Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ANTILLEAN AIRLINES",
+    "canonical_name": "Antillean Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ARABELLA HOTELS",
+    "canonical_name": "Arabella Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ARCADE HOTELS",
+    "canonical_name": "Arcade Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ARCTIA HOTELS",
+    "canonical_name": "Arctia Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ARIA",
+    "canonical_name": "Aria",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ARIZONA BILTMORE",
+    "canonical_name": "Arizona Biltmore",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ASIANA AIRLINES",
+    "canonical_name": "Asiana Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ATLANTIC CITY HILTON",
+    "canonical_name": "Atlantic City Hilton",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AUBERGE DES GOVERNEURS",
+    "canonical_name": "Auberge Des Governeurs",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AUSTRIAN AIR",
+    "canonical_name": "Austrian Air",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AUSTRIAN AIRLINES",
+    "canonical_name": "Austrian Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AUTO HOST RENTAL CARS",
+    "canonical_name": "Auto Host Rental Cars",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AUTOGRAPH COLLECTION",
+    "canonical_name": "Autograph Collection",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AUTOHANSA",
+    "canonical_name": "Autohansa",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AUTOMATE",
+    "canonical_name": "Automate",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AVCAR",
+    "canonical_name": "AVCAR",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AVELO AIRLINES",
+    "canonical_name": "Avelo Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AVENSA",
+    "canonical_name": "Avensa",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AVIACION Y COMERCIO",
+    "canonical_name": "Aviacion Y Comercio",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AVIANCA",
+    "canonical_name": "Avianca",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AVIATECA",
+    "canonical_name": "Aviateca",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AVIS",
+    "canonical_name": "Avis",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AVIS RENT A CAR",
+    "canonical_name": "Avis Rent-A-Car",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "AVON RENT A CAR",
+    "canonical_name": "Avon Rent-A-Car",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "BAHAMASAIR",
+    "canonical_name": "Bahamasair",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "BALKAN BULGARIAN AIRLINES",
+    "canonical_name": "Balkan-Bulgarian Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "BALLYS HOTEL AND CASINO",
+    "canonical_name": "Bally's Hotel and Casino",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "BAR HARBOR AIRLINES",
+    "canonical_name": "Bar Harbor Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "BARTON CREEK RESORT",
+    "canonical_name": "Barton Creek Resort",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "BEAU RIVAGE HOTEL AND CASINO",
+    "canonical_name": "Beau Rivage Hotel and Casino",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "BELLAGIO",
+    "canonical_name": "Bellagio",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "BEMIDJI AVIATION",
+    "canonical_name": "Bemidji Aviation",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "BEST WESTERN",
+    "canonical_name": "Best Western",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "BEVERLY HILLS HOTEL",
+    "canonical_name": "Beverly Hills Hotel",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "BILTMORE HOTEL AND SUITES",
+    "canonical_name": "Biltmore Hotel and Suites",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "BINIONS HORSESHOE CLUB",
+    "canonical_name": "Binion's Horseshoe Club",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "BOCA RATON RESORT",
+    "canonical_name": "Boca Raton Resort",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "BOOKING COM",
+    "canonical_name": "Booking.com",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "BRAATHENS S A F E",
+    "canonical_name": "Braathens S.A.F.E.",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "BRADBURY SUITES",
+    "canonical_name": "Bradbury Suites",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "BREAKERS RESORT",
+    "canonical_name": "Breakers Resort",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "BREEZE AIRWAYS",
+    "canonical_name": "Breeze Airways",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "BRITISH AIRWAYS",
+    "canonical_name": "British Airways",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "BRITISH MIDLAND",
+    "canonical_name": "British Midland",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "BROADMOOR HOTEL",
+    "canonical_name": "Broadmoor Hotel",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "BROCKWAY AIR",
+    "canonical_name": "Brockway Air",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "BROOKS RENT A CAR",
+    "canonical_name": "Brooks Rent-A-Car",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "BUDGET HOST INNS",
+    "canonical_name": "Budget Host Inns",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "BUDGET RENT A CAR",
+    "canonical_name": "Budget Rent-A-Car",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "BUDGETEL",
+    "canonical_name": "Budgetel",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "BUFFALO BILLS HOTEL AND CASINO",
+    "canonical_name": "Buffalo Bill's Hotel and Casino",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CAESARS HOTEL AND CASINO",
+    "canonical_name": "Caesars Hotel and Casino",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CALIFORNIA HOTEL AND CASINO",
+    "canonical_name": "California Hotel and Casino",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CAMPANILE",
+    "canonical_name": "Campanile",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CANADIAN AIRLINES INTERNATIONAL",
+    "canonical_name": "Canadian Airlines International",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CANDLEWOOD SUITES",
+    "canonical_name": "Candlewood Suites",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CANYON RANCH",
+    "canonical_name": "Canyon Ranch",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CAPITOL AIR",
+    "canonical_name": "Capitol Air",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CAREFREE RESORTS",
+    "canonical_name": "Carefree Resorts",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CAREY",
+    "canonical_name": "Carey",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CARIBBEAN AIRLINES",
+    "canonical_name": "Caribbean Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CARIBE ROYAL RESORT SUITES AND VILLAS",
+    "canonical_name": "Caribe Royal Resort Suites and Villas",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CARIBE ROYALE",
+    "canonical_name": "Caribe Royale",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CARLTON HOTELS",
+    "canonical_name": "Carlton Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CARNIVAL AIRLINES",
+    "canonical_name": "Carnival Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CATHAY PACIFIC",
+    "canonical_name": "Cathay Pacific",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CAYMAN AIRWAYS",
+    "canonical_name": "Cayman Airways",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CEBU PACIFIC AIRLINES",
+    "canonical_name": "Cebu Pacific Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CESKOSLOVENSKE AEROLINIE",
+    "canonical_name": "Ceskoslovenske Aerolinie",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CHATEAU ELAN WINERY AND RESORT",
+    "canonical_name": "Chateau Elan Winery and Resort",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CHINA AIRLINES",
+    "canonical_name": "China Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CHINA EASTERN AIRLINES",
+    "canonical_name": "China Eastern Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CHOICE HOTELS INTERNATIONAL",
+    "canonical_name": "Choice Hotels International",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CIGA HOTELS",
+    "canonical_name": "CIGA Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CIRCUS CIRCUS HOTEL AND CASINO",
+    "canonical_name": "Circus Circus Hotel and Casino",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CITE",
+    "canonical_name": "Cite",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CITY LODGE HOTELS",
+    "canonical_name": "City Lodge Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CLARIDGE CASINO HOTEL",
+    "canonical_name": "Claridge Casino Hotel",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CLARION HOTEL",
+    "canonical_name": "Clarion Hotel",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CLIMAT DE FRANCE",
+    "canonical_name": "Climat De France",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CLUB CORPORATION CLUB RESORTS",
+    "canonical_name": "Club Corporation/Club Resorts",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CLUB MED",
+    "canonical_name": "Club Med",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "COAST HOTELS",
+    "canonical_name": "Coast Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "COLORADO BELLE EDGEWATER RESORT",
+    "canonical_name": "Colorado Belle/Edgewater Resort",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "COMAIR",
+    "canonical_name": "Comair",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "COMFORT HOTEL INTERNATIONAL",
+    "canonical_name": "Comfort Hotel International",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "COMMAND AIRWAYS",
+    "canonical_name": "Command Airways",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "COMPANIA FAUCETT",
+    "canonical_name": "Compania Faucett",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "COMPANIA PANAMENA DE AVIACION",
+    "canonical_name": "Compania Panamena De Aviacion",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "COMPRI HOTEL",
+    "canonical_name": "Compri Hotel",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CONCORDE HOTELS",
+    "canonical_name": "Concorde Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CONRAD HOTELS",
+    "canonical_name": "Conrad Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CONSORT HOTELS",
+    "canonical_name": "Consort Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CONTINENTAL AIRLINES",
+    "canonical_name": "Continental Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "COSMOPOLITAN OF LAS VEGAS",
+    "canonical_name": "Cosmopolitan of Las Vegas",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "COUNTRY INN BY CARLSON",
+    "canonical_name": "Country Inn by Carlson",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "COURTYARD BY MARRIOTT",
+    "canonical_name": "Courtyard by Marriott",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CP",
+    "canonical_name": "CP",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CREST HOTELS",
+    "canonical_name": "Crest Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CROATIA AIRLINES",
+    "canonical_name": "Croatia Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CROSSLAND",
+    "canonical_name": "Crossland",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CROWN AIR",
+    "canonical_name": "Crown Air",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CROWNE PLAZA HOTELS",
+    "canonical_name": "Crowne Plaza Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CRUISE LINE",
+    "canonical_name": "Cruise line",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CRUZEIRO DO SUL",
+    "canonical_name": "Cruzeiro Do Sul",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CUMBERLAND AIRLINES",
+    "canonical_name": "Cumberland Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CUMULUS HOTELS",
+    "canonical_name": "Cumulus Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CUNARD HOTELS",
+    "canonical_name": "Cunard Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "CYPRUS AIRWAYS",
+    "canonical_name": "Cyprus Airways",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "DAN AIR SERVICES",
+    "canonical_name": "Dan-Air Services",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "DAN HOTELS",
+    "canonical_name": "Dan Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "DAYS INN",
+    "canonical_name": "Days Inn",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "DAYS INNS OF AMERICA",
+    "canonical_name": "Days Inns of America",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "DBA AIRLINE",
+    "canonical_name": "DBA Airline",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "DE VERE HOTELS",
+    "canonical_name": "De Vere Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "DELTA",
+    "canonical_name": "Delta Air Lines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "DELTA AIR LINES",
+    "canonical_name": "Delta Air Lines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "DELTA HOTELS",
+    "canonical_name": "Delta Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "DILLON INN",
+    "canonical_name": "Dillon Inn",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "DISNEYLAND RESORTS",
+    "canonical_name": "Disneyland Resorts",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "DOLLAR RENT A CAR",
+    "canonical_name": "Dollar Rent-A-Car",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "DOMINICANA DE AVIACION",
+    "canonical_name": "Dominicana De Aviacion",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "DORAL GOLF RESORT",
+    "canonical_name": "Doral Golf Resort",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "DORAL HOTELS",
+    "canonical_name": "Doral Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "DORINT HOTELS",
+    "canonical_name": "Dorint Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "DOUBLETREE",
+    "canonical_name": "DoubleTree",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "DOWNTOWNER PASSPORT",
+    "canonical_name": "Downtowner Passport",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "DRAGON AIRLINES",
+    "canonical_name": "Dragon Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "DRURY INN",
+    "canonical_name": "Drury Inn",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "DUNFEY HOTELS",
+    "canonical_name": "Dunfey Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "EASYJET",
+    "canonical_name": "EasyJet",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ECONO CAR RENT A CAR",
+    "canonical_name": "Econo-Car Rent-A-Car",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ECONO TRAVEL MOTOR HOTEL",
+    "canonical_name": "Econo-Travel Motor Hotel",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ECONOMY INNS OF AMERICA",
+    "canonical_name": "Economy Inns of America",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ECUATORIANA",
+    "canonical_name": "Ecuatoriana",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "EGYPTAIR",
+    "canonical_name": "EgyptAir",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "EL AL",
+    "canonical_name": "El Al",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ELDORADO HOTEL AND CASINO",
+    "canonical_name": "Eldorado Hotel and Casino",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ELEMENT",
+    "canonical_name": "Element",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "EMBASSY HOTELS",
+    "canonical_name": "Embassy Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "EMBASSY SUITES",
+    "canonical_name": "Embassy Suites",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "EMBASSY VACATION RESORT",
+    "canonical_name": "Embassy Vacation Resort",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "EMIRATES",
+    "canonical_name": "Emirates",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "EMIRATES AIRLINES",
+    "canonical_name": "Emirates Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ENTERPRISE RENT A CAR",
+    "canonical_name": "Enterprise Rent-A-Car",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ETHIOPIAN AIRLINES",
+    "canonical_name": "Ethiopian Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ETIHAD AIRWAYS",
+    "canonical_name": "Etihad Airways",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "EUROFLY",
+    "canonical_name": "Eurofly",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "EUROPCAR",
+    "canonical_name": "Europcar",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "EUROPE BY CAR",
+    "canonical_name": "Europe by Car",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "EVA AIRWAYS",
+    "canonical_name": "EVA Airways",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "EXCALIBUR HOTEL AND CASINO",
+    "canonical_name": "Excalibur Hotel and Casino",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "EXCEL INN",
+    "canonical_name": "Excel Inn",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "EXPEDIA",
+    "canonical_name": "Expedia",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "EXTENDED STAY",
+    "canonical_name": "Extended Stay",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "EXTENDED STAY AMERICA",
+    "canonical_name": "Extended Stay America",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "EXTENDED STAY DELUXE",
+    "canonical_name": "Extended Stay Deluxe",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "FAIRFIELD HOTEL",
+    "canonical_name": "Fairfield Hotel",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "FAIRFIELD INN",
+    "canonical_name": "Fairfield Inn",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "FAIRMONT HOTELS",
+    "canonical_name": "Fairmont Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "FINNAIR",
+    "canonical_name": "Finnair",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "FIRST HOSPITALITY HOTELS",
+    "canonical_name": "First Hospitality Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "FLAG INNS",
+    "canonical_name": "Flag Inns",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "FLAIR AIRLINES",
+    "canonical_name": "Flair Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "FONTAINEBLEAU RESORT",
+    "canonical_name": "Fontainebleau Resort",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "FOUR POINTS HOTELS",
+    "canonical_name": "Four Points Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "FOUR SEASONS",
+    "canonical_name": "Four Seasons",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "FRANKENMUTH BAVARIAN",
+    "canonical_name": "Frankenmuth Bavarian",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "FREEDOM AIRLINES",
+    "canonical_name": "Freedom Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "FREMONT HOTEL AND CASINO",
+    "canonical_name": "Fremont Hotel and Casino",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "FRIENDSHIP INNS INTERNATIONAL",
+    "canonical_name": "Friendship Inns International",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "FRONTIER AIRLINES",
+    "canonical_name": "Frontier Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "GALT HOUSE",
+    "canonical_name": "Galt House",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "GARDEN PLACE HOTEL",
+    "canonical_name": "Garden Place Hotel",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "GARUDA INDONESIA",
+    "canonical_name": "Garuda Indonesia",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "GAYLORD OPRYLAND",
+    "canonical_name": "Gaylord Opryland",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "GAYLORD PALMS",
+    "canonical_name": "Gaylord Palms",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "GAYLORD TEXAN",
+    "canonical_name": "Gaylord Texan",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "GENERAL RENT A CAR",
+    "canonical_name": "General Rent-A-Car",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "GERMANWINGS",
+    "canonical_name": "Germanwings",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "GETYOURGUIDE",
+    "canonical_name": "GetYourGuide",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "GO FLY LTD",
+    "canonical_name": "Go Fly Ltd.",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "GODFREY NATIONAL",
+    "canonical_name": "Godfrey National",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "GOL AIRLINES",
+    "canonical_name": "Gol Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "GOLDEN NUGGET",
+    "canonical_name": "Golden Nugget",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "GOLDEN PACIFIC AIR",
+    "canonical_name": "Golden Pacific Air",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "GOLDEN TULIP",
+    "canonical_name": "Golden Tulip",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "GOOGLE FLIGHTS",
+    "canonical_name": "Google Flights",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "GRAND CASINO HOTELS",
+    "canonical_name": "Grand Casino Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "GRAND MET FORUM HOTELS",
+    "canonical_name": "Grand Met Forum Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "GRAND SIERRA RESORT",
+    "canonical_name": "Grand Sierra Resort",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "GRAND WAILEA RESORT",
+    "canonical_name": "Grand Wailea Resort",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "GREAT WOLF LODGE",
+    "canonical_name": "Great Wolf Lodge",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "GREENBRIAR RESORTS",
+    "canonical_name": "Greenbriar Resorts",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "GRUPO HOTELS HUSA SA",
+    "canonical_name": "Grupo Hotels HUSA SA",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "GULF AIR",
+    "canonical_name": "Gulf Air",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "GUYANA AIRWAYS",
+    "canonical_name": "Guyana Airways",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "HALE KOA HOTEL",
+    "canonical_name": "Hale Koa Hotel",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "HALEKULANI HOTEL WAIKIKI PARC",
+    "canonical_name": "Halekulani Hotel/Waikiki Parc",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "HAMPTON INNS",
+    "canonical_name": "Hampton Inns",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "HAPAG LLOYD EXPRESS",
+    "canonical_name": "Hapag-Lloyd Express",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "HARLEY HOTEL",
+    "canonical_name": "Harley Hotel",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "HARRAHS HOTELS AND CASINOS",
+    "canonical_name": "Harrah's Hotels and Casinos",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "HARVEY BRISTOL HOTELS",
+    "canonical_name": "Harvey Bristol Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "HAVASU AIRLINES",
+    "canonical_name": "Havasu Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "HAWAIIAN AIRLINES",
+    "canonical_name": "Hawaiian Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "HELMSLEY HOTELS",
+    "canonical_name": "Helmsley Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "HERMITAGE HOTELS",
+    "canonical_name": "Hermitage Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "HERTZ",
+    "canonical_name": "Hertz",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "HILTON",
+    "canonical_name": "Hilton",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "HILTON GARDEN INN",
+    "canonical_name": "Hilton Garden Inn",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "HILTON HOTELS",
+    "canonical_name": "Hilton Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "HILTON INTERNATIONAL",
+    "canonical_name": "Hilton International",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "HOLIDAY INN",
+    "canonical_name": "Holiday Inn",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "HOLIDAY INNS",
+    "canonical_name": "Holiday Inns",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "HOLIDAY RENT A CAR",
+    "canonical_name": "Holiday Rent-A-Car",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "HOME SUITES",
+    "canonical_name": "Home2 Suites",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "HOMESTEAD",
+    "canonical_name": "Homestead",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "HOMESTEAD SUITES",
+    "canonical_name": "Homestead Suites",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "HOMEWOOD SUITES",
+    "canonical_name": "Homewood Suites",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "HOPPER",
+    "canonical_name": "Hopper",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "HOSPITALITY INNS",
+    "canonical_name": "Hospitality Inns",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "HOTEIS OTHON",
+    "canonical_name": "Hoteis Othon",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "HOTEL DEL CORONADO",
+    "canonical_name": "Hotel Del Coronado",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "HOTEL INDIGO",
+    "canonical_name": "Hotel Indigo",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "HOTEL MERCURE",
+    "canonical_name": "Hotel Mercure",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "HOTEL OKURA",
+    "canonical_name": "Hotel Okura",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "HOTEL SIERRA",
+    "canonical_name": "Hotel Sierra",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "HOTEL UNIVERSAL",
+    "canonical_name": "Hotel Universal",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "HOTELES EL PRESIDENTE",
+    "canonical_name": "Hoteles El Presidente",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "HOTELS COM",
+    "canonical_name": "Hotels.com",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "HOTELS MELIA",
+    "canonical_name": "Hotels Melia",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "HOWARD JOHNSON",
+    "canonical_name": "Howard Johnson",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "HUDSON HOTEL",
+    "canonical_name": "Hudson Hotel",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "HUNGAR HOTELS",
+    "canonical_name": "Hungar Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "HYATT",
+    "canonical_name": "Hyatt",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "HYATT HOTELS",
+    "canonical_name": "Hyatt Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "HYATT HOTELS INTERNATIONAL",
+    "canonical_name": "Hyatt Hotels/International",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "HYATT PLACE",
+    "canonical_name": "Hyatt Place",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "IBERIA",
+    "canonical_name": "Iberia",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "IBEROTEL",
+    "canonical_name": "Iberotel",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "IBUSZ HOTELS",
+    "canonical_name": "Ibusz Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ICELANDAIR",
+    "canonical_name": "Icelandair",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "IHG HOTELS RESORTS",
+    "canonical_name": "IHG Hotels & Resorts",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "IMPERIAL LONDON HOTELS",
+    "canonical_name": "Imperial London Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "INDIAN AIRLINES",
+    "canonical_name": "Indian Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "INDIGO AIRLINES",
+    "canonical_name": "IndiGo Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "INSURANCE RENT A CAR",
+    "canonical_name": "Insurance Rent-A-Car",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "INTERCONTINENTAL",
+    "canonical_name": "InterContinental",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "INTERENT",
+    "canonical_name": "Interent",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "INTERHOTEL CEDOK",
+    "canonical_name": "Interhotel Cedok",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ISLAND AIRLINES",
+    "canonical_name": "Island Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "JAPAN AIR LINES",
+    "canonical_name": "Japan Air Lines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "JAT",
+    "canonical_name": "JAT",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "JEFFERSON HOTEL",
+    "canonical_name": "Jefferson Hotel",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "JET AIRWAYS",
+    "canonical_name": "Jet Airways",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "JETBLUE",
+    "canonical_name": "JetBlue",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "JETBLUE AIRWAYS",
+    "canonical_name": "JetBlue Airways",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "JETSTAR AIRWAYS",
+    "canonical_name": "Jetstar Airways",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "JOHN ASCUAGAS NUGGET",
+    "canonical_name": "John Ascuaga's Nugget",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "JOLLY HOTELS",
+    "canonical_name": "Jolly Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "JOURNEYS END MOTELS",
+    "canonical_name": "Journeys End Motels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "JUMEIRAH ESSEX HOUSE",
+    "canonical_name": "Jumeirah Essex House",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "JURYS DOYLE HOTEL GROUP",
+    "canonical_name": "Jurys Doyle Hotel Group",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "KAHALA MANDARIN ORIENTAL HOTEL",
+    "canonical_name": "Kahala Mandarin Oriental Hotel",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "KAROS HOTELS",
+    "canonical_name": "Karos Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "KAUAI COCONUT BEACH RESORT",
+    "canonical_name": "Kauai Coconut Beach Resort",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "KAYAK",
+    "canonical_name": "Kayak",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "KEMWELL GROUP",
+    "canonical_name": "Kemwell Group",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "KENYA AIRWAYS",
+    "canonical_name": "Kenya Airways",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "KNIGHTS INN",
+    "canonical_name": "Knights Inn",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "KOREAN AIR",
+    "canonical_name": "Korean Air",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "KUWAIT AIRWAYS",
+    "canonical_name": "Kuwait Airways",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "LA COSTA RESORT",
+    "canonical_name": "La Costa Resort",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "LA MANSION DEL RIO",
+    "canonical_name": "La Mansion Del Rio",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "LA QUINTA MOTOR INNS",
+    "canonical_name": "La Quinta Motor Inns",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "LA QUINTA RESORT",
+    "canonical_name": "La Quinta Resort",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "LACSA",
+    "canonical_name": "LACSA",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "LADBROKE HOTELS",
+    "canonical_name": "Ladbroke Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "LADY LUCK HOTEL AND CASINO",
+    "canonical_name": "Lady Luck Hotel and Casino",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "LAN AIRLINES",
+    "canonical_name": "LAN Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "LIAT",
+    "canonical_name": "LIAT",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "LINEA AEREA DEL COBRE",
+    "canonical_name": "Linea Aerea Del Cobre",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "LINEA AEROPOSTAL VENEZOLANA",
+    "canonical_name": "Linea Aeropostal Venezolana",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "LINEAS AEREAS PARAGUAYAS",
+    "canonical_name": "Lineas Aereas Paraguayas",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "LLOYD AERO BOLIVIANO",
+    "canonical_name": "Lloyd Aero Boliviano",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "LOEWS HOTELS",
+    "canonical_name": "Loews Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "LOT POLISH AIRLINES",
+    "canonical_name": "LOT Polish Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "LUFTHANSA",
+    "canonical_name": "Lufthansa",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "LUFTHANSA GERMAN AIRLINES",
+    "canonical_name": "Lufthansa German Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "LUXAIR",
+    "canonical_name": "Luxair",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "LUXOR HOTEL AND CASINO",
+    "canonical_name": "Luxor Hotel and Casino",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "LXR",
+    "canonical_name": "LXR",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "LYFT",
+    "canonical_name": "Lyft",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "MAIN STREET STATION HOTEL AND CASINO",
+    "canonical_name": "Main Street Station Hotel and Casino",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "MAINSTAY SUITES",
+    "canonical_name": "MainStay Suites",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "MAJOR RENT A CAR",
+    "canonical_name": "Major Rent-A-Car",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "MALAYSIA AIRLINES",
+    "canonical_name": "Malaysia Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "MALEV",
+    "canonical_name": "Malev",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "MALMO AVIATION",
+    "canonical_name": "Malmo Aviation",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "MANDALAY BAY RESORT",
+    "canonical_name": "Mandalay Bay Resort",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "MANDARIN INTERNATIONAL",
+    "canonical_name": "Mandarin International",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "MANHATTAN EAST SUITE HOTELS",
+    "canonical_name": "Manhattan East Suite Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "MARITIM",
+    "canonical_name": "Maritim",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "MARRIOTT",
+    "canonical_name": "Marriott",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "MASTERS ECONOMY INNS",
+    "canonical_name": "Masters Economy Inns",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "MERCHANTS RENT A CAR",
+    "canonical_name": "Merchants Rent-A-Car",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "MERIDIEN",
+    "canonical_name": "Meridien",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "MERLIN HOTEL",
+    "canonical_name": "Merlin Hotel",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "MESA AIR",
+    "canonical_name": "Mesa Air",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "METRO AIRLINES",
+    "canonical_name": "Metro Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "METROFLIGHT AIRLINES",
+    "canonical_name": "Metroflight Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "METROPOLE HOTELS",
+    "canonical_name": "Metropole Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "MEXICANA",
+    "canonical_name": "Mexicana",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "MGM GRAND HOTEL",
+    "canonical_name": "MGM Grand Hotel",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "MICROTEL INN AND SUITES",
+    "canonical_name": "Microtel Inn and Suites",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "MIDDLE EAST AIRLINES",
+    "canonical_name": "Middle East Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "MIDWAY MOTOR LODGE",
+    "canonical_name": "Midway Motor Lodge",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "MIDWEST EXPRESS AIRLINES",
+    "canonical_name": "Midwest Express Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "MILLENNIUM BROADWAY HOTEL",
+    "canonical_name": "Millennium Broadway Hotel",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "MILLEVILLE",
+    "canonical_name": "Milleville",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "MIRAGE HOTEL AND CASINO",
+    "canonical_name": "Mirage Hotel and Casino",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "MIYAKO HOTEL KINTETSU",
+    "canonical_name": "Miyako Hotel/Kintetsu",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "MOEVENPICK",
+    "canonical_name": "Moevenpick",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "MONTE CARLO HOTEL AND CASINO",
+    "canonical_name": "Monte Carlo Hotel and Casino",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "MOTEL",
+    "canonical_name": "Motel 6",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "MOUNT CHARLOTTE HOTELS",
+    "canonical_name": "Mount Charlotte Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "MOUNT COOK AIRLINE",
+    "canonical_name": "Mount Cook Airline",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "MTA",
+    "canonical_name": "MTA",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "NATIONAIR",
+    "canonical_name": "Nationair",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "NATIONAL CAR RENTAL",
+    "canonical_name": "National Car Rental",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "NEMACOLIN WOODLANDS",
+    "canonical_name": "Nemacolin Woodlands",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "NEVELE GRANDE RESORT AND COUNTRY CLUB",
+    "canonical_name": "Nevele Grande Resort and Country Club",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "NEW OTANI HOTELS",
+    "canonical_name": "New Otani Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "NEW YORK HELICOPTER",
+    "canonical_name": "New York Helicopter",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "NEW YORK NEW YORK HOTEL AND CASINO",
+    "canonical_name": "New York-New York Hotel and Casino",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "NICKELODEON FAMILY SUITES BY HOLIDAY INN",
+    "canonical_name": "Nickelodeon Family Suites by Holiday Inn",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "NIGERIA AIRWAYS",
+    "canonical_name": "Nigeria Airways",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "NOAHS HOTEL",
+    "canonical_name": "Noah's Hotel",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "NORDAIR",
+    "canonical_name": "NordAir",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "NORONTAIR",
+    "canonical_name": "Norontair",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "NORTHWEST AIRLINES",
+    "canonical_name": "Northwest Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "NORWEGIAN AIR SHUTTLE",
+    "canonical_name": "Norwegian Air Shuttle",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "NOVOTEL",
+    "canonical_name": "Novotel",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "OBEROI HOTELS",
+    "canonical_name": "Oberoi Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "OHANA HOTELS OF HAWAII",
+    "canonical_name": "Ohana Hotels of Hawaii",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "OLYMPIC AIRWAYS",
+    "canonical_name": "Olympic Airways",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "OMAN AIR",
+    "canonical_name": "Oman Air",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "OMNI HOTELS",
+    "canonical_name": "Omni Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "OPRYLAND HOTEL",
+    "canonical_name": "Opryland Hotel",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ORBITZ",
+    "canonical_name": "Orbitz",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ORCHID AT MAUNA LANI",
+    "canonical_name": "Orchid at Mauna Lani",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "OUTRIGGER HOTELS AND RESORTS",
+    "canonical_name": "Outrigger Hotels and Resorts",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "OXFORD SUITES",
+    "canonical_name": "Oxford Suites",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "PAKISTAN INTERNATIONAL AIRLINES",
+    "canonical_name": "Pakistan International Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "PAN AMERICAN WORLD AIRWAYS",
+    "canonical_name": "Pan American World Airways",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "PANNONIA HOTELS",
+    "canonical_name": "Pannonia Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "PARIS LAS VEGAS HOTEL",
+    "canonical_name": "Paris Las Vegas Hotel",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "PARK INN BY RADISSON",
+    "canonical_name": "Park Inn by Radisson",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "PARK PLAZA HOTEL",
+    "canonical_name": "Park Plaza Hotel",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "PARKS INNS INTERNATIONAL",
+    "canonical_name": "Parks Inns International",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "PATRICIA GRAND RESORT HOTELS",
+    "canonical_name": "Patricia Grand Resort Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "PAYLESS CAR RENTAL",
+    "canonical_name": "Payless Car Rental",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "PEABODY HOTELS",
+    "canonical_name": "Peabody Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "PENINSULA HOTELS",
+    "canonical_name": "Peninsula Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "PENTA HOTELS",
+    "canonical_name": "Penta Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "PEPPERMILL HOTEL CASINO",
+    "canonical_name": "Peppermill Hotel Casino",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "PHILIPPINE AIRLINES",
+    "canonical_name": "Philippine Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "PINEHURST RESORT",
+    "canonical_name": "Pinehurst Resort",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "PLM ETAP INTERNATIONAL",
+    "canonical_name": "PLM/ETAP International",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "PREMIER TRAVEL INNS",
+    "canonical_name": "Premier Travel Inns",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "PRICELINE",
+    "canonical_name": "Priceline",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "PRIMADONNA HOTEL AND CASINO",
+    "canonical_name": "Primadonna Hotel and Casino",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "PRINCE HOTELS",
+    "canonical_name": "Prince Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "PRINCESS HOTELS INTERNATIONAL",
+    "canonical_name": "Princess Hotels International",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "PRINCEVILLE AIRWAYS",
+    "canonical_name": "Princeville Airways",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "PRINCEVILLE RESORT",
+    "canonical_name": "Princeville Resort",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "PROTEA HOTELS",
+    "canonical_name": "Protea Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "PROVINCETOWN BOSTON AIRWAYS",
+    "canonical_name": "Provincetown-Boston Airways",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "QANTAS",
+    "canonical_name": "Qantas",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "QATAR AIRWAYS",
+    "canonical_name": "Qatar Airways",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "QUALITY INTERNATIONAL",
+    "canonical_name": "Quality International",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "QUALITY PACIFIC HOTEL",
+    "canonical_name": "Quality Pacific Hotel",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "QUEENS MOAT HOUSES",
+    "canonical_name": "Queens Moat Houses",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "RADISSON",
+    "canonical_name": "Radisson",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "RADISSON BLU",
+    "canonical_name": "Radisson BLU",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "RAFFLES HOTELS",
+    "canonical_name": "Raffles Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "RAMADA INNS",
+    "canonical_name": "Ramada Inns",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "RANK HOTELS",
+    "canonical_name": "Rank Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "RANTASIPI HOTELS",
+    "canonical_name": "Rantasipi Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "RED ROOF INNS",
+    "canonical_name": "Red Roof Inns",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "REGAL INNS",
+    "canonical_name": "Regal 8 Inns",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "REGENT HOTELS",
+    "canonical_name": "Regent Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "REGISTRY HOTELS",
+    "canonical_name": "Registry Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "RELAX INNS",
+    "canonical_name": "Relax Inns",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "RENAISSANCE HOTELS",
+    "canonical_name": "Renaissance Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "RENO AIR",
+    "canonical_name": "Reno Air",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "RENT A CAR",
+    "canonical_name": "A1 Rent-A-Car",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "RENT A WRECK",
+    "canonical_name": "Rent-A-Wreck",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "REPLACEMENT RENT A CAR",
+    "canonical_name": "Replacement Rent-A-Car",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "RESERVE RENT A CAR",
+    "canonical_name": "Reserve Rent-A-Car",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "RESIDENCE INN",
+    "canonical_name": "Residence Inn",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "RESO HOTELS",
+    "canonical_name": "Reso Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "RIO SUITES",
+    "canonical_name": "Rio Suites",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "RITZ CARLTON",
+    "canonical_name": "Ritz-Carlton",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "RIVERSIDE RESORT AND CASINO",
+    "canonical_name": "Riverside Resort and Casino",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "RIVIERA HOTEL AND CASINO",
+    "canonical_name": "Riviera Hotel and Casino",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "RODEWAY INNS INTERNATIONAL",
+    "canonical_name": "Rodeway Inns International",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ROSEN HOTEL AND RESORTS",
+    "canonical_name": "Rosen Hotel and Resorts",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ROYAL AIR MAROC",
+    "canonical_name": "Royal Air Maroc",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ROYAL DUTCH AIRLINES",
+    "canonical_name": "Royal Dutch Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ROYAL HOTELS",
+    "canonical_name": "Royal Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ROYAL KONA RESORT",
+    "canonical_name": "Royal Kona Resort",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ROYCE HOTEL",
+    "canonical_name": "Royce Hotel",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "RYANAIR",
+    "canonical_name": "Ryanair",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SADDLEBROOK RESORT TAMPA",
+    "canonical_name": "Saddlebrook Resort - Tampa",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SAETA",
+    "canonical_name": "SAETA",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SAHARA HOTEL AND CASINO",
+    "canonical_name": "Sahara Hotel and Casino",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SAHSA",
+    "canonical_name": "SAHSA",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SAMS TOWN HOTEL AND CASINO",
+    "canonical_name": "Sam's Town Hotel and Casino",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SAN JUAN AIRLINES",
+    "canonical_name": "San Juan Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SANDMAN HOTELS",
+    "canonical_name": "Sandman Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SANDMAN INN",
+    "canonical_name": "Sandman Inn",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SANDS RESORT",
+    "canonical_name": "Sands Resort",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SARA HOTELS",
+    "canonical_name": "Sara Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SAROVA HOTELS",
+    "canonical_name": "Sarova Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SAUDI ARABIAN AIRLINES",
+    "canonical_name": "Saudi Arabian Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SCANDIC HOTELS",
+    "canonical_name": "Scandic Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SCANDINAVIAN AIRLINE SYSTEM",
+    "canonical_name": "Scandinavian Airline System",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SCENIC AIRLINES",
+    "canonical_name": "Scenic Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SCOOT",
+    "canonical_name": "Scoot",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SEA PINES RESORT",
+    "canonical_name": "Sea Pines Resort",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SETTLE INN",
+    "canonical_name": "Settle Inn",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SHANGRI LA INTERNATIONAL",
+    "canonical_name": "Shangri-La International",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SHERATON",
+    "canonical_name": "Sheraton",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SHILO INN",
+    "canonical_name": "Shilo Inn",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SHONEYS INN",
+    "canonical_name": "Shoney's Inn",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SHOWCASE RENTAL CARS",
+    "canonical_name": "Showcase Rental Cars",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SILVER LEGACY HOTEL AND CASINO",
+    "canonical_name": "Silver Legacy Hotel and Casino",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SILVER STAR HOTEL AND CASINO",
+    "canonical_name": "Silver Star Hotel and Casino",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SIMMONS AIRLINES",
+    "canonical_name": "Simmons Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SINGAPORE AIRLINES",
+    "canonical_name": "Singapore Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SINGLETON",
+    "canonical_name": "Singleton",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SIXT",
+    "canonical_name": "Sixt",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SIXT CAR RENTAL",
+    "canonical_name": "Sixt Car Rental",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SKYSCANNER",
+    "canonical_name": "Skyscanner",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SKYWAYS",
+    "canonical_name": "Skyways",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SLEEP INN",
+    "canonical_name": "Sleep Inn",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SMUGGLERS NOTCH RESORT",
+    "canonical_name": "Smugglers' Notch Resort",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SN BRUSSELS AIRLINES",
+    "canonical_name": "SN Brussels Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SNAPPY CAR RENTAL",
+    "canonical_name": "Snappy Car Rental",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SOFITEL HOTELS",
+    "canonical_name": "Sofitel Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SOHO GRAND HOTEL",
+    "canonical_name": "Soho Grand Hotel",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SOKOS HOTEL",
+    "canonical_name": "Sokos Hotel",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SOL HOTELS",
+    "canonical_name": "Sol Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SONESTA HOTELS",
+    "canonical_name": "Sonesta Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SONESTA INTERNATIONAL HOTELS",
+    "canonical_name": "Sonesta International Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SOUTH AFRICAN AIRWAYS",
+    "canonical_name": "South African Airways",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SOUTHERN PACIFIC HOTEL",
+    "canonical_name": "Southern Pacific Hotel",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SOUTHERN SUN HOTELS",
+    "canonical_name": "Southern Sun Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SOUTHWEST",
+    "canonical_name": "Southwest Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SOUTHWEST AIRLINES",
+    "canonical_name": "Southwest Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SPANAIR",
+    "canonical_name": "Spanair",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SPIRIT AIRLINES",
+    "canonical_name": "Spirit Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SPRINGHILL SUITES",
+    "canonical_name": "SpringHill Suites",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ST REGIS HOTEL",
+    "canonical_name": "St. Regis Hotel",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "STAKIS HOTELS",
+    "canonical_name": "Stakis Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "STAYBRIDGE SUITES",
+    "canonical_name": "Staybridge Suites",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "STEIGENBERGER",
+    "canonical_name": "Steigenberger",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "STRATOSPHERE HOTEL AND CASINO",
+    "canonical_name": "Stratosphere Hotel and Casino",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "STUDIO PLUS",
+    "canonical_name": "Studio Plus",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SUDAN AIRWAYS",
+    "canonical_name": "Sudan Airways",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SUISSE CHALET",
+    "canonical_name": "Suisse Chalet",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SUMMERFIELD SUITES HOTEL",
+    "canonical_name": "Summerfield Suites Hotel",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SUN COUNTRY AIRLINES",
+    "canonical_name": "Sun Country Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SUNBELT AIRLINES",
+    "canonical_name": "Sunbelt Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SUNWORLD INTERNATIONAL",
+    "canonical_name": "Sunworld International",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SUPER MOTEL",
+    "canonical_name": "Super 8 Motel",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SURINAM AIRWAYS",
+    "canonical_name": "Surinam Airways",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SWALLOW HOTELS",
+    "canonical_name": "Swallow Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SWISS INTERNATIONAL AIR LINES",
+    "canonical_name": "Swiss International Air Lines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "SWISSOTEL",
+    "canonical_name": "Swissotel",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "TACA INTERNATIONAL",
+    "canonical_name": "TACA International",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "TAJ HOTELS INTERNATIONAL",
+    "canonical_name": "Taj Hotels International",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "TALAIR PTY LTD",
+    "canonical_name": "Talair PTY Ltd.",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "TAM AIRLINES",
+    "canonical_name": "TAM Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "TAN SAHSA",
+    "canonical_name": "TAN-SAHSA",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "TAP AIR PORTUGAL",
+    "canonical_name": "TAP Air Portugal",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "TAROM ROMANIAN AIR TRANSPORT",
+    "canonical_name": "TAROM Romanian Air Transport",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "THAI AIRWAYS",
+    "canonical_name": "Thai Airways",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "THE ATLANTIC",
+    "canonical_name": "The Atlantic",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "THE DIPLOMAT COUNTRY CLUB AND SPA",
+    "canonical_name": "The Diplomat Country Club and Spa",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "THE ELIOT HOTEL",
+    "canonical_name": "The Eliot Hotel",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "THE FLAMINGO HOTELS",
+    "canonical_name": "The Flamingo Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "THE PALACE HOTEL",
+    "canonical_name": "The Palace Hotel",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "THE PHOENICIAN",
+    "canonical_name": "The Phoenician",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "THE ROOSEVELT HOTEL NY",
+    "canonical_name": "The Roosevelt Hotel NY",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "THE WIGWAM GOLF RESORT AND SPA",
+    "canonical_name": "The Wigwam Golf Resort and Spa",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "THRIFTY CAR RENTAL",
+    "canonical_name": "Thrifty Car Rental",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "THUNDERBIRD RED LION",
+    "canonical_name": "Thunderbird/Red Lion",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "TILDEN RENT A CAR",
+    "canonical_name": "Tilden Rent-A-Car",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "TOKYO GROUP",
+    "canonical_name": "Tokyo Group",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "TOWER AIR",
+    "canonical_name": "Tower Air",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "TOWN AND COUNTRY RESORT AND CONVENTION CENTER",
+    "canonical_name": "Town and Country Resort and Convention Center",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "TOWNEPLACE SUITES",
+    "canonical_name": "TownePlace Suites",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "TRADEWINDS RESORT",
+    "canonical_name": "Tradewinds Resort",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "TRANSAERO",
+    "canonical_name": "Transaero",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "TRANSAVIA",
+    "canonical_name": "Transavia",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "TRANSPORTES AEROS MILITARES",
+    "canonical_name": "Transportes Aeros Militares",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "TRAVELOCITY",
+    "canonical_name": "Travelocity",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "TRAVELODGE MOTELS",
+    "canonical_name": "Travelodge Motels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "TREASURE ISLAND HOTEL AND CASINO",
+    "canonical_name": "Treasure Island Hotel and Casino",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "TRIANGLE RENT A CAR",
+    "canonical_name": "Triangle Rent-A-Car",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "TRIBECA GRAND HOTEL",
+    "canonical_name": "Tribeca Grand Hotel",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "TRIPADVISOR",
+    "canonical_name": "TripAdvisor",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "TROPICAL RENT A CAR",
+    "canonical_name": "Tropical Rent-A-Car",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "TROPICANA RESORT AND CASINO",
+    "canonical_name": "Tropicana Resort and Casino",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "TRUSTHOUSE FORTE",
+    "canonical_name": "Trusthouse Forte",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "TUNIS AIR",
+    "canonical_name": "Tunis Air",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "TURKISH AIRLINES",
+    "canonical_name": "Turkish Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "U S AIR SHUTTLE",
+    "canonical_name": "U.S. Air Shuttle",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "UBER",
+    "canonical_name": "Uber",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "UGLY DUCKLING RENT A CAR",
+    "canonical_name": "Ugly Duckling Rent-A-Car",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "UNI AIRWAYS CORPORATION",
+    "canonical_name": "Uni Airways Corporation",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "UNION DE TRANSPORTS AERIENS",
+    "canonical_name": "Union de Transports Aeriens",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "UNITED",
+    "canonical_name": "United Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "UNITED AIRLINES",
+    "canonical_name": "United Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "US AIRWAYS",
+    "canonical_name": "US Airways",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "USA RENT A CAR",
+    "canonical_name": "USA Rent-A-Car",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "VAGABOND HOTELS",
+    "canonical_name": "Vagabond Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "VALLEY AIRLINES",
+    "canonical_name": "Valley Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "VALUE RENT A CAR",
+    "canonical_name": "Value Rent-A-Car",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "VANGUARD AIRLINES",
+    "canonical_name": "Vanguard Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "VARIG",
+    "canonical_name": "Varig",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "VDARA",
+    "canonical_name": "Vdara",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "VENETIAN RESORT HOTEL AND CASINO",
+    "canonical_name": "Venetian Resort Hotel and Casino",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "VENEZOLANA INTERNATIONAL DE AVIACION",
+    "canonical_name": "Venezolana International De Aviacion",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "VENTURE INN",
+    "canonical_name": "Venture Inn",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "VIACAO AEREA SAO PAULO",
+    "canonical_name": "Viacao Aerea Sao Paulo",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "VIATOR",
+    "canonical_name": "Viator",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "VIRGIN AMERICA",
+    "canonical_name": "Virgin America",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "VIRGIN ATLANTIC",
+    "canonical_name": "Virgin Atlantic",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "VIRGIN EXPRESS",
+    "canonical_name": "Virgin Express",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "VIRGIN RIVER HOTEL AND CASINO",
+    "canonical_name": "Virgin River Hotel and Casino",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "VIVAAEROBUS",
+    "canonical_name": "VivaAerobus",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "VLM AIRLINES",
+    "canonical_name": "VLM Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "VOLARIS",
+    "canonical_name": "Volaris",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "VRBO",
+    "canonical_name": "VRBO",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "VUELING AIRLINES",
+    "canonical_name": "Vueling Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "W HOTELS",
+    "canonical_name": "W Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "WALDORF ASTORIA",
+    "canonical_name": "Waldorf Astoria",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "WELCOMGROUP",
+    "canonical_name": "Welcomgroup",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "WELLESLEY INNS",
+    "canonical_name": "Wellesley Inns",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "WESTIN HOTELS",
+    "canonical_name": "Westin Hotels",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "WESTJET AIRLINES",
+    "canonical_name": "WestJet Airlines",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "WHISKEY PETES HOTEL AND CASINO",
+    "canonical_name": "Whiskey Pete's Hotel and Casino",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "WIDEROES FLYVESELSKAP",
+    "canonical_name": "Wideroes Flyveselskap",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "WILDERNESS HOTEL AND RESORT",
+    "canonical_name": "Wilderness Hotel and Resort",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "WINDWARD ISLAND AIRWAYS",
+    "canonical_name": "Windward Island Airways",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "WINGS AIRWAYS",
+    "canonical_name": "Wings Airways",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "WIZZ AIR",
+    "canonical_name": "Wizz Air",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "WOODSIDE HOTELS AND RESORTS",
+    "canonical_name": "Woodside Hotels and Resorts",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "WYNDHAM",
+    "canonical_name": "Wyndham",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "WYNN LAS VEGAS",
+    "canonical_name": "Wynn Las Vegas",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ZAMBIA AIRWAYS",
+    "canonical_name": "Zambia Airways",
+    "category": "travel"
+  },
+  {
+    "merchant_key": "ALAMO DRAFTHOUSE CINEMA",
+    "canonical_name": "Alamo Drafthouse Cinema",
+    "category": "entertainment"
+  },
+  {
+    "merchant_key": "AMC THEATRES",
+    "canonical_name": "AMC Theatres",
+    "category": "entertainment"
+  },
+  {
+    "merchant_key": "AMUSEMENT PARK",
+    "canonical_name": "Amusement park",
+    "category": "entertainment"
+  },
+  {
+    "merchant_key": "APPLE COM BILL",
+    "canonical_name": "Apple Subscription",
+    "category": "entertainment"
+  },
+  {
+    "merchant_key": "BOWLING ALLEY",
+    "canonical_name": "Bowling alley",
+    "category": "entertainment"
+  },
+  {
+    "merchant_key": "CINEMARK",
+    "canonical_name": "Cinemark",
+    "category": "entertainment"
+  },
+  {
+    "merchant_key": "DISNEY",
+    "canonical_name": "Disney+",
+    "category": "entertainment"
+  },
+  {
+    "merchant_key": "HBO",
+    "canonical_name": "HBO Max",
+    "category": "entertainment"
+  },
+  {
+    "merchant_key": "HULU",
+    "canonical_name": "Hulu",
+    "category": "entertainment"
+  },
+  {
+    "merchant_key": "MAX",
+    "canonical_name": "Max",
+    "category": "entertainment"
+  },
+  {
+    "merchant_key": "NETFLIX",
+    "canonical_name": "Netflix",
+    "category": "entertainment"
+  },
+  {
+    "merchant_key": "REGAL CINEMAS",
+    "canonical_name": "Regal Cinemas",
+    "category": "entertainment"
+  },
+  {
+    "merchant_key": "SPOTIFY",
+    "canonical_name": "Spotify",
+    "category": "entertainment"
+  },
+  {
+    "merchant_key": "TICKETMASTER",
+    "canonical_name": "Ticketmaster",
+    "category": "entertainment"
+  },
+  {
+    "merchant_key": "ACE HARDWARE",
+    "canonical_name": "Ace Hardware",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "ADOBE CREATIVE CLOUD",
+    "canonical_name": "Adobe Creative Cloud",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "AIRTABLE",
+    "canonical_name": "Airtable",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "AMAZON COM",
+    "canonical_name": "Amazon.com",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "AMAZON WEB SERVICES",
+    "canonical_name": "Amazon Web Services",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "ANTHROPIC",
+    "canonical_name": "Anthropic",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "APPLE STORE",
+    "canonical_name": "Apple Store",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "ASANA",
+    "canonical_name": "Asana",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "ATLASSIAN",
+    "canonical_name": "Atlassian",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "BARNES NOBLE",
+    "canonical_name": "Barnes & Noble",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "BEST BUY",
+    "canonical_name": "Best Buy",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "BITWARDEN",
+    "canonical_name": "Bitwarden",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "CANVA",
+    "canonical_name": "Canva",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "CLOUDFLARE",
+    "canonical_name": "Cloudflare",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "CURSOR",
+    "canonical_name": "Cursor",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "CVS PHARMACY",
+    "canonical_name": "CVS Pharmacy",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "DATADOG",
+    "canonical_name": "Datadog",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "DICKS SPORTING GOODS",
+    "canonical_name": "Dick's Sporting Goods",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "DIGITALOCEAN",
+    "canonical_name": "DigitalOcean",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "DILLARDS",
+    "canonical_name": "Dillard's",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "DOCUSIGN",
+    "canonical_name": "DocuSign",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "DOLLAR GENERAL",
+    "canonical_name": "Dollar General",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "DOLLAR TREE",
+    "canonical_name": "Dollar Tree",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "DROPBOX",
+    "canonical_name": "Dropbox",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "EBAY",
+    "canonical_name": "eBay",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "FAMILY DOLLAR",
+    "canonical_name": "Family Dollar",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "FIGMA",
+    "canonical_name": "Figma",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "GAMESTOP",
+    "canonical_name": "GameStop",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "GITHUB",
+    "canonical_name": "GitHub",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "GITLAB",
+    "canonical_name": "GitLab",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "GOOGLE CLOUD PLATFORM",
+    "canonical_name": "Google Cloud Platform",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "GRAMMARLY",
+    "canonical_name": "Grammarly",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "HOME DEPOT",
+    "canonical_name": "The Home Depot",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "HUBSPOT",
+    "canonical_name": "HubSpot",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "IKEA",
+    "canonical_name": "IKEA",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "INTERCOM",
+    "canonical_name": "Intercom",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "JCPENNEY",
+    "canonical_name": "JCPenney",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "KOHLS",
+    "canonical_name": "Kohl's",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "LASTPASS",
+    "canonical_name": "LastPass",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "LINEAR",
+    "canonical_name": "Linear",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "LOOM",
+    "canonical_name": "Loom",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "LOWES",
+    "canonical_name": "Lowe's",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "MACYS",
+    "canonical_name": "Macy's",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "MAILCHIMP",
+    "canonical_name": "Mailchimp",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "MARSHALLS",
+    "canonical_name": "Marshalls",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "MICHAELS",
+    "canonical_name": "Michaels",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "MICRO CENTER",
+    "canonical_name": "Micro Center",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "MICROSOFT",
+    "canonical_name": "Microsoft 365",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "MICROSOFT AZURE",
+    "canonical_name": "Microsoft Azure",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "MONDAY COM",
+    "canonical_name": "Monday.com",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "NETLIFY",
+    "canonical_name": "Netlify",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "NORDSTROM",
+    "canonical_name": "Nordstrom",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "NOTION",
+    "canonical_name": "Notion",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "OFFICE",
+    "canonical_name": "Office 365",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "OFFICE DEPOT",
+    "canonical_name": "Office Depot",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "OFFICEMAX",
+    "canonical_name": "OfficeMax",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "OPENAI",
+    "canonical_name": "OpenAI",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "PASSWORD",
+    "canonical_name": "1Password",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "PETCO",
+    "canonical_name": "Petco",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "PETSMART",
+    "canonical_name": "PetSmart",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "PLANETSCALE",
+    "canonical_name": "PlanetScale",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "POSTMAN",
+    "canonical_name": "Postman",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "RENDER",
+    "canonical_name": "Render",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "RITE AID",
+    "canonical_name": "Rite Aid",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "ROSS",
+    "canonical_name": "Ross",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "SENTRY",
+    "canonical_name": "Sentry",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "SEPHORA",
+    "canonical_name": "Sephora",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "SHOPIFY",
+    "canonical_name": "Shopify",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "SLACK",
+    "canonical_name": "Slack",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "SQUARESPACE",
+    "canonical_name": "Squarespace",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "STAPLES",
+    "canonical_name": "Staples",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "SUPABASE",
+    "canonical_name": "Supabase",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "TARGET",
+    "canonical_name": "Target",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "THE HOME DEPOT",
+    "canonical_name": "The Home Depot",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "TJ MAXX",
+    "canonical_name": "TJ Maxx",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "TWILIO",
+    "canonical_name": "Twilio",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "ULTA BEAUTY",
+    "canonical_name": "Ulta Beauty",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "VERCEL",
+    "canonical_name": "Vercel",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "WALGREENS",
+    "canonical_name": "Walgreens",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "WALMART",
+    "canonical_name": "Walmart",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "WALMART NEIGHBORHOOD MARKET",
+    "canonical_name": "Walmart Neighborhood Market",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "WEBFLOW",
+    "canonical_name": "Webflow",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "WIX",
+    "canonical_name": "Wix",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "ZENDESK",
+    "canonical_name": "Zendesk",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "ZOOM",
+    "canonical_name": "Zoom",
+    "category": "shopping"
+  },
+  {
+    "merchant_key": "ADVANCE AUTO PARTS",
+    "canonical_name": "Advance Auto Parts",
+    "category": "other"
+  },
+  {
+    "merchant_key": "AT T",
+    "canonical_name": "AT&T",
+    "category": "other"
+  },
+  {
+    "merchant_key": "AUTOZONE",
+    "canonical_name": "AutoZone",
+    "category": "other"
+  },
+  {
+    "merchant_key": "DISCOUNT TIRE",
+    "canonical_name": "Discount Tire",
+    "category": "other"
+  },
+  {
+    "merchant_key": "DRY CLEANER",
+    "canonical_name": "Dry cleaner",
+    "category": "other"
+  },
+  {
+    "merchant_key": "FEDEX",
+    "canonical_name": "FedEx",
+    "category": "other"
+  },
+  {
+    "merchant_key": "JIFFY LUBE",
+    "canonical_name": "Jiffy Lube",
+    "category": "other"
+  },
+  {
+    "merchant_key": "OREILLY",
+    "canonical_name": "O'Reilly",
+    "category": "other"
+  },
+  {
+    "merchant_key": "T MOBILE",
+    "canonical_name": "T-Mobile",
+    "category": "other"
+  },
+  {
+    "merchant_key": "UPS",
+    "canonical_name": "UPS",
+    "category": "other"
+  },
+  {
+    "merchant_key": "USPS",
+    "canonical_name": "USPS",
+    "category": "other"
+  },
+  {
+    "merchant_key": "VERIZON",
+    "canonical_name": "Verizon",
+    "category": "other"
+  }
+]

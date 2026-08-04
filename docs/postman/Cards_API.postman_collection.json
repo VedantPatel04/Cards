@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "b1f7c2a4-9d3e-4a21-8c5f-cards-api-0001",
     "name": "Cards API",
-    "description": "Register -> Token -> protected endpoints. The token request auto-saves access/refresh into collection variables, and protected requests inherit Bearer {{access_token}} automatically, so you never copy-paste tokens.",
+    "description": "setup_dev → Token → Catalog/Wallet → Upload → Transactions/Review.\n\nProtected requests inherit Bearer {{access_token}}. Run `python manage.py setup_dev` once to seed data and create user1 with a wallet card.\n\nValid rewards categories: `dining` | `groceries` | `travel` | `gas` | `entertainment` | `shopping` | `other`",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "auth": {
@@ -13,11 +13,15 @@
   },
   "variable": [
     { "key": "baseUrl", "value": "http://127.0.0.1:8000", "type": "string" },
-    { "key": "username", "value": "tester", "type": "string" },
-    { "key": "email", "value": "tester@example.com", "type": "string" },
-    { "key": "password", "value": "SomeStrongPass123", "type": "string" },
+    { "key": "username", "value": "user1", "type": "string" },
+    { "key": "email", "value": "user1@example.com", "type": "string" },
+    { "key": "password", "value": "user1Password", "type": "string" },
     { "key": "access_token", "value": "", "type": "string" },
-    { "key": "refresh_token", "value": "", "type": "string" }
+    { "key": "refresh_token", "value": "", "type": "string" },
+    { "key": "user_card_id", "value": "", "type": "string" },
+    { "key": "card_product_id", "value": "", "type": "string" },
+    { "key": "merchant_key", "value": "", "type": "string" },
+    { "key": "category", "value": "groceries", "type": "string" }
   ],
   "item": [
     {
@@ -35,7 +39,7 @@
           "host": ["{{baseUrl}}"],
           "path": ["api", "register", ""]
         },
-        "description": "Public. Creates a normal user. Expect 201. Safe to get 400 if the user already exists."
+        "description": "Optional if you already ran setup_dev. Expect 201, or 400 if user1 already exists."
       }
     },
     {
@@ -71,24 +75,146 @@
           "host": ["{{baseUrl}}"],
           "path": ["api", "token", ""]
         },
-        "description": "Public. Returns access + refresh. The Tests script auto-saves both into collection variables."
+        "description": "Public. Returns access + refresh. Tests script auto-saves both. Auth on this request must be No Auth."
       }
     },
     {
-      "name": "3. Is Authenticated (protected)",
+      "name": "3. Catalog Cards (protected)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "  const res = pm.response.json();",
+              "  if (res.cards && res.cards.length > 0) {",
+              "    pm.collectionVariables.set('card_product_id', String(res.cards[0].id));",
+              "    console.log('Saved card_product_id:', res.cards[0].id);",
+              "  }",
+              "}"
+            ]
+          }
+        }
+      ],
       "request": {
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{baseUrl}}/api/isAuthenticated/",
+          "raw": "{{baseUrl}}/api/cards/",
           "host": ["{{baseUrl}}"],
-          "path": ["api", "isAuthenticated", ""]
+          "path": ["api", "cards", ""]
         },
-        "description": "Protected. Inherits Bearer {{access_token}} from the collection. Expect 200; 401 if you have no valid token."
+        "description": "Protected. Lists active catalog products you can add to your wallet / use for Day 5 recommendations. Saves first id to {{card_product_id}}."
       }
     },
     {
-      "name": "4. Upload Transactions (protected)",
+      "name": "4. Wallet — List (protected)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "  const res = pm.response.json();",
+              "  if (res.cards && res.cards.length > 0) {",
+              "    pm.collectionVariables.set('user_card_id', String(res.cards[0].id));",
+              "    console.log('Saved user_card_id:', res.cards[0].id);",
+              "  }",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/wallet/",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "wallet", ""]
+        },
+        "description": "Protected. Cards you own. Each `id` is the user_card_id for upload. Tests script saves the first id."
+      }
+    },
+    {
+      "name": "5. Wallet — Add catalog (protected)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if (pm.response.code === 201) {",
+              "  const res = pm.response.json();",
+              "  if (res.id) pm.collectionVariables.set('user_card_id', String(res.id));",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"card_product_id\": {{card_product_id}}\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/wallet/",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "wallet", ""]
+        },
+        "description": "Protected. Add from catalog by id. 201 on success; 400 if already in wallet, unknown, or inactive. Saves {{user_card_id}}."
+      }
+    },
+    {
+      "name": "5b. Wallet — Add custom (protected)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if (pm.response.code === 201) {",
+              "  const res = pm.response.json();",
+              "  if (res.id) pm.collectionVariables.set('user_card_id', String(res.id));",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Campus Visa\",\n  \"issuer\": \"Local CU\",\n  \"network\": \"Visa\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/wallet/",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "wallet", ""]
+        },
+        "description": "Protected. Free-text card (name + issuer + network required). Creates is_catalog=false product with zero rewards, or attaches an existing name+issuer match (including catalog). 400 on duplicate in your wallet."
+      }
+    },
+    {
+      "name": "6. Wallet — Delete (protected)",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/wallet/{{user_card_id}}/",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "wallet", "{{user_card_id}}", ""]
+        },
+        "description": "Protected. HARD delete wallet row + its Transactions. If the product was custom and unused, the Card_Products row is removed too. Catalog products are kept."
+      }
+    },
+    {
+      "name": "7. Upload Transactions (protected)",
       "request": {
         "method": "POST",
         "header": [],
@@ -100,6 +226,12 @@
               "type": "file",
               "src": [],
               "description": "Select backend/data/sample_uploads/Chase Transaction Statement.csv"
+            },
+            {
+              "key": "user_card_id",
+              "type": "text",
+              "value": "{{user_card_id}}",
+              "description": "Wallet entry id from GET /api/wallet/"
             }
           ]
         },
@@ -108,11 +240,73 @@
           "host": ["{{baseUrl}}"],
           "path": ["api", "upload", ""]
         },
-        "description": "Protected. Inherits Bearer {{access_token}}. Body is form-data with a File field named 'file'. Returns 501 until process_upload is implemented."
+        "description": "Protected. form-data: file + user_card_id."
       }
     },
     {
-      "name": "5. Refresh Token",
+      "name": "8. List Transactions (protected)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/transactions/",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "transactions", ""]
+        },
+        "description": "Protected. Your transactions with card_name + issuer joined (user_card_id FK kept)."
+      }
+    },
+    {
+      "name": "9. Review Queue (protected)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "  const res = pm.response.json();",
+              "  if (res.merchants && res.merchants.length > 0) {",
+              "    pm.collectionVariables.set('merchant_key', res.merchants[0].merchant_key);",
+              "    console.log('Saved top merchant_key:', res.merchants[0].merchant_key);",
+              "  } else {",
+              "    console.log('Review queue empty — nothing to label.');",
+              "  }",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/review/",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "review", ""]
+        },
+        "description": "Protected. Unresolved merchants for your spend."
+      }
+    },
+    {
+      "name": "10. Review Answer (protected)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"merchant_key\": \"{{merchant_key}}\",\n  \"category\": \"{{category}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/review/answer/",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "review", "answer", ""]
+        },
+        "description": "Protected. Label a merchant; backfills your transactions."
+      }
+    },
+    {
+      "name": "11. Refresh Token",
       "event": [
         {
           "listen": "test",
@@ -141,7 +335,7 @@
           "host": ["{{baseUrl}}"],
           "path": ["api", "token", "refresh", ""]
         },
-        "description": "Public. Exchanges the saved refresh token for a fresh access token (auto-saved by the Tests script)."
+        "description": "Public. Exchanges refresh for a new access token (auto-saved)."
       }
     }
   ]

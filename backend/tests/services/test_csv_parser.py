@@ -122,8 +122,8 @@ class NormalizeCsvSignTests(SimpleTestCase):
 class NormalizeCsvCategoryTests(SimpleTestCase):
     """
     The adapter owns provider vocabulary and hands the resolver a canonical
-    bucket. Keeping this here is what lets a Plaid adapter reuse the resolver
-    untouched.
+    bucket. Keeping this seam is what lets another bank's adapter reuse the
+    resolver and the review loop untouched.
     """
 
     def test_chase_text_becomes_canonical_bucket(self):
@@ -131,20 +131,26 @@ class NormalizeCsvCategoryTests(SimpleTestCase):
         self.assertEqual(row["category"], "dining")
         self.assertEqual(row["source_category"], "Food & Drink")  # raw text preserved
 
-    def test_unmapped_category_is_blank_not_guessed(self):
+    def test_non_bonus_chase_bucket_is_other_not_a_question(self):
         row = normalize_csv(_csv("07/16/2026,07/17/2026,X,Automotive,Sale,-1.00,"))[0]
+        self.assertEqual(row["category"], "other")
+
+    def test_unknown_chase_text_on_spend_is_blank_for_review(self):
+        row = normalize_csv(_csv("07/16/2026,07/17/2026,X,Sponsorships,Sale,-1.00,"))[0]
         self.assertEqual(row["category"], "")
 
-    def test_missing_category_is_blank(self):
+    def test_blank_category_on_a_credit_is_other(self):
+        """Card payments have no Chase category and are not spend to categorize."""
         row = normalize_csv(_csv("07/16/2026,07/17/2026,PAYMENT,,Payment,250.00,"))[0]
-        self.assertEqual(row["category"], "")
+        self.assertEqual(row["category"], "other")
 
-    def test_every_mapped_bucket_is_one_the_resolver_knows(self):
-        from services.mcc_resolver import REPRESENTATIVE_MCC
+    def test_every_mapped_bucket_is_a_rewards_category(self):
+        from services.category_resolver import reward_categories
 
+        cats = reward_categories()
         for chase_text, canonical in CHASE_CATEGORY_MAP.items():
             with self.subTest(chase_text=chase_text):
-                self.assertIn(canonical, REPRESENTATIVE_MCC)
+                self.assertIn(canonical, cats)
 
 
 # ---------------------------------------------------------------------------
@@ -255,26 +261,6 @@ class NormalizeCsvLengthTests(SimpleTestCase):
         long_name = "A" * 400
         row = normalize_csv(_csv(f"07/16/2026,07/17/2026,{long_name},Groceries,Sale,-1.00,"))[0]
         self.assertEqual(len(row["raw_description"]), 255)
-
-
-# ---------------------------------------------------------------------------
-# Optional MCC column (lets resolve_mcc short-circuit at Tier 1)
-# ---------------------------------------------------------------------------
-
-class NormalizeCsvMccColumnTests(SimpleTestCase):
-    def test_mcc_column_is_passed_through(self):
-        data = (
-            "Transaction Date,Description,Category,Amount,MCC\n"
-            "07/16/2026,WAL-MART #2297,Groceries,-35.34,5411\n"
-        ).encode("utf-8")
-        self.assertEqual(normalize_csv(data)[0]["mcc"], "5411")
-
-    def test_blank_mcc_cell_is_not_passed_through(self):
-        data = (
-            "Transaction Date,Description,Category,Amount,MCC\n"
-            "07/16/2026,WAL-MART #2297,Groceries,-35.34,\n"
-        ).encode("utf-8")
-        self.assertNotIn("mcc", normalize_csv(data)[0])
 
 
 # ---------------------------------------------------------------------------

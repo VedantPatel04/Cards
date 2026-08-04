@@ -1,0 +1,43 @@
+# Rewards categories (not MCC)
+
+Card reward rules and transaction categorization share one vocabulary in
+`data/card_catalog/reward_categories.json`:
+
+  dining | groceries | travel | gas | entertainment | shopping | other
+
+## Flow
+
+```text
+Chase CSV Category  →  rewards category  ┐
+user's saved answer (authoritative)      ├→  Transactions.category  →  Reward_Rules match
+neither  →  ""  →  review queue          ┘
+```
+
+`normalize_csv` owns the bank's vocabulary. `resolve_category(row, user_id)`
+checks that user's override (Redis, then `MerchantResolution`), then falls back
+to the adapter's stamp. There is no Visa MCC hop and no LLM.
+
+## The two states that are easy to confuse
+
+- `"other"` — a real bucket: fees, utilities, card payments, anything no card
+  pays a bonus on.
+- `""` (`UNRESOLVED_CATEGORY`) — nobody knows yet. Surfaced by `GET /api/review/`.
+
+Never collapse `""` into `"other"`. That is the bug the review queue exists to
+prevent: it hides unknowns inside a legitimate-looking category.
+
+## Overrides are per user
+
+`MerchantResolution` is keyed `(user, merchant_key)` and the Redis key is
+`merchant:{user_id}:{merchant_key}`. A global override table would let one
+person's label rewrite everyone else's categorization.
+
+## Never add a merchant override to...
+
+- dodge an unmapped Chase category (fix `CHASE_CATEGORY_MAP` instead)
+- invent precision the bank data does not have
+
+## Before expanding reward_categories.json
+
+Ask the user. New buckets need at least one card rule that uses them and either
+an adapter mapping or a review answer that can produce them.

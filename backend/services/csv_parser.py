@@ -1,10 +1,9 @@
 """
 CSV adapter.
 
-The ONLY place that knows a specific bank's column names. Its job is to turn
-raw file bytes into a list of normalized row dicts that the pipeline and
-resolver understand. Add one function per source (Chase now, Plaid later) and
-nothing downstream changes.
+The ONLY place that knows a specific bank's column names. Turns raw file bytes
+into canonical row dicts the pipeline and resolver understand. Adding another
+bank later means adding one function here; nothing downstream changes.
 """
 
 import csv
@@ -21,16 +20,12 @@ CHASE_DATE_FORMAT = "%m/%d/%Y"
 # rather than dying on a KeyError halfway through.
 REQUIRED_CHASE_COLUMNS = ("Transaction Date", "Description", "Category", "Amount")
 
-# Optional column: our own tester CSVs may carry a known MCC per row, which
-# lets resolve_mcc() short-circuit at Tier 1. Chase exports never have it.
-OPTIONAL_MCC_COLUMN = "MCC"
-
-# Chase's "Category" vocabulary -> our canonical category names (the keys of
-# mcc_resolver.REPRESENTATIVE_MCC). Provider vocabulary is format knowledge, so
-# it belongs here next to the column names: the Plaid adapter will ship its own
-# map and emit the same canonical values, and the resolver stays provider-blind.
-# A category we deliberately do not map falls through to Tier 6 (uncategorized),
-# which is more honest than guessing a bucket.
+# Chase's "Category" vocabulary → our rewards categories (reward_categories.json).
+# Provider vocabulary stays in the adapter; the resolver only sees canonical names.
+#
+# The bottom group maps to "other" rather than being left blank because no card
+# pays a bonus on them, so there is nothing for a user to usefully decide. Only
+# Chase text we have never seen becomes "" and reaches the review queue.
 CHASE_CATEGORY_MAP = {
     "Groceries": "groceries",
     "Food & Drink": "dining",
@@ -39,6 +34,14 @@ CHASE_CATEGORY_MAP = {
     "Gas": "gas",
     "Entertainment": "entertainment",
     "Fees & Adjustments": "other",
+    "Bills & Utilities": "other",
+    "Health & Wellness": "other",
+    "Home": "other",
+    "Automotive": "other",
+    "Education": "other",
+    "Personal": "other",
+    "Professional Services": "other",
+    "Gifts & Donations": "other",
 }
 
 # Transactions.description is varchar(255) and Transactions.amount is
@@ -78,14 +81,10 @@ def normalize_csv(file_bytes: bytes) -> list[dict]:
     Return a list of dicts with canonical keys:
       raw_description : str   (Chase "Description")
       source_category : str   (Chase "Category", verbatim — kept for debugging)
-      category        : str   (canonical bucket, "" when Chase's text is unmapped)
+      category        : str   (rewards category, "" when unknown → user review)
       amount          : Decimal
       transaction_date: date  (parsed from "Transaction Date", MM/DD/YYYY)
       row_index       : int   (0-based position in the file, for idempotency)
-      mcc             : str   (only when the file carries an "MCC" column)
-
-    Note: does NOT assign mcc for bank files — resolution happens later via
-    resolve_mcc().
 
     Sign convention: Chase marks spend as negative; our Transactions model
     uses positive = spend / negative = refund. We negate Chase amounts here
@@ -149,18 +148,22 @@ def normalize_csv(file_bytes: bytes) -> list[dict]:
             logger.debug("normalize_csv: truncating long description at row %s", row_index)
             description = description[:MAX_DESCRIPTION_CHARS]
 
+        amount = -chase_amount  # negates chase amount so spend is positive
+        category = CHASE_CATEGORY_MAP.get(row["Category"], "")
+        # Chase leaves Category blank on card payments and some credits. Those
+        # are not spend, so asking a user to categorize them is noise — bucket
+        # them as "other" and keep the review queue to real purchases.
+        if not category and amount <= 0:
+            category = "other"
+
         normalized = {
             "raw_description": description,
             "source_category": row["Category"],
-            "category": CHASE_CATEGORY_MAP.get(row["Category"], ""),
-            "amount": -chase_amount,  # negates chase amount so spend is positive
+            "category": category,
+            "amount": amount,
             "transaction_date": transaction_date,
             "row_index": row_index,
         }
-
-        mcc = row.get(OPTIONAL_MCC_COLUMN)
-        if mcc:
-            normalized["mcc"] = mcc
 
         structured_data.append(normalized)
 

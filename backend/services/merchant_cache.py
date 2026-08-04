@@ -1,21 +1,16 @@
 """
-Phase 4 — Redis exact-match cache (cache-aside, fails open).
+Redis cache for a user's merchant -> rewards category answers (fails open).
 
-Thin wrapper around a single Redis client. Keys are namespaced as
-"merchant:{merchant_key}". Every call is wrapped so that if Redis is
-unreachable the pipeline keeps working (get -> None, set -> no-op).
+Keys are namespaced per user as "merchant:{user_id}:{merchant_key}". The user
+id is part of the key on purpose: a shared namespace would serve one user's
+label to everyone else.
 
-Design decisions to implement:
-  - Key namespace:  f"merchant:{merchant_key}"
-  - TTL:            settings.MERCHANT_CACHE_TTL (seconds) on every set
-  - Fail open:      catch redis errors; never raise into the resolver
-  - Sentinel:       store "" to represent a cached "known-unknown" so we do
-                    not re-hit the LLM for a merchant it already failed on
+Every call is wrapped so that if Redis is unreachable the pipeline keeps
+working (get -> None, set -> no-op). Redis is CACHE ONLY.
 """
+
 import redis
 from django.conf import settings
-
-
 
 redis_client = redis.from_url(
     settings.REDIS_URL,
@@ -25,27 +20,38 @@ redis_client = redis.from_url(
 )
 
 
-def cache_get(merchant_key: str) -> str | None:
-    """
-    Return the cached MCC code for a merchant key.
+def _key(user_id: int, merchant_key: str) -> str:
+    return f"merchant:{user_id}:{merchant_key}"
 
-    Returns:
-      - a code string on hit,
-      - ""   if the merchant is cached as a known-unknown,
-      - None on a miss OR on any Redis failure (fail open).
+
+def cache_get(user_id: int, merchant_key: str) -> str | None:
+    """
+    Return this user's cached category for a merchant key.
+
+    Returns the category string on a hit, or None on a miss OR on any Redis
+    failure (fail open).
     """
     try:
-        return redis_client.get(f"merchant:{merchant_key}")
+        return redis_client.get(_key(user_id, merchant_key))
     except redis.RedisError:
         return None
 
 
-def cache_set(merchant_key: str, mcc_code: str) -> None:
-    """
-    Cache an MCC code (or "" for known-unknown) with the configured TTL.
-    Silently no-ops if Redis is unavailable (fail open).
-    """
+def cache_set(user_id: int, merchant_key: str, category: str) -> None:
+    """Cache a category with the configured TTL. No-ops if Redis is down."""
     try:
-        redis_client.set(f"merchant:{merchant_key}", mcc_code, ex=settings.MERCHANT_CACHE_TTL)
+        redis_client.set(
+            _key(user_id, merchant_key),
+            category,
+            ex=settings.MERCHANT_CACHE_TTL,
+        )
+    except redis.RedisError:
+        return
+
+
+def cache_delete(user_id: int, merchant_key: str) -> None:
+    """Drop a cached answer so the next resolve re-reads the DB."""
+    try:
+        redis_client.delete(_key(user_id, merchant_key))
     except redis.RedisError:
         return
