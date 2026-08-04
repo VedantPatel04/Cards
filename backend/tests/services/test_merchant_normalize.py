@@ -75,7 +75,7 @@ class MerchantKeyAlgorithmStepTests(SimpleTestCase):
     def test_step1_uppercases(self):
         self.assertEqual(merchant_key("lyft"), "LYFT")
         self.assertEqual(merchant_key("Wal-Mart"), "WAL MART")
-        self.assertEqual(merchant_key("mTa*nyct"), "MTA")  # MTA not processor → keep left
+        self.assertEqual(merchant_key("mTa*nyct"), "MTA")  # MTA not processor -> keep left
 
     def test_step2_star_processor_keeps_right(self):
         processor_cases = [
