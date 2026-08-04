@@ -3,6 +3,7 @@ from django.urls import path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 from apps.users.views import is_Authenticated, register
 from apps.uploads.views import upload_transactions
+from apps.transactions.views import review_answer, review_queue
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -17,4 +18,8 @@ urlpatterns = [
 
     # Uploads
     path('api/upload/', upload_transactions, name='upload_transactions'),
+
+    # category revfiew for merchants USER ENTERS INFORMATION
+    path('api/review/', review_queue, name='review_queue'),
+    path('api/review/answer/', review_answer, name='review_answer'),
 ]

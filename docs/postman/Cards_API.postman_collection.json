@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "b1f7c2a4-9d3e-4a21-8c5f-cards-api-0001",
     "name": "Cards API",
-    "description": "Register -> Token -> protected endpoints. The token request auto-saves access/refresh into collection variables, and protected requests inherit Bearer {{access_token}} automatically, so you never copy-paste tokens.",
+    "description": "Register → Token → Upload → Review. The token request auto-saves access/refresh into collection variables, and protected requests inherit Bearer {{access_token}} automatically.\n\n**Suggested flow for merchant review**\n1. Register / Get Token\n2. Upload a Chase CSV (needs an active `user_card_id` in your wallet)\n3. GET Review Queue — lists unresolved merchants; Tests script saves the top `merchant_key`\n4. POST Review Answer — label that merchant; it drops out of the queue\n5. GET Review Queue again to confirm\n\nValid rewards categories: `dining` | `groceries` | `travel` | `gas` | `entertainment` | `shopping` | `other`",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "auth": {
@@ -17,7 +17,10 @@
     { "key": "email", "value": "tester@example.com", "type": "string" },
     { "key": "password", "value": "SomeStrongPass123", "type": "string" },
     { "key": "access_token", "value": "", "type": "string" },
-    { "key": "refresh_token", "value": "", "type": "string" }
+    { "key": "refresh_token", "value": "", "type": "string" },
+    { "key": "user_card_id", "value": "1", "type": "string" },
+    { "key": "merchant_key", "value": "", "type": "string" },
+    { "key": "category", "value": "groceries", "type": "string" }
   ],
   "item": [
     {
@@ -100,6 +103,12 @@
               "type": "file",
               "src": [],
               "description": "Select backend/data/sample_uploads/Chase Transaction Statement.csv"
+            },
+            {
+              "key": "user_card_id",
+              "type": "text",
+              "value": "{{user_card_id}}",
+              "description": "PK of an active User_cards row owned by this user"
             }
           ]
         },
@@ -108,11 +117,60 @@
           "host": ["{{baseUrl}}"],
           "path": ["api", "upload", ""]
         },
-        "description": "Protected. Inherits Bearer {{access_token}}. Body is form-data with a File field named 'file'. Returns 501 until process_upload is implemented."
+        "description": "Protected. Multipart form-data: `file` (CSV) + `user_card_id`.\n\n**Success**\n- `201` first time this file hash is seen; `200` on re-upload (idempotent refresh)\n- Body: `{ upload_id, filename, status, summary }`\n\n**Errors**\n- `400` missing file / missing user_card_id / inactive or foreign card / bad CSV shape\n- `400` file over 2 MB\n- `401` no token\n- `500` unexpected pipeline failure"
       }
     },
     {
-      "name": "5. Refresh Token",
+      "name": "5. Review Queue (protected)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "  const res = pm.response.json();",
+              "  if (res.merchants && res.merchants.length > 0) {",
+              "    pm.collectionVariables.set('merchant_key', res.merchants[0].merchant_key);",
+              "    console.log('Saved top merchant_key:', res.merchants[0].merchant_key);",
+              "  } else {",
+              "    console.log('Review queue empty — nothing to label.');",
+              "  }",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/review/",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "review", ""]
+        },
+        "description": "Protected. `GET /api/review/`\n\nLists **your** unresolved merchants (`category=\"\"`), grouped by `merchant_key`, highest total spend first (max 200). Answering the top of this list moves the most dollars.\n\n**Auth**\nInherits Bearer `{{access_token}}`. Expect `401` without a valid token.\n\n**200 success**\n```json\n{\n  \"count\": 2,\n  \"categories\": [\"dining\", \"entertainment\", \"gas\", \"groceries\", \"other\", \"shopping\", \"travel\"],\n  \"merchants\": [\n    {\n      \"merchant_key\": \"TRADER JOES\",\n      \"display_name\": \"Trader Joes\",\n      \"sample_description\": \"TRADER JOE'S #123 SAN FRANCISCO CA\",\n      \"transaction_count\": 4,\n      \"total_amount\": \"187.42\"\n    }\n  ]\n}\n```\n\n- `count` — number of merchant groups returned (not raw transaction rows)\n- `categories` — full whitelist of valid rewards categories (use these in POST Answer)\n- `merchants[].merchant_key` — opaque uppercase key; pass this to POST Answer\n- `merchants[].display_name` — clean title for UI\n- `merchants[].sample_description` — one raw bank string as evidence\n- `merchants[].total_amount` — always a two-decimal string (e.g. `\"25.00\"`)\n\n**Empty queue** (everything categorized):\n```json\n{ \"count\": 0, \"categories\": [...], \"merchants\": [] }\n```\n\n**Tests script**\nOn 200 with at least one merchant, saves `merchants[0].merchant_key` into the `{{merchant_key}}` collection variable so Request 6 can use it immediately.\n\n**Prerequisite**\nUpload a statement first (Request 4). If the pipeline already categorized every row, the queue is empty."
+      }
+    },
+    {
+      "name": "6. Review Answer (protected)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"merchant_key\": \"{{merchant_key}}\",\n  \"category\": \"{{category}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/review/answer/",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "review", "answer", ""]
+        },
+        "description": "Protected. `POST /api/review/answer/`\n\nSaves your category override for a merchant and backfills **all** of your transactions with that `merchant_key` (including ones the bank already categorized — you are the authority).\n\n**Body**\n```json\n{\n  \"merchant_key\": \"TRADER JOES\",\n  \"category\": \"groceries\"\n}\n```\n\nUses collection vars `{{merchant_key}}` (auto-filled by Request 5) and `{{category}}` (default `groceries`). Valid categories: `dining` | `groceries` | `travel` | `gas` | `entertainment` | `shopping` | `other`.\n\n**200 success**\n```json\n{\n  \"merchant_key\": \"TRADER JOES\",\n  \"category\": \"groceries\",\n  \"transactions_updated\": 4\n}\n```\n`transactions_updated` is only rows whose category actually changed (0 if already set). Re-posting the same answer is safe (upsert).\n\n**Errors**\n| Status | When | Body |\n|--------|------|------|\n| `400` | Missing / blank `merchant_key` | `{ \"detail\": \"merchant_key is required.\" }` |\n| `400` | Unknown `category` | `{ \"detail\": \"category is not a known rewards category.\", \"categories\": [...] }` |\n| `404` | `merchant_key` not in your transactions | `{ \"detail\": \"No transaction of yours matches that merchant_key.\" }` |\n| `401` | No / invalid token | auth error |\n\n**After success**\nRe-run Request 5 — that merchant should leave the queue (its transactions are no longer `category=\"\"`)."
+      }
+    },
+    {
+      "name": "7. Refresh Token",
       "event": [
         {
           "listen": "test",
@@ -146,3 +204,4 @@
     }
   ]
 }
+

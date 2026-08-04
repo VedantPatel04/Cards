@@ -13,7 +13,7 @@ from decimal import Decimal
 from django.contrib.auth import get_user_model
 
 from apps.cards.models import Card_Products, Reward_Rules
-from apps.transactions.models import MCC_Codes, Transactions
+from apps.transactions.models import MerchantResolution, Transactions
 from apps.uploads.models import Uploads
 from apps.users.models import User_cards
 
@@ -88,25 +88,21 @@ def make_upload(user=None, **overrides):
     return Uploads.objects.create(**defaults)
 
 
-def make_mcc(**overrides):
-    n = _next()
-    defaults = {
-        "code": str(5000 + n),
-        "category": "dining",
-        "merchant_name": "",
-    }
-    defaults.update(overrides)
-    return MCC_Codes.objects.create(**defaults)
-
-
-def make_transaction(upload=None, user_card=None, mcc_code=None, **overrides):
-    upload = upload or make_upload()
-    user_card = user_card or make_user_card()
-    mcc_code = mcc_code or make_mcc()
+def make_transaction(upload=None, user_card=None, **overrides):
+    """
+    The upload and the card default to the same owner. Review queries filter on
+    user_card__user, so a transaction whose card belongs to a different user
+    than its upload would be a fixture that cannot happen in production.
+    """
+    if user_card is None:
+        user_card = make_user_card(user=upload.user if upload else None)
+    upload = upload or make_upload(user=user_card.user)
     defaults = {
         "upload": upload,
         "user_card": user_card,
-        "mcc_code": mcc_code,
+        "category": "dining",
+        "merchant_key": "COFFEE",
+        "normalized_description": "Coffee",
         "amount": Decimal("12.34"),
         "transaction_date": date(2026, 1, 1),
         "description": "coffee",
@@ -114,3 +110,15 @@ def make_transaction(upload=None, user_card=None, mcc_code=None, **overrides):
     }
     defaults.update(overrides)
     return Transactions.objects.create(**defaults)
+
+
+def make_merchant_resolution(user=None, **overrides):
+    user = user or make_user()
+    defaults = {
+        "user": user,
+        "merchant_key": f"MERCHANT{_next()}",
+        "category": "groceries",
+        "source": "user",
+    }
+    defaults.update(overrides)
+    return MerchantResolution.objects.create(**defaults)
