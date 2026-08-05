@@ -19,6 +19,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from apps.transactions.models import (
+    SOURCE_USER,
     UNRESOLVED_CATEGORY,
     MerchantResolution,
     Transactions,
@@ -181,21 +182,29 @@ def review_answer(request):
             merchant_key=merchant_key,
             defaults={"category": category, "source": "user"},
         )
-        updated = owned.exclude(category=category).update(category=category)
+        # Count category flips separately from metadata stamping: a re-post of the
+        # same category should still mark source=user / confidence=1.0 on every
+        # owned row (bank/global labels are defaults, not final authority).
+        category_changed = owned.exclude(category=category).count()
+        owned.update(
+            category=category,
+            resolution_source=SOURCE_USER,
+            confidence=1.0,
+        )
 
     # After the commit, so a rolled-back write can never leave Redis serving a category the database does not have.
     cache_set(request.user.pk, merchant_key, category)
 
     logger.info(
-        "user %s labeled %s as %s (%s rows updated)",
-        request.user.pk, merchant_key, category, updated,
+        "user %s labeled %s as %s (%s category flips, all owned rows stamped user)",
+        request.user.pk, merchant_key, category, category_changed,
     )
 
     return Response(
         {
             "merchant_key": merchant_key,
             "category": category,
-            "transactions_updated": updated,
+            "transactions_updated": category_changed,
         },
         status=status.HTTP_200_OK,
     )

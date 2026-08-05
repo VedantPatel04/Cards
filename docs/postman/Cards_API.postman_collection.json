@@ -19,6 +19,7 @@
     { "key": "access_token", "value": "", "type": "string" },
     { "key": "refresh_token", "value": "", "type": "string" },
     { "key": "user_card_id", "value": "", "type": "string" },
+    { "key": "upload_id", "value": "", "type": "string" },
     { "key": "card_product_id", "value": "", "type": "string" },
     { "key": "merchant_key", "value": "", "type": "string" },
     { "key": "category", "value": "groceries", "type": "string" }
@@ -215,6 +216,20 @@
     },
     {
       "name": "7. Upload Transactions (protected)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if (pm.response.code === 201 || pm.response.code === 200) {",
+              "  const res = pm.response.json();",
+              "  if (res.upload_id) pm.collectionVariables.set('upload_id', String(res.upload_id));",
+              "}"
+            ]
+          }
+        }
+      ],
       "request": {
         "method": "POST",
         "header": [],
@@ -240,7 +255,53 @@
           "host": ["{{baseUrl}}"],
           "path": ["api", "upload", ""]
         },
-        "description": "Protected. form-data: file + user_card_id."
+        "description": "Protected. form-data: file + user_card_id. Same bytes + same card refreshes (200). Same bytes + different card → 409 — use reassign."
+      }
+    },
+    {
+      "name": "7b. List Uploads (protected)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "  const res = pm.response.json();",
+              "  if (res.uploads && res.uploads.length > 0) {",
+              "    pm.collectionVariables.set('upload_id', String(res.uploads[0].upload_id));",
+              "  }",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/uploads/",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "uploads", ""]
+        },
+        "description": "Protected. Lists your statement imports (upload_id, card, row count)."
+      }
+    },
+    {
+      "name": "7c. Reassign Upload Card (protected)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"user_card_id\": {{user_card_id}}\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/uploads/{{upload_id}}/reassign/",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "uploads", "{{upload_id}}", "reassign", ""]
+        },
+        "description": "Protected. Moves every transaction on this upload to another wallet card (wrong-card fix). Upload-level only."
       }
     },
     {

@@ -89,7 +89,13 @@ Sample files (under `backend/data/sample_uploads/`):
 3. List transactions → each row has `card_name` / `issuer` joined from the wallet product; `category` and `resolution_source` populated.
 4. Open review queue → only merchants with `category == ""` appear. Empty queue is valid when coverage is 100%.
 
-Re-upload **the same file bytes** → same `Uploads` row (hash idempotency); transactions refresh by `(upload, row_index)` rather than duplicating.
+Re-upload **the same file bytes** with the **same** `user_card_id` → same `Uploads` row; transactions refresh by `(upload, row_index)`.
+
+Same bytes with a **different** `user_card_id` → **409 Conflict** (no silent card move). To fix a wrong-card import:
+
+1. `GET /api/uploads/` → note `upload_id`
+2. `POST /api/uploads/<upload_id>/reassign/` with `{ "user_card_id": <other wallet id> }`
+3. Every transaction on that statement moves to the new card (upload-level only; no audit trail yet)
 
 ### 3b. What to expect for `Chase_MAY_Transactions.csv`
 

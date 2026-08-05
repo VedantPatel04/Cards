@@ -1,19 +1,28 @@
 # **CONTEXT OF THE PROBLEM**
 
----
+API pricing - A huge blocker that eventually led to the complete restructuring of our category resolution architecture.
 
-Chase transactions don't include the MCC code - only a general purpose category of spending and merchant name. A general purpose category of spending can have numerous merchant codes it can map to, so how do we figure out which is which? (Public Transit may have MCC 4131, 4112, 4111 etc.)
+API's aren't cheap and running even just a tens or hundreds of calls over thousands of transactions becomes expensive if you're limited to the free tiers like I am (assuming the free tier hands out that much usage to begin with). 
 
 ### What's the real issue here?
 
 ```
-We need a way to map merchant names to the correct MCC code.
+I need a way to resolve merchant categories without making calls to any API, whether that be for an LLM or VISA developers or PLAID  ,,, you get the point.
 ```
+
+
 
 ### Solution
 
 ```
-Query LLM to determine exact MCC match.
+A new architecture that relies on a couple of things:
+
+- A global preseeded dataset from data gathered through official merchant category code lists and other mappings published by networks and issuers like VISA, MasterfCard, Chase, etc.
+
+- Category supplied by bank transaction statements
+
+- User supplied data for any unresolved categories
+
 ```
 
 ## **OVERVIEW OF CHANGES MADE**
