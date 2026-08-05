@@ -5,7 +5,7 @@ from apps.users.views import is_Authenticated, register
 from apps.users.wallet_views import wallet_delete, wallet_list_or_add
 from apps.cards.views import catalog_list
 from apps.uploads.views import upload_list, upload_reassign, upload_transactions
-from apps.transactions.views import review_answer, review_queue, transaction_list
+from apps.transactions.views import review_answer, review_queue, summary_view, transaction_list
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,4 +32,7 @@ urlpatterns = [
     path('api/transactions/', transaction_list, name='transaction_list'),
     path('api/review/', review_queue, name='review_queue'),
     path('api/review/answer/', review_answer, name='review_answer'),
+
+    # Spend summary
+    path('api/summary/', summary_view, name='spend_summary'),
 ]

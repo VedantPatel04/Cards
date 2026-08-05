@@ -198,10 +198,7 @@
 
 ### Architecture
 
-- **Day 4 upload pipeline:** write the ingestion service to accept a normalized transaction list, not a file handle. Shape: `raw source → normalize → idempotent ingestion service → DB`. Adding Plaid later = writing one adapter; nothing else changes. `Upload` may need a `source` field (`csv` vs `plaid`).
-- **Plaid (bank connection):** Plaid Transactions product — users auth via Plaid Link, you get normalized transaction data. Plaid uses its own category taxonomy (not MCC), so a mapping layer is needed. Free dev tier; production requires a contract. Alternatives: Finicity, MX.
 - **Card catalog ingestion:** seam already exists — preserve it. Keep `ingest_cards` accepting structured input, not coupled to one file path. Web scraping is unreliable; a manually-curated JSON/YAML with a light refresh process is better for v2. Data source options: CardRatings/Rewards Network affiliate data, or Plaid Liabilities API.
-- **MCC → Category mapping:** keep as a seed/config table, not hardcoded logic — taxonomy will evolve and updates shouldn't require migrations.
 - **Recommendations caching:** output is deterministic given spend totals + card catalog. Invalidate on new upload or catalog update, cache otherwise.
 
 

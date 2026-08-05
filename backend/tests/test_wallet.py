@@ -207,6 +207,8 @@ class TransactionListTests(APITestCase):
         self.assertEqual(item["user_card_id"], self.user_card.pk)
         self.assertEqual(item["card_name"], self.user_card.card.name)
         self.assertEqual(item["issuer"], self.user_card.card.issuer)
+        self.assertEqual(item["upload_id"], self.upload.pk)
+        self.assertEqual(item["filename"], self.upload.filename)
         self.assertEqual(item["merchant_key"], "MCDONALDS")
         self.assertEqual(item["category"], "dining")
 

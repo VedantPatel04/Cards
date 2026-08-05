@@ -91,11 +91,12 @@ Sample files (under `backend/data/sample_uploads/`):
 
 Re-upload **the same file bytes** with the **same** `user_card_id` → same `Uploads` row; transactions refresh by `(upload, row_index)`.
 
-Same bytes with a **different** `user_card_id` → **409 Conflict** (no silent card move). To fix a wrong-card import:
+Same bytes with a **different** `user_card_id` → **409 Conflict** (no silent card move). To fix a wrong-card import **without re-uploading**:
 
-1. `GET /api/uploads/` → note `upload_id`
-2. `POST /api/uploads/<upload_id>/reassign/` with `{ "user_card_id": <other wallet id> }`
-3. Every transaction on that statement moves to the new card (upload-level only; no audit trail yet)
+1. `GET /api/uploads/` → pick the row by `filename` (e.g. `Chase_MAY_Transactions.csv`) and note its `upload_id`
+2. Optionally confirm on `GET /api/transactions/` — each row now includes `upload_id` + `filename`
+3. `POST /api/uploads/<upload_id>/reassign/` with `{ "user_card_id": <destination wallet id> }`
+4. Every transaction on that statement moves to the new card (upload-level only; no audit trail yet)
 
 ### 3b. What to expect for `Chase_MAY_Transactions.csv`
 
@@ -137,10 +138,45 @@ Do **not** put raw Chase description strings in `merchant_key` — keys must mat
 
 ```bash
 cd backend
-python manage.py test tests.test_wallet tests.test_review tests.services.test_category_resolver tests.services.test_upload_pipeline tests.services.test_merchant_normalize tests.services.test_csv_parser
+python manage.py test tests.test_wallet tests.test_review tests.test_summary tests.services.test_category_resolver tests.services.test_upload_pipeline tests.services.test_merchant_normalize tests.services.test_csv_parser
 ```
 
-Uses `config.settings.test` via the test runner. These suites cover wallet catalog/custom behavior, review isolation, resolver tiers (including dead Redis), upload pipeline, and Chase CSV parsing.
+Uses `config.settings.test` via the test runner. These suites cover wallet catalog/custom behavior, review isolation, spend summary (service + HTTP layer), resolver tiers (including dead Redis), upload pipeline, and Chase CSV parsing.
+
+---
+
+## 6. Spend summary
+
+Prerequisite: authenticated user with at least one upload (workflow 3).
+
+```
+GET /api/summary/
+```
+
+Returns all-time spend totals by rewards category across all wallet cards.
+
+**Key fields:**
+
+| Field | Notes |
+|-------|-------|
+| `by_category` | All 7 buckets always present; net spend (refunds reduce totals) |
+| `annualized` | Projected annual spend per category (`by_category × 365 / days_span`) |
+| `total_spend` | Sum of all `by_category` values (categorised only) |
+| `categorized_pct` | Count-based coverage; improves as you clear the review queue |
+| `unresolved_count` / `unresolved_amount` | Rows still needing review |
+| `period` | `earliest`, `latest` transaction date and `days_span` |
+
+**Normal flow:**
+
+1. Upload a statement (workflow 3).
+2. Clear the review queue to maximise `categorized_pct` (workflow 3c).
+3. `GET /api/summary/` → confirm `by_category` totals are plausible for the uploaded data.
+
+**What to watch for:**
+
+- `other` can be negative when card payment rows outweigh real "other" spend — this is expected, not an error.
+- `categorized_pct < 100` means unresolved rows are excluded from `by_category`; answer review items to close the gap.
+- Day 6 recommendations will call this service internally; keeping coverage high produces more accurate recommendations.
 
 ---
 
@@ -154,4 +190,5 @@ Uses `config.settings.test` via the test runner. These suites cover wallet catal
 | Smoke a statement | Upload a file under `data/sample_uploads/` with a real `user_card_id` |
 | Prove user override | Answer review → re-upload same merchant → stays categorized |
 | Update merchant globals | Edit aliases JSON → `seed_global_merchants` |
+| Spend summary | `GET /api/summary/` after uploading a statement |
 | API shapes | Postman collection only |
