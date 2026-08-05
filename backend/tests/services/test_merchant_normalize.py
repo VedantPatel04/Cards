@@ -153,11 +153,24 @@ class MerchantKeyAlgorithmStepTests(SimpleTestCase):
             ("WAL-MART", "WAL MART"),
             ("PERUSALL E-BOOK", "PERUSALL E BOOK"),
             ("CVS/PHARMACY", "CVS PHARMACY"),
-            ("APPLE.COM/BILL", "APPLE COM BILL"),
-            ("WWW.AMAZON.COM", "WWW AMAZON COM"),
+            ("APPLE.COM/BILL", "APPLE BILL"),
+            ("WWW.AMAZON.COM", "AMAZON"),
+            ("AMTRAK .COM 1160649536639", "AMTRAK"),
             ("H&M STORE", "H M STORE"),
             ("AT&T", "AT T"),
             ("AT&T*BILL PAYMENT", "AT T"),  # AT&T is not a processor
+        ]
+        for raw, expected in cases:
+            with self.subTest(raw=raw):
+                self.assertEqual(merchant_key(raw), expected)
+
+    def test_web_tld_and_www_stripped(self):
+        cases = [
+            ("AMTRAK .COM 1100634708546", "AMTRAK"),
+            ("APPLE.COM/BILL", "APPLE BILL"),
+            ("WWW.AMAZON.COM", "AMAZON"),
+            ("SPOTIFY.NET", "SPOTIFY"),
+            ("HELP.LYFT.COM", "HELP LYFT"),  # no star — full string kept minus TLDs
         ]
         for raw, expected in cases:
             with self.subTest(raw=raw):
@@ -203,8 +216,9 @@ class MerchantKeyChaseStatementTests(SimpleTestCase):
         ("TST* JOE'S PIZZA",             "JOES PIZZA"),
         # Non-processor: keep the merchant on the left
         ("GOOGLE *YouTubePremium",       "GOOGLE"),
-        ("APPLE.COM/BILL",               "APPLE COM BILL"),
-        ("WWW.AMAZON.COM",               "WWW AMAZON COM"),
+        ("APPLE.COM/BILL",               "APPLE BILL"),
+        ("WWW.AMAZON.COM",               "AMAZON"),
+        ("AMTRAK .COM 1160649536639",    "AMTRAK"),
         ("POS DEBIT CHIPOTLE",           "POS DEBIT CHIPOTLE"),
         ("CHIPOTLE 1842",                "CHIPOTLE"),
         ("SHELL OIL 5541",               "SHELL OIL"),
