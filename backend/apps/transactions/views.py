@@ -19,12 +19,14 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from apps.transactions.models import (
+    SOURCE_USER,
     UNRESOLVED_CATEGORY,
     MerchantResolution,
     Transactions,
 )
 from services.category_resolver import is_valid_category, reward_categories
 from services.merchant_cache import cache_set
+from services.spending_aggregator import get_spend_summary
 
 logger = logging.getLogger(__name__)
 
@@ -61,13 +63,15 @@ def transaction_list(request):
     """
     rows = (
         _user_transactions(request.user)
-        .select_related("user_card__card")
+        .select_related("user_card__card", "upload")
         .order_by("-transaction_date", "-id")[:MAX_TRANSACTION_ITEMS]
     )
 
     items = [
         {
             "id": row.pk,
+            "upload_id": row.upload_id,
+            "filename": row.upload.filename,
             "user_card_id": row.user_card_id,
             "card_name": row.user_card.card.name,
             "issuer": row.user_card.card.issuer,
@@ -181,21 +185,76 @@ def review_answer(request):
             merchant_key=merchant_key,
             defaults={"category": category, "source": "user"},
         )
-        updated = owned.exclude(category=category).update(category=category)
+        # Count category flips separately from metadata stamping: a re-post of the
+        # same category should still mark source=user / confidence=1.0 on every
+        # owned row (bank/global labels are defaults, not final authority).
+        category_changed = owned.exclude(category=category).count()
+        owned.update(
+            category=category,
+            resolution_source=SOURCE_USER,
+            confidence=1.0,
+        )
 
     # After the commit, so a rolled-back write can never leave Redis serving a category the database does not have.
     cache_set(request.user.pk, merchant_key, category)
 
     logger.info(
-        "user %s labeled %s as %s (%s rows updated)",
-        request.user.pk, merchant_key, category, updated,
+        "user %s labeled %s as %s (%s category flips, all owned rows stamped user)",
+        request.user.pk, merchant_key, category, category_changed,
     )
 
     return Response(
         {
             "merchant_key": merchant_key,
             "category": category,
-            "transactions_updated": updated,
+            "transactions_updated": category_changed,
+        },
+        status=status.HTTP_200_OK,
+    )
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def summary_view(request):
+    """
+    GET /api/summary/
+
+    All-time spend totals across all wallet cards, by rewards category.
+
+    Returns net spend (refunds reduce category totals). Unresolved rows
+    (category="") are excluded from by_category and reported separately in
+    unresolved_count / unresolved_amount.
+
+    All 7 category buckets are always present even if zero. Negative totals
+    (e.g. other when card payments outweigh real spend) are not clamped —
+    the Day 6 Confidence Check (Stage 5) handles distortion detection.
+
+    The Day 6 recommendation engine calls get_spend_summary() directly as a
+    service; this view serialises the same output for the HTTP API.
+    """
+    summary = get_spend_summary(request.user)
+    period = summary["period"]
+
+    return Response(
+        {
+            "period": {
+                "earliest": period["earliest"].isoformat() if period["earliest"] else None,
+                "latest": period["latest"].isoformat() if period["latest"] else None,
+                "days_span": period["days_span"],
+            },
+            "by_category": {
+                cat: _money(total)
+                for cat, total in summary["by_category"].items()
+            },
+            "annualized": {
+                cat: _money(total)
+                for cat, total in summary["annualized"].items()
+            },
+            "total_spend": _money(summary["total_spend"]),
+            "transaction_count": summary["transaction_count"],
+            "unresolved_count": summary["unresolved_count"],
+            "unresolved_amount": _money(summary["unresolved_amount"]),
+            "categorized_pct": str(summary["categorized_pct"]),
         },
         status=status.HTTP_200_OK,
     )

@@ -19,6 +19,8 @@
     { "key": "access_token", "value": "", "type": "string" },
     { "key": "refresh_token", "value": "", "type": "string" },
     { "key": "user_card_id", "value": "", "type": "string" },
+    { "key": "upload_id", "value": "", "type": "string" },
+    { "key": "upload_filename", "value": "Chase_MAY_Transactions.csv", "type": "string" },
     { "key": "card_product_id", "value": "", "type": "string" },
     { "key": "merchant_key", "value": "", "type": "string" },
     { "key": "category", "value": "groceries", "type": "string" }
@@ -215,6 +217,20 @@
     },
     {
       "name": "7. Upload Transactions (protected)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if (pm.response.code === 201 || pm.response.code === 200) {",
+              "  const res = pm.response.json();",
+              "  if (res.upload_id) pm.collectionVariables.set('upload_id', String(res.upload_id));",
+              "}"
+            ]
+          }
+        }
+      ],
       "request": {
         "method": "POST",
         "header": [],
@@ -240,7 +256,64 @@
           "host": ["{{baseUrl}}"],
           "path": ["api", "upload", ""]
         },
-        "description": "Protected. form-data: file + user_card_id."
+        "description": "Protected. form-data: file + user_card_id. Same bytes + same card refreshes (200). Same bytes + different card → 409 — use reassign."
+      }
+    },
+    {
+      "name": "7b. List Uploads (protected)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if (pm.response.code !== 200) { return; }",
+              "const res = pm.response.json();",
+              "const uploads = res.uploads || [];",
+              "uploads.forEach(u => console.log(`upload_id=${u.upload_id}  file=${u.filename}  card=${u.card_name}`));",
+              "const want = (pm.collectionVariables.get('upload_filename') || '').trim();",
+              "let chosen = null;",
+              "if (want) {",
+              "  chosen = uploads.find(u => u.filename === want)",
+              "    || uploads.find(u => (u.filename || '').includes(want));",
+              "}",
+              "if (!chosen && uploads.length === 1) { chosen = uploads[0]; }",
+              "if (chosen) {",
+              "  pm.collectionVariables.set('upload_id', String(chosen.upload_id));",
+              "  console.log('Selected upload_id', chosen.upload_id, 'for', chosen.filename);",
+              "} else {",
+              "  console.log('No auto-select. Set collection var upload_filename to a listed file, or paste upload_id into 7c.');",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/uploads/",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "uploads", ""]
+        },
+        "description": "Protected. **This is how you pick which statement to reassign** — no re-upload needed.\n\nResponse lists every import: `upload_id`, `filename`, `user_card_id`, `card_name`, `transaction_count`.\n\nTests script:\n- Logs all uploads to the console\n- If collection var `upload_filename` matches a listed file, saves that `upload_id` for 7c\n- If only one upload exists, selects it\n- Otherwise leave `upload_id` blank and paste the id you want into 7c"
+      }
+    },
+    {
+      "name": "7c. Reassign Upload Card (protected)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"user_card_id\": {{user_card_id}}\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/uploads/{{upload_id}}/reassign/",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "uploads", "{{upload_id}}", "reassign", ""]
+        },
+        "description": "Protected. Moves every transaction on **this upload_id** to another wallet card.\n\n1. Run 7b List Uploads (set `upload_filename` to e.g. Chase_MAY_Transactions.csv)\n2. Set `user_card_id` to the **destination** wallet card\n3. Send — do **not** re-upload the CSV first"
       }
     },
     {
@@ -253,7 +326,7 @@
           "host": ["{{baseUrl}}"],
           "path": ["api", "transactions", ""]
         },
-        "description": "Protected. Your transactions with card_name + issuer joined (user_card_id FK kept)."
+        "description": "Protected. Includes `upload_id` + `filename` so you can see which statement a row belongs to before reassigning."
       }
     },
     {
@@ -306,7 +379,20 @@
       }
     },
     {
-      "name": "11. Refresh Token",
+      "name": "11. Spend Summary (protected)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/summary/",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "summary", ""]
+        },
+        "description": "Protected. All-time spend totals by rewards category across all wallet cards.\n\nResponse fields:\n- by_category: all 7 buckets (dining, groceries, travel, gas, entertainment, shopping, other) as net spend strings\n- annualized: projected annual spend per category (by_category × 365 / days_span)\n- total_spend: sum of all by_category values\n- transaction_count: total rows across all uploads\n- unresolved_count / unresolved_amount: rows still needing review\n- categorized_pct: count-based coverage, 1 decimal place\n- period: earliest/latest transaction date + days_span\n\nAll money values are 2-decimal strings. Run Upload (step 7) first for non-zero totals. Run Review Answer (step 10) to improve categorized_pct."
+      }
+    },
+    {
+      "name": "12. Refresh Token",
       "event": [
         {
           "listen": "test",

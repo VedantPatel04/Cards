@@ -38,6 +38,11 @@ PROCESSOR_PREFIXES = frozenset([
     "ETSY",    # Etsy Payments
 ])
 
+# Web junk that survives if '.' is turned into a space ("AMTRAK .COM" → "AMTRAK COM").
+# Longer TLDs first so ".COM" is not partially eaten by a shorter alternative.
+_WEB_TLD_RE = re.compile(r"\s*\.(?:COM|NET|ORG|IO|US)\b")
+_WWW_PREFIX_RE = re.compile(r"^WWW\.")
+
 
 def _handle_star(text: str) -> str:
     """
@@ -61,10 +66,23 @@ def _handle_star(text: str) -> str:
     return left
 
 
+def _strip_web_junk(text: str) -> str:
+    """
+    Drop WWW. prefixes and common TLDs before '.' becomes a space.
+
+    Examples (input already uppercase):
+      "AMTRAK .COM 1160"   -> "AMTRAK  1160"
+      "APPLE.COM/BILL"     -> "APPLE/BILL"
+      "WWW.AMAZON.COM"     -> "AMAZON"
+    """
+    text = _WWW_PREFIX_RE.sub("", text)
+    return _WEB_TLD_RE.sub("", text)
+
+
 def _strip_noise(text: str) -> str:
     """
     Remove store codes, digits, non-alpha characters, and extra whitespace.
-    Input is already uppercase after */#  handling.
+    Input is already uppercase after */# / web-junk handling
     """
     # Letter+digit store codes like "F31398", "A1", "B2"
     text = re.sub(r"\b[A-Z]\d+\b", " ", text)
@@ -86,11 +104,12 @@ def merchant_key(description: str | None) -> str:
       2. Resolve '*' (processor prefix → keep right; merchant → keep left;
          single trailing letter → join)
       3. Resolve '#' (store/location code — keep left)
-      4. Remove letter+digit store codes  ("F31398", "A1")
-      5. Remove remaining digits
-      6. Remove apostrophes (joined, not spaced)
-      7. Replace every non A-Z character with a space
-      8. Collapse whitespace, strip, truncate to MAX_KEY_CHARS
+      4. Strip WWW. prefixes and common TLDs (.COM / .NET / .ORG / .IO / .US)
+      5. Remove letter+digit store codes  ("F31398", "A1")
+      6. Remove remaining digits
+      7. Remove apostrophes (joined, not spaced)
+      8. Replace every non A-Z character with a space
+      9. Collapse whitespace, strip, truncate to MAX_KEY_CHARS
 
     The output is all-uppercase and ASCII-alpha+space.
 
@@ -100,6 +119,9 @@ def merchant_key(description: str | None) -> str:
       "MTA*NYCT PAYGO"                -> "MTA"
       "LYFT   *AIRPORT 07-06"         -> "LYFT"
       "SQ *BLUE BOTTLE COFFEE 0042"   -> "BLUE BOTTLE COFFEE"
+      "AMTRAK .COM 1160649536639"     -> "AMTRAK"
+      "APPLE.COM/BILL"                -> "APPLE BILL"
+      "WWW.AMAZON.COM"                -> "AMAZON"
     """
     if not isinstance(description, str):
         return ""
@@ -110,6 +132,7 @@ def merchant_key(description: str | None) -> str:
     if "#" in text:
         text = text.split("#", 1)[0]
 
+    text = _strip_web_junk(text)
     return _strip_noise(text)[:MAX_KEY_CHARS]
 
 
@@ -128,5 +151,5 @@ def normalized_display(description: str | None) -> str:
       "PAYPAL *NETFLIX"                               -> "Netflix"
       "TST* JOE'S PIZZA"                              -> "Joes Pizza"
     """
-    
+
     return merchant_key(description).title()

@@ -129,6 +129,30 @@ class ReviewAnswerTests(ReviewTestCase):
         self.assertFalse(
             Transactions.objects.filter(merchant_key="MYSTERY VENDOR", category="").exists()
         )
+        for tx in Transactions.objects.filter(merchant_key="MYSTERY VENDOR"):
+            self.assertEqual(tx.resolution_source, "user")
+            self.assertEqual(tx.confidence, 1.0)
+
+    def test_answer_stamps_user_source_even_when_category_unchanged(self):
+        """Confirming Chase's shopping as shopping still records user authority."""
+        self.add_transaction(
+            "AMAZON",
+            category="shopping",
+            resolution_source="bank",
+            confidence=0.7,
+            row_index=0,
+        )
+        resp = self.client.post(
+            self.answer_url,
+            {"merchant_key": "AMAZON", "category": "shopping"},
+            format="json",
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        self.assertEqual(resp.data["transactions_updated"], 0)
+        tx = Transactions.objects.get(merchant_key="AMAZON")
+        self.assertEqual(tx.category, "shopping")
+        self.assertEqual(tx.resolution_source, "user")
+        self.assertEqual(tx.confidence, 1.0)
 
     def test_answer_warms_the_users_cache_namespace(self):
         self.add_transaction("MYSTERY VENDOR")

@@ -3760,10 +3760,11 @@
     "category": "entertainment"
   },
   {
-    "merchant_key": "APPLE COM BILL",
+    "merchant_key": "APPLE BILL",
     "canonical_name": "Apple Subscription",
     "category": "entertainment"
   },
+  
   {
     "merchant_key": "BOWLING ALLEY",
     "canonical_name": "Bowling alley",
