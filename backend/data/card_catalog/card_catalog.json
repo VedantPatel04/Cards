@@ -7,7 +7,8 @@
     "annual_fee": "95.00",
     "base_reward_rate": "1.00",
     "signup_bonus": "750.00",
-    "signup_bonus_required_spending": "4000.00",
+    "signup_bonus_required_spending": "500.00",
+    "signup_bonus_spend_period_months": 3,
     "reward_rules": [
       { "category": "dining",        "reward_unit": "points", "reward_rate": "3.00" },
       { "category": "groceries",     "reward_unit": "points", "reward_rate": "3.00" },
@@ -24,6 +25,7 @@
     "base_reward_rate": "1.50",
     "signup_bonus": "200.00",
     "signup_bonus_required_spending": "500.00",
+    "signup_bonus_spend_period_months": 3,
     "reward_rules": [
       { "category": "dining",   "reward_unit": "cash_back", "reward_rate": "3.00" },
       { "category": "shopping", "reward_unit": "cash_back", "reward_rate": "3.00" },
@@ -38,7 +40,8 @@
     "annual_fee": "95.00",
     "base_reward_rate": "1.00",
     "signup_bonus": "250.00",
-    "signup_bonus_required_spending": "3000.00",
+    "signup_bonus_required_spending": "500.00",
+    "signup_bonus_spend_period_months": 6,
     "reward_rules": [
       { "category": "groceries",     "reward_unit": "cash_back", "reward_rate": "6.00" },
       { "category": "entertainment", "reward_unit": "cash_back", "reward_rate": "6.00" },
@@ -55,6 +58,7 @@
     "base_reward_rate": "2.00",
     "signup_bonus": "200.00",
     "signup_bonus_required_spending": "500.00",
+    "signup_bonus_spend_period_months": 3,
     "reward_rules": []
   }
 ]

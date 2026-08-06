@@ -13,6 +13,7 @@ REQUIRED_CARD_KEYS = {
     "name", "issuer", "network", "card_type",
     "annual_fee", "base_reward_rate", "signup_bonus",
     "signup_bonus_required_spending", "reward_rules",
+    "signup_bonus_spend_period_months",
 }
 REQUIRED_RULE_KEYS = {"category", "reward_unit", "reward_rate"}
 DECIMAL_CARD_FIELDS = (
@@ -62,6 +63,11 @@ def _validate_catalog(card_data): # runs before any DB write — fail loudly wit
                     f"Card '{label}', rule '{rule.get('category', j)}': "
                     f"'reward_rate' is not a valid decimal: {rule['reward_rate']!r}"
                 )
+        
+        months = entry["signup_bonus_spend_period_months"]
+        if not isinstance(months, int) or isinstance(months, bool) or months < 1:
+            raise ValueError(f"Card '{label}': 'signup_bonus_spend_period_months' is not a valid integer: {months!r}")
+
 
 
 @transaction.atomic
@@ -90,6 +96,7 @@ def ingest_card_catalog():
                 "signup_bonus_required_spending": card_product["signup_bonus_required_spending"],
                 "is_active": True,  # re-activates card previously inactive
                 "is_catalog": True,
+                "signup_bonus_spend_period_months": card_product["signup_bonus_spend_period_months"],
             }
         )
         if created:
