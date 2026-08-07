@@ -47,8 +47,12 @@ logger = logging.getLogger(__name__)
 REWARD_CATEGORIES_PATH = os.path.join(
     settings.BASE_DIR, "data", "card_catalog", "reward_categories.json"
 )
+REWARD_RULE_ALIASES_PATH = os.path.join(
+    settings.BASE_DIR, "data", "card_catalog", "reward_rule_aliases.json"
+)
 
 _reward_categories: frozenset[str] | None = None
+_reward_rule_aliases: dict[str, str | None] | None = None
 _global_aliases: dict[str, tuple[str, str]] | None = None  # key -> (category, canonical_name)
 
 def reward_categories() -> frozenset[str]:
@@ -66,6 +70,42 @@ def reward_categories() -> frozenset[str]:
 
 def is_valid_category(category: str) -> bool:
     return category in reward_categories()
+
+
+def reward_rule_aliases() -> dict[str, str | None]:
+    """
+    Maps a card catalog's reward-rule label onto a scoring bucket.
+
+    Issuers name categories far more finely than transactions can be labelled
+    ("us_supermarkets", "prepaid_hotels_via_amex_travel"), so the catalog keeps
+    the issuer's wording and this table folds it into the seven buckets that
+    Transactions can actually produce.
+
+    A value of null means "deliberately not scored" — rotating or
+    activation-gated categories we cannot verify. Every label a catalog uses
+    must appear here, so a typo fails ingestion instead of silently becoming a
+    rule that can never match spend.
+    """
+    global _reward_rule_aliases
+    if _reward_rule_aliases is None:
+        with open(REWARD_RULE_ALIASES_PATH) as f:
+            loaded = json.load(f)
+        if not isinstance(loaded, dict):
+            raise ValueError("reward_rule_aliases.json must be a JSON object")
+        known = reward_categories()
+        for raw, bucket in loaded.items():
+            if bucket is not None and bucket not in known:
+                raise ValueError(
+                    f"reward_rule_aliases.json maps '{raw}' to '{bucket}', "
+                    f"which is not a rewards category"
+                )
+        _reward_rule_aliases = loaded
+    return _reward_rule_aliases
+
+
+def scoring_bucket(rule_category: str) -> str | None:
+    """The bucket a reward rule scores against, or None if it is not scored."""
+    return reward_rule_aliases().get(rule_category)
 
 
 def _get_global_aliases() -> dict[str, tuple[str, str]]:

@@ -7,7 +7,11 @@ Contracts:
 - Net Sum(amount) per category; refunds reduce totals; negatives are not clamped.
 - category="" excluded from by_category; reported as unresolved_count / unresolved_amount.
 - All reward categories always present (even 0.00).
-- annualized[c] = by_category[c] * 365 / days_span; days_span=0 only when no txs.
+- annualized[c] = by_category[c] * 12 / months_covered; 0.00 when no txs.
+- months_covered counts distinct calendar months holding a transaction.
+  days_span is reported for display but must not be used to extrapolate:
+  statements arrive with gaps, and a April statement plus a July one is two
+  months of evidence spread over 103 calendar days, not 103 days of spending.
 """
 
 from decimal import ROUND_HALF_UP, Decimal
@@ -20,7 +24,7 @@ from services.category_resolver import reward_categories
 _ZERO = Decimal("0.00")
 _CENTS = Decimal("0.01")
 _ONE_DECIMAL = Decimal("0.1")
-_365 = Decimal("365")
+_MONTHS_PER_YEAR = Decimal("12")
 
 
 def _user_transactions(user):
@@ -65,12 +69,17 @@ def get_spend_summary(user) -> dict:
     )
     earliest = period_agg["earliest"]
     latest = period_agg["latest"]
-    # Inclusive calendar days: same-day span is 1, not 0
+    # Inclusive calendar days: same-day span is 1, not 0. Descriptive only.
     days_span = ((latest - earliest).days + 1) if (earliest and latest) else 0
 
+    # How much evidence we actually hold. Counting distinct months rather than
+    # the calendar span stops an empty gap between two statements from being
+    # read as months of zero spending.
+    months_covered: int = qs.dates("transaction_date", "month").count()
+
     # Annualised estimates
-    if days_span > 0:
-        factor = _365 / Decimal(days_span)
+    if months_covered > 0:
+        factor = _MONTHS_PER_YEAR / Decimal(months_covered)
         annualized: dict[str, Decimal] = {
             c: (v * factor).quantize(_CENTS, rounding=ROUND_HALF_UP)
             for c, v in by_category.items()
@@ -96,6 +105,7 @@ def get_spend_summary(user) -> dict:
             "earliest": earliest,
             "latest": latest,
             "days_span": days_span,
+            "months_covered": months_covered,
         },
         "by_category": by_category,
         "annualized": annualized,

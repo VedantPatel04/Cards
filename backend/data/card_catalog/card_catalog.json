@@ -6,14 +6,47 @@
     "card_type": "credit",
     "annual_fee": "95.00",
     "base_reward_rate": "1.00",
-    "signup_bonus": "750.00",
-    "signup_bonus_required_spending": "500.00",
+    "signup_bonus": "75000.00",
+    "signup_bonus_required_spending": "5000.00",
     "signup_bonus_spend_period_months": 3,
+    "signup_bonus_unit": "points",
+    "notes": "Standard current offer is 75,000 points; a limited-time 100,000-point promo ran through July 30, 2026 and has since expired.",
     "reward_rules": [
-      { "category": "dining",        "reward_unit": "points", "reward_rate": "3.00" },
-      { "category": "groceries",     "reward_unit": "points", "reward_rate": "3.00" },
-      { "category": "entertainment", "reward_unit": "points", "reward_rate": "3.00" },
-      { "category": "travel",        "reward_unit": "points", "reward_rate": "2.00" }
+      {
+        "category": "travel_via_chase_travel",
+        "reward_unit": "points",
+        "reward_rate": "5.00"
+      },
+      {
+        "category": "dining",
+        "reward_unit": "points",
+        "reward_rate": "3.00"
+      },
+      {
+        "category": "online_groceries",
+        "reward_unit": "points",
+        "reward_rate": "3.00"
+      },
+      {
+        "category": "vacation_rentals",
+        "reward_unit": "points",
+        "reward_rate": "3.00"
+      },
+      {
+        "category": "gas_and_ev_charging",
+        "reward_unit": "points",
+        "reward_rate": "3.00"
+      },
+      {
+        "category": "select_streaming",
+        "reward_unit": "points",
+        "reward_rate": "3.00"
+      },
+      {
+        "category": "other_travel",
+        "reward_unit": "points",
+        "reward_rate": "2.00"
+      }
     ]
   },
   {
@@ -26,10 +59,23 @@
     "signup_bonus": "200.00",
     "signup_bonus_required_spending": "500.00",
     "signup_bonus_spend_period_months": 3,
+    "signup_bonus_unit": "cash_back",
     "reward_rules": [
-      { "category": "dining",   "reward_unit": "cash_back", "reward_rate": "3.00" },
-      { "category": "shopping", "reward_unit": "cash_back", "reward_rate": "3.00" },
-      { "category": "travel",   "reward_unit": "cash_back", "reward_rate": "5.00" }
+      {
+        "category": "travel_via_chase_travel",
+        "reward_unit": "cash_back",
+        "reward_rate": "5.00"
+      },
+      {
+        "category": "dining",
+        "reward_unit": "cash_back",
+        "reward_rate": "3.00"
+      },
+      {
+        "category": "drugstore",
+        "reward_unit": "cash_back",
+        "reward_rate": "3.00"
+      }
     ]
   },
   {
@@ -38,15 +84,34 @@
     "network": "Amex",
     "card_type": "credit",
     "annual_fee": "95.00",
+    "notes": "Annual fee is waived for the first year ($0 intro), then $95.",
     "base_reward_rate": "1.00",
-    "signup_bonus": "250.00",
-    "signup_bonus_required_spending": "500.00",
+    "signup_bonus": "300.00",
+    "signup_bonus_required_spending": "3000.00",
     "signup_bonus_spend_period_months": 6,
+    "signup_bonus_unit": "cash_back",
     "reward_rules": [
-      { "category": "groceries",     "reward_unit": "cash_back", "reward_rate": "6.00" },
-      { "category": "entertainment", "reward_unit": "cash_back", "reward_rate": "6.00" },
-      { "category": "gas",           "reward_unit": "cash_back", "reward_rate": "3.00" },
-      { "category": "travel",        "reward_unit": "cash_back", "reward_rate": "3.00" }
+      {
+        "category": "us_supermarkets",
+        "reward_unit": "cash_back",
+        "reward_rate": "6.00",
+        "cap_note": "up to $6,000/yr, then 1%"
+      },
+      {
+        "category": "streaming",
+        "reward_unit": "cash_back",
+        "reward_rate": "6.00"
+      },
+      {
+        "category": "gas",
+        "reward_unit": "cash_back",
+        "reward_rate": "3.00"
+      },
+      {
+        "category": "transit",
+        "reward_unit": "cash_back",
+        "reward_rate": "3.00"
+      }
     ]
   },
   {
@@ -59,6 +124,109 @@
     "signup_bonus": "200.00",
     "signup_bonus_required_spending": "500.00",
     "signup_bonus_spend_period_months": 3,
+    "signup_bonus_unit": "cash_back",
     "reward_rules": []
+  },
+  {
+    "name": "Double Cash",
+    "issuer": "Citi",
+    "network": "Mastercard",
+    "card_type": "credit",
+    "annual_fee": "0.00",
+    "base_reward_rate": "2.00",
+    "notes": "2% = 1% when you buy + 1% as you pay.",
+    "signup_bonus": "200.00",
+    "signup_bonus_required_spending": "1500.00",
+    "signup_bonus_spend_period_months": 6,
+    "signup_bonus_unit": "cash_back",
+    "reward_rules": [
+      {
+        "category": "citi_travel_hotels_cars_attractions",
+        "reward_unit": "cash_back",
+        "reward_rate": "5.00"
+      }
+    ]
+  },
+  {
+    "name": "Venture Rewards",
+    "issuer": "Capital One",
+    "network": "Visa",
+    "card_type": "credit",
+    "annual_fee": "95.00",
+    "base_reward_rate": "2.00",
+    "signup_bonus": "75000.00",
+    "signup_bonus_required_spending": "4000.00",
+    "signup_bonus_spend_period_months": 3,
+    "signup_bonus_unit": "miles",
+    "reward_rules": [
+      {
+        "category": "hotels_vacation_rentals_cars_via_cap1_travel",
+        "reward_unit": "miles",
+        "reward_rate": "5.00"
+      }
+    ]
+  },
+  {
+    "name": "Discover it Cash Back",
+    "issuer": "Discover",
+    "network": "Discover",
+    "card_type": "credit",
+    "annual_fee": "0.00",
+    "base_reward_rate": "1.00",
+    "signup_bonus": "0.00",
+    "signup_bonus_required_spending": null,
+    "signup_bonus_spend_period_months": null,
+    "signup_bonus_unit": "cash_back",
+    "notes": "No traditional welcome bonus. Instead, Discover matches 100% of all cash back earned in the cardholder's first year (Cashback Match). Bonus categories rotate quarterly and require activation, capped at $1,500 in combined spend per quarter (then 1%). Q3 2026 (Jul-Sep) categories shown below as an example.",
+    "reward_rules": [
+      {
+        "category": "rotating_q3_2026_gas_ev_transit_drugstore",
+        "reward_unit": "cash_back",
+        "reward_rate": "5.00"
+      }
+    ]
+  },
+  {
+    "name": "Gold Card",
+    "issuer": "American Express",
+    "network": "Amex",
+    "card_type": "credit",
+    "annual_fee": "325.00",
+    "base_reward_rate": "1.00",
+    "signup_bonus": "100000.00",
+    "signup_bonus_required_spending": "8000.00",
+    "signup_bonus_spend_period_months": 6,
+    "signup_bonus_unit": "points",
+    "notes": "Welcome offers are targeted/variable; 100,000 points is the current 'as high as' offer, not guaranteed for every applicant.",
+    "reward_rules": [
+      {
+        "category": "restaurants_worldwide",
+        "reward_unit": "points",
+        "reward_rate": "4.00",
+        "cap_note": "up to $50,000/yr, then 1x"
+      },
+      {
+        "category": "us_supermarkets",
+        "reward_unit": "points",
+        "reward_rate": "4.00",
+        "cap_note": "up to $25,000/yr, then 1x"
+      },
+      {
+        "category": "prepaid_hotels_via_amex_travel",
+        "reward_unit": "points",
+        "reward_rate": "5.00"
+      },
+      {
+        "category": "flights",
+        "reward_unit": "points",
+        "reward_rate": "3.00"
+      },
+      {
+        "category": "prepaid_cars_and_cruises_via_amex_travel",
+        "reward_unit": "points",
+        "reward_rate": "2.00"
+      }
+    ]
   }
+  
 ]

@@ -4,7 +4,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from apps.users.views import is_Authenticated, register
 from apps.users.wallet_views import wallet_delete, wallet_list_or_add
 from apps.cards.views import catalog_list
-from apps.uploads.views import upload_list, upload_reassign, upload_transactions
+from apps.uploads.views import upload_delete, upload_list, upload_reassign, upload_transactions
 from apps.transactions.views import review_answer, review_queue, summary_view, transaction_list
 from apps.recommendations.views import recommendations_view
 
@@ -27,6 +27,7 @@ urlpatterns = [
     # Uploads
     path('api/upload/', upload_transactions, name='upload_transactions'),
     path('api/uploads/', upload_list, name='upload_list'),
+    path('api/uploads/<int:upload_id>/', upload_delete, name='upload_delete'),
     path('api/uploads/<int:upload_id>/reassign/', upload_reassign, name='upload_reassign'),
 
     # Transactions + merchant review

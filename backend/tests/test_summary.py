@@ -7,7 +7,7 @@ Truth dataset:
   other:     -25 (payment)          → net -25.00
   unresolved:+75                    → excluded from by_category
   total_spend=295.00  count=6  unresolved=1  categorized_pct=83.3
-  period 2026-01-01→01-31 (31 days)  annualized dining=3179.03
+  period 2026-01-01→01-31 (31 days, 1 month covered)  annualized dining=3240.00
 """
 
 from datetime import date
@@ -89,8 +89,9 @@ class SpendSummaryServiceTest(TestCase):
         self.assertEqual(s["period"]["earliest"], date(2026, 1, 1))
         self.assertEqual(s["period"]["latest"], date(2026, 1, 31))
         self.assertEqual(s["period"]["days_span"], 31)
-        # 270 × 365 / 31 = 3179.032… → 3179.03
-        self.assertEqual(s["annualized"]["dining"], Decimal("3179.03"))
+        self.assertEqual(s["period"]["months_covered"], 1)
+        # 270 × 12 / 1
+        self.assertEqual(s["annualized"]["dining"], Decimal("3240.00"))
 
     def test_empty_wallet(self):
         s = get_spend_summary(seeds.make_user())
@@ -100,6 +101,7 @@ class SpendSummaryServiceTest(TestCase):
         self.assertEqual(s["unresolved_amount"], Decimal("0"))
         self.assertIsNone(s["period"]["earliest"])
         self.assertEqual(s["period"]["days_span"], 0)
+        self.assertEqual(s["period"]["months_covered"], 0)
         self.assertEqual(s["categorized_pct"], Decimal("100.0"))
         self.assertEqual(set(s["by_category"].keys()), ALL_CATEGORIES)
         self.assertTrue(all(v == Decimal("0") for v in s["by_category"].values()))

@@ -59,7 +59,7 @@ Dropped the MCC + LLM path entirely. Categories now resolve directly to the shar
 - **`GET /api/transactions/`** — your rows with `card_name`, `upload_id`, `filename` joined in
 - **`GET /api/review/`** / **`POST /api/review/answer/`** — unresolved merchants by spend, answer upserts override, backfills category + stamps `resolution_source=user` / `confidence=1.0`, warms Redis
 - **`GET /api/cards/`** — active catalog products (`is_catalog=True`) for wallet add / Day 5 scoring pool
-- **`GET|POST /api/wallet/`** / **`DELETE /api/wallet/<id>/`** — own cards (catalog id *or* custom name/issuer/network), hard-delete cascades txs, orphan custom products cleaned up
+- **`GET|POST /api/wallet/`** / **`DELETE /api/wallet/<id>/`** — own cards (catalog id *or* custom name/issuer/network), hard-delete cascades txs + empty uploads, orphan custom products cleaned up
 - **`setup_dev`** — one command: seed cards + aliases, ensure `user1`, attach a wallet card, print credentials
 
 ### ***Data / ops files:***

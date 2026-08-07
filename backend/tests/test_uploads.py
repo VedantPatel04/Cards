@@ -1,9 +1,9 @@
 """
-HTTP tests for upload ingest, list, and reassign.
+HTTP tests for upload ingest, multi-file, list, reassign, and delete.
 
 Pipeline behavior lives in tests/services/test_upload_pipeline.py. These cover
 the view: auth, validation, wallet scoping, idempotent status codes,
-card-mismatch 409, and upload-level reassign.
+card-mismatch 409, batch upload, and upload-level reassign/delete.
 """
 
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -26,6 +26,10 @@ SAMPLE_CSV = _chase_csv(
     "07/08/2026,07/10/2026,MTA*NYCT PAYGO,Travel,Sale,-3.00,",
 )
 
+SAMPLE_CSV_B = _chase_csv(
+    "06/01/2026,06/02/2026,TARGET 0001,Shopping,Sale,-12.00,",
+)
+
 
 class UploadEndpointTests(APITestCase):
     def setUp(self):
@@ -42,6 +46,20 @@ class UploadEndpointTests(APITestCase):
         return self.client.post(
             self.url,
             {"file": upload, "user_card_id": user_card_id},
+            format="multipart",
+        )
+
+    def _post_many(self, files, user_card_id=None):
+        """files: list of (filename, content) tuples — repeated multipart `file` keys."""
+        if user_card_id is None:
+            user_card_id = self.user_card.pk
+        uploads = [
+            SimpleUploadedFile(filename, content, content_type="text/csv")
+            for filename, content in files
+        ]
+        return self.client.post(
+            self.url,
+            {"file": uploads, "user_card_id": user_card_id},
             format="multipart",
         )
 
@@ -164,3 +182,67 @@ class UploadEndpointTests(APITestCase):
             format="json",
         )
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_multi_file_upload_creates_each(self):
+        resp = self._post_many(
+            [
+                ("stmt_a.csv", SAMPLE_CSV),
+                ("stmt_b.csv", SAMPLE_CSV_B),
+            ]
+        )
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(resp.data["count"], 2)
+        self.assertEqual(resp.data["succeeded"], 2)
+        self.assertEqual(resp.data["failed"], 0)
+        self.assertTrue(all(r["ok"] for r in resp.data["results"]))
+        self.assertEqual(Uploads.objects.filter(user=self.user).count(), 2)
+        self.assertEqual(
+            Transactions.objects.filter(user_card=self.user_card).count(),
+            3,
+        )
+
+    def test_multi_file_partial_failure_returns_207(self):
+        resp = self._post_many(
+            [
+                ("good.csv", SAMPLE_CSV),
+                ("bad.csv", b"not,a,chase,file\n1,2,3,4\n"),
+            ]
+        )
+        self.assertEqual(resp.status_code, status.HTTP_207_MULTI_STATUS)
+        self.assertEqual(resp.data["succeeded"], 1)
+        self.assertEqual(resp.data["failed"], 1)
+        by_name = {r["filename"]: r for r in resp.data["results"]}
+        self.assertTrue(by_name["good.csv"]["ok"])
+        self.assertFalse(by_name["bad.csv"]["ok"])
+        self.assertEqual(Uploads.objects.filter(user=self.user, status="processed").count(), 1)
+
+    def test_delete_upload_removes_transactions(self):
+        created = self._post()
+        upload_id = created.data["upload_id"]
+        self.assertEqual(Transactions.objects.filter(upload_id=upload_id).count(), 2)
+
+        resp = self.client.delete(
+            reverse("upload_delete", kwargs={"upload_id": upload_id})
+        )
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(Uploads.objects.filter(pk=upload_id).exists())
+        self.assertFalse(Transactions.objects.filter(upload_id=upload_id).exists())
+
+    def test_delete_requires_authentication(self):
+        created = self._post()
+        self.client.force_authenticate(user=None)
+        resp = self.client.delete(
+            reverse("upload_delete", kwargs={"upload_id": created.data["upload_id"]})
+        )
+        self.assertEqual(resp.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_delete_rejects_foreign_upload(self):
+        stranger_card = seeds.make_user_card()
+        upload = seeds.make_upload(user=stranger_card.user)
+        seeds.make_transaction(upload=upload, user_card=stranger_card, row_index=0)
+
+        resp = self.client.delete(
+            reverse("upload_delete", kwargs={"upload_id": upload.pk})
+        )
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertTrue(Uploads.objects.filter(pk=upload.pk).exists())
