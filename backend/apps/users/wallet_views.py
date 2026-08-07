@@ -9,9 +9,10 @@ If name+issuer already exists as a Card_Products row (catalog or prior custom),
 that product is attached (Option A). Custom creates use is_catalog=False,
 zero reward fields, and no Reward_Rules.
 
-DELETE is a hard delete: Transactions cascade with the wallet row. If the
-product was custom (is_catalog=False) and no other wallet still references it,
-the orphan Card_Products row is deleted too.
+DELETE is a hard delete: Transactions cascade with the wallet row. Statement
+imports (Uploads) left with zero transactions for this user are removed too.
+If the product was custom (is_catalog=False) and no other wallet still
+references it, the orphan Card_Products row is deleted as well.
 
 Card_Products.is_active still matters for catalog lifecycle (ingest soft-
 deactivates removed snapshot products). Inactive products cannot be added.
@@ -22,12 +23,14 @@ on list/upload until a later cleanup.
 from decimal import Decimal
 
 from django.db import transaction as db_transaction
+from django.db.models import Count
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from apps.cards.models import Card_Products
+from apps.uploads.models import Uploads
 from apps.users.models import User_cards
 
 _ZERO = Decimal("0.00")
@@ -174,8 +177,10 @@ def wallet_delete(request, wallet_id: int):
     """
     DELETE /api/wallet/<wallet_id>/
 
-    Hard-deletes this user's wallet entry (and its transactions). Orphan
-    custom Card_Products rows are removed when nothing else references them.
+    Hard-deletes this user's wallet entry (and its transactions). Uploads
+    for this user that no longer have any transactions are removed.
+    Orphan custom Card_Products rows are removed when nothing else
+    references them.
     """
     entry = (
         User_cards.objects.select_related("card")
@@ -196,5 +201,14 @@ def wallet_delete(request, wallet_id: int):
             and not User_cards.objects.filter(card_id=card.pk).exists()
         ):
             card.delete()
+
+        # Uploads are not FK'd to the wallet card — only transactions are.
+        # After the cascade, drop statement shells left with no rows.
+        (
+            Uploads.objects.filter(user=request.user)
+            .annotate(tx_count=Count("upload_transactions"))
+            .filter(tx_count=0)
+            .delete()
+        )
 
     return Response(status=status.HTTP_204_NO_CONTENT)

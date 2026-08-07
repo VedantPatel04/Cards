@@ -241,6 +241,7 @@ def summary_view(request):
                 "earliest": period["earliest"].isoformat() if period["earliest"] else None,
                 "latest": period["latest"].isoformat() if period["latest"] else None,
                 "days_span": period["days_span"],
+                "months_covered": period["months_covered"],
             },
             "by_category": {
                 cat: _money(total)

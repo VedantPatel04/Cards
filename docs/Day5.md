@@ -36,7 +36,20 @@ Rows with `category=""` are intentionally absent from spend totals. They appear 
 MVP aggregates everything the user has uploaded. Date range and per-card filters are not in scope for Day 5 or 6.
 
 ### Annualised estimates belong in the aggregator
-Stage 1 of the recommendation pipeline outputs "annualized estimates." The aggregator computes them (`by_category[c] × 365 / days_span`) so Day 6 receives a stable, pre-computed value rather than re-deriving it.
+Stage 1 of the recommendation pipeline outputs "annualized estimates." The aggregator computes them so Day 6 receives a stable, pre-computed value rather than re-deriving it.
+
+```
+annualized[c] = by_category[c] × 12 / months_covered
+```
+
+### Coverage is counted in months, not calendar days *(revised Day 7)*
+`months_covered` is the number of distinct calendar months holding at least one transaction. `days_span` is still reported, but **must not** be used to extrapolate.
+
+**Why:** statements arrive with gaps. An April statement plus a July one is 103 calendar days apart but only two months of evidence, and the 68 empty days in between are missing records, not months of zero spending. Dividing by 103 days understated every annualised figure by roughly a third and made signup-bonus projections fail on data that was never uploaded.
+
+**Known limitation:** a single statement straddling a month boundary (15 Apr – 14 May) counts as 2 months, which understates annualised spend. Conservative in the direction of not overselling a card.
+
+**Day 6 usage note:** spending score uses `annualized`; signup-bonus projection uses actual `by_category` (not annualized) scaled by `months_covered`. See `docs/Day6.md`.
 
 ---
 
@@ -47,7 +60,8 @@ Stage 1 of the recommendation pipeline outputs "annualized estimates." The aggre
   "period": {
     "earliest": "2025-01-15",
     "latest":   "2025-05-30",
-    "days_span": 136
+    "days_span": 136,
+    "months_covered": 5
   },
   "by_category": {
     "dining":        "842.50",
@@ -59,13 +73,13 @@ Stage 1 of the recommendation pipeline outputs "annualized estimates." The aggre
     "other":           "45.40"
   },
   "annualized": {
-    "dining":       "2261.44",
-    "groceries":     "575.10",
+    "dining":       "2022.00",
+    "groceries":     "514.32",
     "travel":          "0.00",
     "gas":             "0.00",
-    "entertainment":  "134.19",
-    "shopping":       "837.50",
-    "other":          "121.88"
+    "entertainment":  "120.00",
+    "shopping":       "748.80",
+    "other":          "108.96"
   },
   "total_spend":      "1464.20",
   "transaction_count": 45,

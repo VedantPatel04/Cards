@@ -1,10 +1,11 @@
 """
 Upload endpoints.
 
-POST /api/upload/     — ingest a Chase CSV onto one wallet card
+POST /api/upload/     — ingest one or more Chase CSVs onto one wallet card
 GET  /api/uploads/    — list this user's statement imports
 POST /api/uploads/<id>/reassign/ — move every transaction on that import
                                  to a different wallet card (wrong-card fix)
+DELETE /api/uploads/<id>/ — hard-delete a statement import (and its rows)
 
 A statement always belongs to one user-owned card. Re-posting the same file
 bytes refreshes row data only when the card matches. Switching cards requires
@@ -93,41 +94,48 @@ def _serialize_upload(upload: Uploads) -> dict:
     }
 
 
-@api_view(["POST"])
-@permission_classes([IsAuthenticated])
-def upload_transactions(request):
+def _collect_upload_files(request):
     """
-    POST /api/upload/  (multipart form-data: file=<csv>, user_card_id=<int>)
+    Gather uploaded CSVs from multipart form-data.
 
-    Same bytes + same card → refresh rows (200).
-    Same bytes + different card → 409; use reassign instead.
+    Accepts repeated `file` keys and/or repeated `files` keys
+    (Postman multi-select / curl -F file=@a -F file=@b).
     """
-    uploaded_file = request.FILES.get("file")
-    if uploaded_file is None:
-        return Response(
-            {"detail": "No file provided under the 'file' field."},
-            status=status.HTTP_400_BAD_REQUEST,
-        )
+    files = list(request.FILES.getlist("file")) + list(request.FILES.getlist("files"))
+    # Preserve order; drop accidental empties.
+    return [f for f in files if f is not None]
+
+
+def _ingest_one_file(user, uploaded_file, user_card):
+    """
+    Ingest a single CSV onto user_card.
+
+    Returns (payload_dict, http_status). payload always includes filename;
+    failures include detail (and conflict fields when applicable).
+    """
+    filename = (uploaded_file.name or "upload.csv")[:255]
 
     if uploaded_file.size > MAX_UPLOAD_BYTES:
-        return Response(
-            {"detail": f"File exceeds the {MAX_UPLOAD_BYTES} byte limit."},
-            status=status.HTTP_400_BAD_REQUEST,
+        return (
+            {
+                "ok": False,
+                "filename": filename,
+                "detail": f"File exceeds the {MAX_UPLOAD_BYTES} byte limit.",
+            },
+            status.HTTP_400_BAD_REQUEST,
         )
-
-    user_card, err = _active_wallet_card(request.user, request.data.get("user_card_id"))
-    if err is not None:
-        return err
 
     file_bytes = uploaded_file.read()
     file_hash = hashlib.sha256(file_bytes).hexdigest()
 
-    existing = Uploads.objects.filter(user=request.user, file_hash=file_hash).first()
+    existing = Uploads.objects.filter(user=user, file_hash=file_hash).first()
     if existing is not None:
         bound = _upload_card_ids(existing)
         if bound and bound != {user_card.pk}:
-            return Response(
+            return (
                 {
+                    "ok": False,
+                    "filename": filename,
                     "detail": (
                         "This file was already imported under a different wallet card. "
                         "Reassign the upload instead of re-uploading."
@@ -136,14 +144,14 @@ def upload_transactions(request):
                     "current_user_card_ids": sorted(bound),
                     "requested_user_card_id": user_card.pk,
                 },
-                status=status.HTTP_409_CONFLICT,
+                status.HTTP_409_CONFLICT,
             )
 
     upload, was_created = Uploads.objects.update_or_create(
-        user=request.user,
+        user=user,
         file_hash=file_hash,
         defaults={
-            "filename": uploaded_file.name[:255],
+            "filename": filename,
             "status": STATUS_PENDING,
         },
     )
@@ -152,25 +160,94 @@ def upload_transactions(request):
         summary = process_upload(upload, user_card, file_bytes)
     except ValueError as exc:
         Uploads.objects.filter(pk=upload.pk).update(status=STATUS_FAILED)
-        return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+        return (
+            {"ok": False, "filename": filename, "upload_id": upload.pk, "detail": str(exc)},
+            status.HTTP_400_BAD_REQUEST,
+        )
     except Exception:
         Uploads.objects.filter(pk=upload.pk).update(status=STATUS_FAILED)
         logger.exception("upload %s failed", upload.pk)
-        return Response(
-            {"detail": "Upload could not be processed."},
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        return (
+            {
+                "ok": False,
+                "filename": filename,
+                "upload_id": upload.pk,
+                "detail": "Upload could not be processed.",
+            },
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
 
-    return Response(
+    http_status = status.HTTP_201_CREATED if was_created else status.HTTP_200_OK
+    return (
         {
+            "ok": True,
             "upload_id": upload.pk,
             "filename": upload.filename,
             "status": upload.status,
             "user_card_id": user_card.pk,
             "summary": summary,
         },
-        status=status.HTTP_201_CREATED if was_created else status.HTTP_200_OK,
+        http_status,
     )
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def upload_transactions(request):
+    """
+    POST /api/upload/  (multipart: file|files=<csv>+, user_card_id=<int>)
+
+    One file → same response shape as before (no batch wrapper).
+    Multiple files → {count, succeeded, failed, results[]} with per-file ok/detail.
+    Same bytes + same card → refresh rows (200).
+    Same bytes + different card → 409; use reassign instead.
+    """
+    uploaded_files = _collect_upload_files(request)
+    if not uploaded_files:
+        return Response(
+            {"detail": "No file provided under the 'file' (or 'files') field."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    user_card, err = _active_wallet_card(request.user, request.data.get("user_card_id"))
+    if err is not None:
+        return err
+
+    if len(uploaded_files) == 1:
+        payload, http_status = _ingest_one_file(
+            request.user, uploaded_files[0], user_card
+        )
+        # Single-file responses stay backward-compatible (no ok wrapper).
+        body = {k: v for k, v in payload.items() if k != "ok"}
+        return Response(body, status=http_status)
+
+    results = []
+    succeeded = failed = 0
+    any_created = False
+    for uploaded_file in uploaded_files:
+        payload, http_status = _ingest_one_file(request.user, uploaded_file, user_card)
+        item = {**payload, "http_status": http_status}
+        results.append(item)
+        if payload.get("ok"):
+            succeeded += 1
+            if http_status == status.HTTP_201_CREATED:
+                any_created = True
+        else:
+            failed += 1
+
+    body = {
+        "count": len(results),
+        "succeeded": succeeded,
+        "failed": failed,
+        "results": results,
+    }
+    if failed == 0:
+        overall = status.HTTP_201_CREATED if any_created else status.HTTP_200_OK
+    elif succeeded == 0:
+        overall = status.HTTP_400_BAD_REQUEST
+    else:
+        overall = status.HTTP_207_MULTI_STATUS
+    return Response(body, status=overall)
 
 
 @api_view(["GET"])
@@ -219,3 +296,24 @@ def upload_reassign(request, upload_id: int):
         },
         status=status.HTTP_200_OK,
     )
+
+
+@api_view(["DELETE"])
+@permission_classes([IsAuthenticated])
+def upload_delete(request, upload_id: int):
+    """
+    DELETE /api/uploads/<upload_id>/
+
+    Hard-deletes this user's statement import. Related transactions cascade.
+    """
+    upload = Uploads.objects.filter(pk=upload_id, user=request.user).first()
+    if upload is None:
+        return Response(
+            {"detail": "No upload of yours matches that id."},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
+    upload_pk = upload.pk
+    upload.delete()
+    logger.info("user %s deleted upload %s", request.user.pk, upload_pk)
+    return Response(status=status.HTTP_204_NO_CONTENT)

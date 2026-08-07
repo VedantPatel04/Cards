@@ -66,9 +66,16 @@ class CardProductIngestionTests(TestCase):
             self.assertEqual(card.annual_fee, Decimal(entry["annual_fee"]))
             self.assertEqual(card.base_reward_rate, Decimal(entry["base_reward_rate"]))
             self.assertEqual(card.signup_bonus, Decimal(entry["signup_bonus"]))
+            self.assertEqual(card.reward_currency, entry["signup_bonus_unit"])
+            # Cards with no welcome bonus may leave the thresholds null; they
+            # land as 0 and are never read.
             self.assertEqual(
                 card.signup_bonus_required_spending,
-                Decimal(entry["signup_bonus_required_spending"]),
+                Decimal(entry["signup_bonus_required_spending"] or 0),
+            )
+            self.assertEqual(
+                card.signup_bonus_spend_period_months,
+                entry["signup_bonus_spend_period_months"] or 0,
             )
 
             for rule_entry in entry["reward_rules"]:

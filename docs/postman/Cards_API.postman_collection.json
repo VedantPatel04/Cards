@@ -223,9 +223,14 @@
           "script": {
             "type": "text/javascript",
             "exec": [
-              "if (pm.response.code === 201 || pm.response.code === 200) {",
+              "if (pm.response.code === 201 || pm.response.code === 200 || pm.response.code === 207) {",
               "  const res = pm.response.json();",
-              "  if (res.upload_id) pm.collectionVariables.set('upload_id', String(res.upload_id));",
+              "  if (res.upload_id) {",
+              "    pm.collectionVariables.set('upload_id', String(res.upload_id));",
+              "  } else if (res.results && res.results.length) {",
+              "    const firstOk = res.results.find(r => r.ok && r.upload_id) || res.results[0];",
+              "    if (firstOk && firstOk.upload_id) pm.collectionVariables.set('upload_id', String(firstOk.upload_id));",
+              "  }",
               "}"
             ]
           }
@@ -241,13 +246,20 @@
               "key": "file",
               "type": "file",
               "src": [],
-              "description": "Select backend/data/sample_uploads/Chase Transaction Statement.csv"
+              "description": "Select one or more CSVs under backend/data/sample_uploads/. In Postman: add another `file` row (same key) for each extra statement, or multi-select if your client supports it."
+            },
+            {
+              "key": "file",
+              "type": "file",
+              "src": [],
+              "disabled": true,
+              "description": "Optional second statement — enable and pick another CSV to upload both in one request."
             },
             {
               "key": "user_card_id",
               "type": "text",
               "value": "{{user_card_id}}",
-              "description": "Wallet entry id from GET /api/wallet/"
+              "description": "Wallet entry id from GET /api/wallet/ (shared across all files in this request)"
             }
           ]
         },
@@ -256,7 +268,7 @@
           "host": ["{{baseUrl}}"],
           "path": ["api", "upload", ""]
         },
-        "description": "Protected. form-data: file + user_card_id. Same bytes + same card refreshes (200). Same bytes + different card → 409 — use reassign."
+        "description": "Protected. form-data: one or more `file` fields + `user_card_id`.\n\n- **One file** → same shape as before (`upload_id`, `summary`, …). 201 create / 200 refresh.\n- **Multiple files** → `{ count, succeeded, failed, results[] }` with per-file `ok` / `detail`. 201 all-new, 200 all-refresh, 207 mixed, 400 all failed.\n\nSame bytes + same card refreshes. Same bytes + different card → 409 — use reassign."
       }
     },
     {
@@ -282,7 +294,7 @@
               "  pm.collectionVariables.set('upload_id', String(chosen.upload_id));",
               "  console.log('Selected upload_id', chosen.upload_id, 'for', chosen.filename);",
               "} else {",
-              "  console.log('No auto-select. Set collection var upload_filename to a listed file, or paste upload_id into 7c.');",
+              "  console.log('No auto-select. Set collection var upload_filename to a listed file, or paste upload_id into 7c/7d.');",
               "}"
             ]
           }
@@ -296,7 +308,7 @@
           "host": ["{{baseUrl}}"],
           "path": ["api", "uploads", ""]
         },
-        "description": "Protected. **This is how you pick which statement to reassign** — no re-upload needed.\n\nResponse lists every import: `upload_id`, `filename`, `user_card_id`, `card_name`, `transaction_count`.\n\nTests script:\n- Logs all uploads to the console\n- If collection var `upload_filename` matches a listed file, saves that `upload_id` for 7c\n- If only one upload exists, selects it\n- Otherwise leave `upload_id` blank and paste the id you want into 7c"
+        "description": "Protected. **This is how you pick which statement to reassign or delete** — no re-upload needed.\n\nResponse lists every import: `upload_id`, `filename`, `user_card_id`, `card_name`, `transaction_count`.\n\nTests script:\n- Logs all uploads to the console\n- If collection var `upload_filename` matches a listed file, saves that `upload_id` for 7c/7d\n- If only one upload exists, selects it\n- Otherwise leave `upload_id` blank and paste the id you want into 7c or 7d"
       }
     },
     {
@@ -314,6 +326,33 @@
           "path": ["api", "uploads", "{{upload_id}}", "reassign", ""]
         },
         "description": "Protected. Moves every transaction on **this upload_id** to another wallet card.\n\n1. Run 7b List Uploads (set `upload_filename` to e.g. Chase_MAY_Transactions.csv)\n2. Set `user_card_id` to the **destination** wallet card\n3. Send — do **not** re-upload the CSV first"
+      }
+    },
+    {
+      "name": "7d. Delete Upload (protected)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if (pm.response.code === 204) {",
+              "  console.log('Deleted upload_id', pm.collectionVariables.get('upload_id'));",
+              "  pm.collectionVariables.set('upload_id', '');",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/uploads/{{upload_id}}/",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "uploads", "{{upload_id}}", ""]
+        },
+        "description": "Protected. Hard-deletes the statement import for **this upload_id** and cascades its transactions.\n\n1. Run 7b List Uploads to set `upload_id` (or paste one)\n2. Send — expect **204 No Content**\n3. Re-run 7b / 8 / 11 to confirm the statement and its spend are gone\n\nForeign or unknown ids → 404."
       }
     },
     {
@@ -388,11 +427,94 @@
           "host": ["{{baseUrl}}"],
           "path": ["api", "summary", ""]
         },
-        "description": "Protected. All-time spend totals by rewards category across all wallet cards.\n\nResponse fields:\n- by_category: all 7 buckets (dining, groceries, travel, gas, entertainment, shopping, other) as net spend strings\n- annualized: projected annual spend per category (by_category × 365 / days_span)\n- total_spend: sum of all by_category values\n- transaction_count: total rows across all uploads\n- unresolved_count / unresolved_amount: rows still needing review\n- categorized_pct: count-based coverage, 1 decimal place\n- period: earliest/latest transaction date + days_span\n\nAll money values are 2-decimal strings. Run Upload (step 7) first for non-zero totals. Run Review Answer (step 10) to improve categorized_pct."
+        "description": "Protected. All-time spend totals by rewards category across all wallet cards.\n\nResponse fields:\n- by_category: all 7 buckets (dining, groceries, travel, gas, entertainment, shopping, other) as net spend strings\n- annualized: projected annual spend per category (by_category × 12 / months_covered)\n- total_spend: sum of all by_category values\n- transaction_count: total rows across all uploads\n- unresolved_count / unresolved_amount: rows still needing review\n- categorized_pct: count-based coverage, 1 decimal place\n- period: earliest/latest transaction date, days_span (display only) + months_covered\n\nmonths_covered counts distinct calendar months holding a transaction. Statements arrive with gaps, so an April statement plus a July one is 2 months of evidence across 103 calendar days — annualizing on days_span would read the empty gap as months of zero spending.\n\nAll money values are 2-decimal strings. Run Upload (step 7) first for non-zero totals. Run Review Answer (step 10) to improve categorized_pct."
       }
     },
     {
-      "name": "12. Refresh Token",
+      "name": "12. Recommendations (protected)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const MONEY = /^-?\\d+\\.\\d{2}$/;",
+              "const STATUSES = ['met', 'not_met', 'insufficient_data', 'no_bonus'];",
+              "const FIELDS = ['rank', 'card_id', 'card_name', 'issuer', 'reward_currency',",
+              "  'headline', 'spending_score', 'annual_fee', 'signup_bonus_score',",
+              "  'signup_bonus_status', 'signup_bonus_note', 'total_score',",
+              "  'ongoing_annual_value', 'break_even_annual_spend', 'explanation'];",
+              "",
+              "pm.test('200 OK', () => pm.response.to.have.status(200));",
+              "const res = pm.response.json();",
+              "",
+              "pm.test('envelope has confidence + value_basis + recommendations', () => {",
+              "  pm.expect(res).to.have.property('confidence');",
+              "  pm.expect(res).to.have.property('confidence_note');",
+              "  pm.expect(res).to.have.property('value_basis');",
+              "  pm.expect(res.recommendations).to.be.an('array');",
+              "});",
+              "",
+              "const recs = res.recommendations || [];",
+              "pm.test('at most 5 recommendations', () => pm.expect(recs.length).to.be.at.most(5));",
+              "",
+              "recs.forEach((c, i) => {",
+              "  const label = '#' + (i + 1) + ' ' + c.card_name;",
+              "  pm.test(label + ': contract fields present', () => {",
+              "    FIELDS.forEach(f => pm.expect(c).to.have.property(f));",
+              "  });",
+              "  pm.test(label + ': money fields are 2-decimal strings', () => {",
+              "    ['spending_score', 'annual_fee', 'signup_bonus_score', 'total_score', 'ongoing_annual_value']",
+              "      .forEach(f => pm.expect(c[f]).to.match(MONEY));",
+              "  });",
+              "  pm.test(label + ': total = spend - fee + bonus', () => {",
+              "    const expected = Number(c.spending_score) - Number(c.annual_fee) + Number(c.signup_bonus_score);",
+              "    // each field is rounded on its own, so allow one cent of drift",
+              "    pm.expect(Math.abs(Number(c.total_score) - expected)).to.be.at.most(0.011);",
+              "  });",
+              "  pm.test(label + ': ongoing value excludes the bonus', () => {",
+              "    const expected = Number(c.spending_score) - Number(c.annual_fee);",
+              "    pm.expect(Math.abs(Number(c.ongoing_annual_value) - expected)).to.be.at.most(0.011);",
+              "  });",
+              "  pm.test(label + ': break-even set only when a fee needs covering', () => {",
+              "    const needed = Number(c.annual_fee) > 0 && Number(c.spending_score) > 0;",
+              "    pm.expect(c.break_even_annual_spend !== null).to.eql(needed);",
+              "  });",
+              "  pm.test(label + ': signup_bonus_status is valid', () => {",
+              "    pm.expect(STATUSES).to.include(c.signup_bonus_status);",
+              "    pm.expect(Number(c.signup_bonus_score) > 0).to.eql(c.signup_bonus_status === 'met');",
+              "  });",
+              "});",
+              "",
+              "pm.test('competition ranks (ties share a rank)', () => {",
+              "  recs.forEach((c, i) => {",
+              "    pm.expect(c.rank).to.be.at.most(i + 1);",
+              "    if (i > 0) pm.expect(c.rank).to.be.at.least(recs[i - 1].rank);",
+              "    // rank_note is omitted entirely unless this card ties",
+              "    if ('rank_note' in c) pm.expect(c.rank_note).to.include('Tied with');",
+              "  });",
+              "});",
+              "",
+              "console.log('confidence:', res.confidence, res.confidence_note);",
+              "console.log('basis:', JSON.stringify(res.value_basis));",
+              "recs.forEach(c => console.log('#' + c.rank + ' ' + c.card_name + ' — ' + c.headline));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/recommendations/",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "recommendations", ""]
+        },
+        "description": "Protected. Top ≤5 catalog cards scored against this user's spend summary.\n\nEvery money field is estimated US dollars per year — see `value_basis` in the response.\n\nResponse fields:\n- confidence / confidence_note: reliability of the underlying summary\n- value_basis: currency, months_of_data, point_value_cents\n- recommendations[]: rank, card_id, card_name, issuer, reward_currency, headline, spending_score, annual_fee, signup_bonus_score/status/note, total_score, ongoing_annual_value, break_even_annual_spend, explanation[]\n- rank_note is **omitted** unless the card ties with another\n\nFormulas:\n- spending uses annualized spend × effective rate%; negatives floored to 0\n- annualized = by_category × 12 / months_covered (months holding transactions, not calendar span)\n- points/miles convert at value_basis.point_value_cents before entering any dollar figure\n- signup bonus uses actual by_category; insufficient_data until months_covered reaches the card's window\n- total_score = spending_score − annual_fee + signup_bonus_score (first year)\n- ongoing_annual_value = spending_score − annual_fee (every year after)\n- break_even_annual_spend: spend at this user's mix that would cover the fee; null when there is no fee\n- residual ties share Olympic rank (e.g. 1,1,3) with rank_note\n\nNegative totals are meaningful: the annual fee costs more than the card returns.\n\nEmpty wallet still returns 200 (often confidence=low). Run Upload + Summary first for meaningful ranks. Clear review queue to raise confidence."
+      }
+    },
+    {
+      "name": "13. Refresh Token",
       "event": [
         {
           "listen": "test",

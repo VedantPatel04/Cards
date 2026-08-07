@@ -1,0 +1,33 @@
+{
+  "dining": "dining",
+  "restaurants_worldwide": "dining",
+
+  "groceries": "groceries",
+  "us_supermarkets": "groceries",
+  "online_groceries": "groceries",
+
+  "travel": "travel",
+  "travel_via_chase_travel": "travel",
+  "other_travel": "travel",
+  "vacation_rentals": "travel",
+  "transit": "travel",
+  "flights": "travel",
+  "citi_travel_hotels_cars_attractions": "travel",
+  "hotels_vacation_rentals_cars_via_cap1_travel": "travel",
+  "prepaid_hotels_via_amex_travel": "travel",
+  "prepaid_cars_and_cruises_via_amex_travel": "travel",
+
+  "gas": "gas",
+  "gas_and_ev_charging": "gas",
+
+  "entertainment": "entertainment",
+  "streaming": "entertainment",
+  "select_streaming": "entertainment",
+
+  "shopping": "shopping",
+  "drugstore": "shopping",
+
+  "other": "other",
+
+  "rotating_q3_2026_gas_ev_transit_drugstore": null
+}

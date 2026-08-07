@@ -7,6 +7,7 @@ from rest_framework.test import APITestCase
 import seeds
 from apps.cards.models import Card_Products
 from apps.transactions.models import Transactions
+from apps.uploads.models import Uploads
 from apps.users.models import User_cards
 
 
@@ -147,8 +148,27 @@ class WalletTests(APITestCase):
         self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(User_cards.objects.filter(pk=entry.pk).exists())
         self.assertEqual(Transactions.objects.filter(user_card_id=entry.pk).count(), 0)
+        # Empty statement shells are cleaned up with the card.
+        self.assertFalse(Uploads.objects.filter(pk=upload.pk).exists())
         # Catalog products are kept even when the wallet row is gone.
         self.assertTrue(Card_Products.objects.filter(pk=self.card.pk).exists())
+
+    def test_delete_keeps_uploads_still_holding_transactions(self):
+        doomed = seeds.make_user_card(user=self.user, card=self.card)
+        kept = seeds.make_user_card(user=self.user)
+        empty_upload = seeds.make_upload(user=self.user)
+        live_upload = seeds.make_upload(user=self.user)
+        seeds.make_transaction(upload=empty_upload, user_card=doomed, row_index=0)
+        seeds.make_transaction(upload=live_upload, user_card=kept, row_index=0)
+
+        resp = self.client.delete(reverse("wallet_delete", kwargs={"wallet_id": doomed.pk}))
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(Uploads.objects.filter(pk=empty_upload.pk).exists())
+        self.assertTrue(Uploads.objects.filter(pk=live_upload.pk).exists())
+        self.assertEqual(
+            Transactions.objects.filter(upload=live_upload, user_card=kept).count(),
+            1,
+        )
 
     def test_delete_custom_removes_orphan_product(self):
         add = self.client.post(
