@@ -49,7 +49,7 @@ annualized[c] = by_category[c] × 12 / months_covered
 
 **Known limitation:** a single statement straddling a month boundary (15 Apr – 14 May) counts as 2 months, which understates annualised spend. Conservative in the direction of not overselling a card.
 
-**Day 6 usage note:** spending score uses `annualized`; signup-bonus projection uses actual `by_category` (not annualized) scaled by `months_covered`. See `docs/Day6.md`.
+**Day 6 usage note:** spending score uses `annualized`; signup-bonus projection uses actual `by_category` (not annualized) scaled by `months_covered`. See `docs/Day6-7.md`.
 
 ---
 
