@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import path
 from django.views.generic import RedirectView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
-from apps.users.views import is_Authenticated, register
+from apps.users.views import RegisterView, is_Authenticated
 from apps.users.wallet_views import wallet_delete, wallet_list_or_add
 from apps.cards.views import catalog_list
 from apps.uploads.views import upload_delete, upload_list, upload_reassign, upload_transactions
@@ -14,7 +14,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # Auth
-    path('api/register/', register, name='register'),
+    path('api/register/', RegisterView.as_view(), name='register'),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
