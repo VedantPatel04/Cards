@@ -17,6 +17,7 @@ Contracts:
 from decimal import ROUND_HALF_UP, Decimal
 
 from django.db.models import Count, Max, Min, Sum
+from django.db.models.functions import TruncMonth
 
 from apps.transactions.models import UNRESOLVED_CATEGORY, Transactions
 from services.category_resolver import reward_categories
@@ -75,7 +76,19 @@ def get_spend_summary(user) -> dict:
     # How much evidence we actually hold. Counting distinct months rather than
     # the calendar span stops an empty gap between two statements from being
     # read as months of zero spending.
-    months_covered: int = qs.dates("transaction_date", "month").count()
+    #
+    # months_breakdown also drives months_covered — one query instead of two.
+    _month_rows = (
+        qs.annotate(_m=TruncMonth("transaction_date"))
+        .values("_m")
+        .annotate(transaction_count=Count("id"))
+        .order_by("_m")
+    )
+    months_breakdown = [
+        {"month": row["_m"].strftime("%Y-%m"), "transaction_count": row["transaction_count"]}
+        for row in _month_rows
+    ]
+    months_covered: int = len(months_breakdown)
 
     # Annualised estimates
     if months_covered > 0:
@@ -106,6 +119,7 @@ def get_spend_summary(user) -> dict:
             "latest": latest,
             "days_span": days_span,
             "months_covered": months_covered,
+            "months_breakdown": months_breakdown,
         },
         "by_category": by_category,
         "annualized": annualized,

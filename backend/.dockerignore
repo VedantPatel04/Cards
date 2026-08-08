@@ -1,0 +1,16 @@
+# Build context is backend/. Keep secrets and junk out of the image.
+# basically the gitignore file for docker builds
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.env
+.env.*
+!.env.example
+.coverage
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+.DS_Store
+# Tests run in CI on the runner, not inside the runtime image.
+tests/

@@ -75,6 +75,7 @@ def _serialize(scored: dict) -> dict:
         "signup_bonus_score": _money(scored["signup_bonus_score"]),
         "signup_bonus_status": scored["signup_bonus_status"],
         "signup_bonus_note": scored["signup_bonus_note"],
+        "signup_bonus_detail": scored["signup_bonus_detail"],
         "total_score": _money(scored["total_score"]),
         "ongoing_annual_value": _money(scored["ongoing_annual_value"]),
         "break_even_annual_spend": None if breakeven is None else _money(breakeven),

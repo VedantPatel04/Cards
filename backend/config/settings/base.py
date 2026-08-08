@@ -1,11 +1,14 @@
 from pathlib import Path
+import os
+
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
-import os
-from dotenv import load_dotenv
-load_dotenv(BASE_DIR / ".env") # loads environment variables from backend/.env
+load_dotenv(BASE_DIR / ".env")  # loads backend/.env when present; no-op if missing
 
-SECRET_KEY = 'changeme'
+# Intentionally unset in base — each environment module must set SECRET_KEY.
+# Production must refuse to start without an explicit env value.
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 DEBUG = False
 
@@ -20,6 +23,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # Third-party
+    'corsheaders',
     'rest_framework',
     'rest_framework_simplejwt',
 
@@ -33,6 +37,8 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    # CorsMiddleware should sit above CommonMiddleware so preflight is handled early.
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -59,7 +65,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'config.wsgi.application'
-AUTH_USER_MODEL = 'users.CustomUser' # Points Django to user CustomUser model instead of  the default User class
+AUTH_USER_MODEL = 'users.CustomUser'
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -67,10 +73,10 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES':( #used simplyjwt here
+    'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-    'DEFAULT_PERMISSION_CLASSES':(
+    'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
 }
@@ -82,6 +88,13 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-# LOAD environment variables
-REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0") # (URL, redis default URL with host: localhost,  port: 6379)
+
+REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
 MERCHANT_CACHE_TTL = int(os.environ.get("MERCHANT_CACHE_TTL", 60 * 60 * 24 * 30))  # 30 days
+
+# Empty until a frontend origin is configured via env (comma-separated).
+CORS_ALLOWED_ORIGINS = [
+    origin.strip()
+    for origin in os.environ.get("CORS_ALLOWED_ORIGINS", "").split(",")
+    if origin.strip()
+]

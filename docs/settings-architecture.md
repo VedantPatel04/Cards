@@ -1,16 +1,28 @@
 # Settings split (`config/settings/`)
 
-**Context:** One `settings.py` mixes dev DB, secrets, and test DB. That makes it easy to run tests against real data or ship unsafe defaults.
+**Modules**
 
-**Action:** Replaced the single file with `base.py` + `local.py` + `test.py`. `local` and `test` do `from .base import *` then override only what differs (DB, `DEBUG`, etc.).
+| Module | Role |
+|--------|------|
+| `base.py` | Shared apps, middleware, DRF/JWT, Redis, CORS list parsing |
+| `local.py` | Dev: `DEBUG=True`, `DATABASE_URL` (no SSL), local secret fallback |
+| `test.py` | SQLite `:memory:`, Redis DB 15, registers `tests` app |
+| `production.py` | `DEBUG=False`, required env secrets, `DATABASE_URL` with SSL, proxy SSL headers |
 
-**Split boundaries:** Shared stuff (apps, middleware, templates, paths) stays in `base.py`. Per-environment stuff stays out of `base` when possible.
-
-**REMINDER TO MYSELF** Set which module Django loads:
+**Which module loads**
 
 ```bash
-export DJANGO_SETTINGS_MODULE=config.settings.local   # for dev
-export DJANGO_SETTINGS_MODULE=config.settings.test    # for tests
+export DJANGO_SETTINGS_MODULE=config.settings.local        # host-based day-to-day
+export DJANGO_SETTINGS_MODULE=config.settings.test         # tests / CI
+export DJANGO_SETTINGS_MODULE=config.settings.production   # Docker / Render
 ```
 
-If you forget, Django won’t load the right config. Alternatively, change the default in `manage.py` to `config.settings.local` so daily commands work without exporting (still use `test` in CI or when running the test runner).
+Defaults: `manage.py` → `local`; `wsgi.py` / `asgi.py` → `production`.
+
+**Database**
+
+Local and production both use `DATABASE_URL` (via `dj-database-url`). Production defaults `DATABASE_SSL_REQUIRE=true` (Supabase/Render); docker-compose sets it to `false` for the local Postgres image. Do not manage the same tables with both Django migrations and Supabase SQL migrations — Django owns the schema.
+
+**CORS**
+
+`CORS_ALLOWED_ORIGINS` is a comma-separated env var. Default is empty until a frontend origin exists.

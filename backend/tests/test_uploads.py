@@ -132,12 +132,12 @@ class UploadEndpointTests(APITestCase):
             2,
         )
 
-    def test_bad_csv_returns_400_and_marks_failed(self):
+    def test_bad_csv_returns_400_and_deletes_failed_upload(self):
         bad = b"not,a,chase,file\n1,2,3,4\n"
         resp = self._post(content=bad, filename="bad.csv")
         self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
-        upload = Uploads.objects.get(user=self.user)
-        self.assertEqual(upload.status, "failed")
+        self.assertFalse(Uploads.objects.filter(user=self.user).exists())
+        self.assertNotIn("upload_id", resp.data)
 
     def test_list_uploads(self):
         created = self._post()
@@ -215,6 +215,7 @@ class UploadEndpointTests(APITestCase):
         self.assertTrue(by_name["good.csv"]["ok"])
         self.assertFalse(by_name["bad.csv"]["ok"])
         self.assertEqual(Uploads.objects.filter(user=self.user, status="processed").count(), 1)
+        self.assertFalse(Uploads.objects.filter(user=self.user, status="failed").exists())
 
     def test_delete_upload_removes_transactions(self):
         created = self._post()
@@ -246,3 +247,17 @@ class UploadEndpointTests(APITestCase):
         )
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
         self.assertTrue(Uploads.objects.filter(pk=upload.pk).exists())
+
+    def test_rejects_more_than_max_upload_rows(self):
+        from services.csv_parser import MAX_UPLOAD_ROWS
+
+        header = "Transaction Date,Post Date,Description,Category,Type,Amount,Memo"
+        lines = [header] + [
+            f"07/16/2026,07/17/2026,MERCHANT {i},Shopping,Sale,-1.00,"
+            for i in range(MAX_UPLOAD_ROWS + 1)
+        ]
+        content = ("\n".join(lines) + "\n").encode("utf-8")
+        resp = self._post(content=content, filename="too_many.csv")
+        self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn(str(MAX_UPLOAD_ROWS), resp.data["detail"])
+        self.assertFalse(Uploads.objects.filter(user=self.user).exists())

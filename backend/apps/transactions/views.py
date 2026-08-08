@@ -60,12 +60,17 @@ def transaction_list(request):
 
     This user's transactions, newest first. card_name / issuer are joined from
     the wallet -> catalog product; the FK (user_card_id) is kept for uploads.
+
+    count is the total matching rows. At most MAX_TRANSACTION_ITEMS are
+    returned; truncated is true when more exist.
     """
-    rows = (
+    qs = (
         _user_transactions(request.user)
         .select_related("user_card__card", "upload")
-        .order_by("-transaction_date", "-id")[:MAX_TRANSACTION_ITEMS]
+        .order_by("-transaction_date", "-id")
     )
+    total = qs.count()
+    rows = qs[:MAX_TRANSACTION_ITEMS]
 
     items = [
         {
@@ -88,7 +93,11 @@ def transaction_list(request):
     ]
 
     return Response(
-        {"count": len(items), "transactions": items},
+        {
+            "count": total,
+            "truncated": total > MAX_TRANSACTION_ITEMS,
+            "transactions": items,
+        },
         status=status.HTTP_200_OK,
     )
 
@@ -102,8 +111,11 @@ def review_queue(request):
     Distinct merchants with at least one uncategorized transaction, largest
     total spend first — answering the top of this list moves the most dollars,
     so a user who answers three questions and stops still gets a useful result.
+
+    count is the total matching merchant groups. At most MAX_REVIEW_ITEMS are
+    returned; truncated is true when more exist.
     """
-    groups = (
+    groups_qs = (
         _user_transactions(request.user)
         .filter(category=UNRESOLVED_CATEGORY)
         .exclude(merchant_key="")
@@ -116,8 +128,10 @@ def review_queue(request):
             #raw bank string: show as evidence below the clean name.
             sample_description=Max("description"),
         )
-        .order_by("-total_amount")[:MAX_REVIEW_ITEMS]
+        .order_by("-total_amount")
     )
+    total = groups_qs.count()
+    groups = groups_qs[:MAX_REVIEW_ITEMS]
 
     items = [
         {
@@ -132,7 +146,8 @@ def review_queue(request):
 
     return Response(
         {
-            "count": len(items),
+            "count": total,
+            "truncated": total > MAX_REVIEW_ITEMS,
             "categories": sorted(reward_categories()),
             "merchants": items,
         },
@@ -242,6 +257,7 @@ def summary_view(request):
                 "latest": period["latest"].isoformat() if period["latest"] else None,
                 "days_span": period["days_span"],
                 "months_covered": period["months_covered"],
+                "months_breakdown": period["months_breakdown"],
             },
             "by_category": {
                 cat: _money(total)

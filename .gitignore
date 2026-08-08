@@ -26,6 +26,8 @@ coverage.xml
 .env
 backend/.env
 .env.*
+!.env.example
+!backend/.env.example
 
 # OS / editor cruft
 .DS_Store

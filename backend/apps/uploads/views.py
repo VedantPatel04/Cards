@@ -7,9 +7,12 @@ POST /api/uploads/<id>/reassign/ — move every transaction on that import
                                  to a different wallet card (wrong-card fix)
 DELETE /api/uploads/<id>/ — hard-delete a statement import (and its rows)
 
+Failed ingests do not leave status=failed shells: the Uploads row is deleted
+unless it already has transactions, in which case status is restored to processed.
+
 A statement always belongs to one user-owned card. Re-posting the same file
 bytes refreshes row data only when the card matches. Switching cards requires
-the explicit reassign endpoint — silent rebind on upload is rejected (409).
+the explicit reassign endpoint — and a silent rebind on upload is rejected (409).
 """
 
 import hashlib
@@ -23,7 +26,7 @@ from rest_framework.response import Response
 from apps.transactions.models import Transactions
 from apps.uploads.models import Uploads
 from apps.users.models import User_cards
-from services.upload_pipeline import STATUS_FAILED, STATUS_PENDING, process_upload
+from services.upload_pipeline import STATUS_PENDING, STATUS_PROCESSED, process_upload
 
 logger = logging.getLogger(__name__)
 
@@ -106,6 +109,20 @@ def _collect_upload_files(request):
     return [f for f in files if f is not None]
 
 
+def _abandon_failed_upload(upload: Uploads) -> int | None:
+    """
+    Drop a failed import shell. If the row already has transactions (re-upload
+    of bytes that previously succeeded, then failed on a later parse), keep the
+    row and restore status to processed so we do not cascade-delete good data.
+    """
+    if Transactions.objects.filter(upload=upload).exists():
+        Uploads.objects.filter(pk=upload.pk).update(status=STATUS_PROCESSED)
+        return upload.pk
+    upload_id = upload.pk
+    upload.delete()
+    return None
+
+
 def _ingest_one_file(user, uploaded_file, user_card):
     """
     Ingest a single CSV onto user_card.
@@ -159,23 +176,22 @@ def _ingest_one_file(user, uploaded_file, user_card):
     try:
         summary = process_upload(upload, user_card, file_bytes)
     except ValueError as exc:
-        Uploads.objects.filter(pk=upload.pk).update(status=STATUS_FAILED)
-        return (
-            {"ok": False, "filename": filename, "upload_id": upload.pk, "detail": str(exc)},
-            status.HTTP_400_BAD_REQUEST,
-        )
+        kept_id = _abandon_failed_upload(upload)
+        body = {"ok": False, "filename": filename, "detail": str(exc)}
+        if kept_id is not None:
+            body["upload_id"] = kept_id
+        return body, status.HTTP_400_BAD_REQUEST
     except Exception:
-        Uploads.objects.filter(pk=upload.pk).update(status=STATUS_FAILED)
-        logger.exception("upload %s failed", upload.pk)
-        return (
-            {
-                "ok": False,
-                "filename": filename,
-                "upload_id": upload.pk,
-                "detail": "Upload could not be processed.",
-            },
-            status.HTTP_500_INTERNAL_SERVER_ERROR,
-        )
+        kept_id = _abandon_failed_upload(upload)
+        logger.exception("upload %s failed", kept_id or "(deleted)")
+        body = {
+            "ok": False,
+            "filename": filename,
+            "detail": "Upload could not be processed.",
+        }
+        if kept_id is not None:
+            body["upload_id"] = kept_id
+        return body, status.HTTP_500_INTERNAL_SERVER_ERROR
 
     http_status = status.HTTP_201_CREATED if was_created else status.HTTP_200_OK
     return (
