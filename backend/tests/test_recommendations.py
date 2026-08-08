@@ -156,17 +156,32 @@ class SignupBonusTest(TestCase):
         self.assertEqual(r["signup_bonus_status"], "insufficient_data")
         self.assertEqual(r["signup_bonus_score"], ZERO)
         self.assertIn("Upload 2 more month(s)", r["signup_bonus_note"])
+        d = r["signup_bonus_detail"]
+        self.assertEqual(d["status"], "insufficient_data")
+        self.assertEqual(d["months_of_data"], 1)
+        self.assertEqual(d["months_needed"], 2)
+        self.assertEqual(d["period_months"], 3)
+        self.assertIn("required_spend", d)
 
     def test_no_data_at_all_is_insufficient_not_a_crash(self):
         r = score_card(self.freedom, _ann(), _by(), months_covered=0)
         self.assertEqual(r["signup_bonus_status"], "insufficient_data")
         self.assertIn("Upload 3 more month(s)", r["signup_bonus_note"])
+        self.assertEqual(r["signup_bonus_detail"]["months_of_data"], 0)
 
     def test_not_met(self):
         r = score_card(self.freedom, _ann(), _by(dining=Decimal("100.00")), months_covered=3)
         self.assertEqual(r["signup_bonus_status"], "not_met")
         self.assertEqual(r["signup_bonus_score"], ZERO)
         self.assertIn("short of", r["signup_bonus_note"])
+        d = r["signup_bonus_detail"]
+        self.assertEqual(d["status"], "not_met")
+        self.assertEqual(d["positive_actual_spend"], "100.00")
+        self.assertEqual(d["monthly_average"], "33.33")
+        self.assertEqual(d["projected_spend"], "100.00")  # 33.33 × 3
+        self.assertEqual(d["required_spend"], "500.00")
+        self.assertEqual(d["period_months"], 3)
+        self.assertEqual(d["months_of_data"], 3)
 
     def test_no_bonus_skips_period_check(self):
         card = seeds.make_card(
@@ -181,6 +196,7 @@ class SignupBonusTest(TestCase):
         self.assertEqual(r["signup_bonus_status"], "no_bonus")
         self.assertEqual(r["signup_bonus_note"], "")
         self.assertEqual(r["signup_bonus_score"], ZERO)
+        self.assertEqual(r["signup_bonus_detail"], {"status": "no_bonus"})
 
     def test_statements_with_a_gap_are_counted_as_months_not_calendar_days(self):
         r = score_card(self.freedom, _ann(), _by(dining=Decimal("409.08")), months_covered=2)
@@ -317,10 +333,12 @@ class RecommendationsAPITest(APITestCase):
         for key in (
             "rank", "card_id", "card_name", "issuer", "reward_currency", "headline",
             "annual_fee", "spending_score", "signup_bonus_score", "signup_bonus_status",
-            "signup_bonus_note", "total_score", "ongoing_annual_value",
+            "signup_bonus_note", "signup_bonus_detail", "total_score", "ongoing_annual_value",
             "break_even_annual_spend", "explanation",
         ):
             self.assertIn(key, rec)
+        self.assertIsInstance(rec["signup_bonus_detail"], dict)
+        self.assertIn("status", rec["signup_bonus_detail"])
         self.assertIsInstance(rec["annual_fee"], str)
         self.assertIsInstance(rec["spending_score"], str)
         self.assertIsInstance(rec["total_score"], str)

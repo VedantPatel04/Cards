@@ -133,6 +133,7 @@ def score_card(card, annualized: dict, by_category: dict, months_covered: int) -
         signup_bonus_score = ZERO
         signup_bonus_status = "no_bonus"
         signup_bonus_note = ""
+        signup_bonus_detail: dict = {"status": "no_bonus"}
     elif months_covered < period_months:
         # Covers months_covered == 0 too, so there is no division by zero below.
         months_needed = period_months - months_covered
@@ -143,9 +144,19 @@ def score_card(card, annualized: dict, by_category: dict, months_covered: int) -
             f"card's {_bonus_label(card)} signup bonus, which needs "
             f"${card.signup_bonus_required_spending} of spend in {period_months} months."
         )
+        signup_bonus_detail = {
+            "status": "insufficient_data",
+            "months_of_data": months_covered,
+            "months_needed": months_needed,
+            "period_months": period_months,
+            "required_spend": str(
+                card.signup_bonus_required_spending.quantize(CENTS, rounding=ROUND_HALF_UP)
+            ),
+        }
     else:
         positive_actual = sum((max(v, ZERO) for v in by_category.values()), ZERO)
-        projected = positive_actual / Decimal(months_covered) * Decimal(period_months)
+        monthly_average = positive_actual / Decimal(months_covered)
+        projected = monthly_average * Decimal(period_months)
         shown = projected.quantize(CENTS, rounding=ROUND_HALF_UP)
         if projected >= card.signup_bonus_required_spending:
             signup_bonus_score = _bonus_in_dollars(card)
@@ -161,6 +172,19 @@ def score_card(card, annualized: dict, by_category: dict, months_covered: int) -
                 f"Your spending projects to ${shown} over {period_months} months, "
                 f"short of the ${card.signup_bonus_required_spending} required."
             )
+        signup_bonus_detail = {
+            "status": signup_bonus_status,
+            "positive_actual_spend": str(
+                positive_actual.quantize(CENTS, rounding=ROUND_HALF_UP)
+            ),
+            "monthly_average": str(monthly_average.quantize(CENTS, rounding=ROUND_HALF_UP)),
+            "projected_spend": str(shown),
+            "required_spend": str(
+                card.signup_bonus_required_spending.quantize(CENTS, rounding=ROUND_HALF_UP)
+            ),
+            "period_months": period_months,
+            "months_of_data": months_covered,
+        }
 
     #  Total score
     total_score = spending_score - card.annual_fee + signup_bonus_score
@@ -180,6 +204,7 @@ def score_card(card, annualized: dict, by_category: dict, months_covered: int) -
         "signup_bonus_score": signup_bonus_score,
         "signup_bonus_status": signup_bonus_status,
         "signup_bonus_note": signup_bonus_note,
+        "signup_bonus_detail": signup_bonus_detail,
         "total_score": total_score,
         "ongoing_annual_value": ongoing_annual_value,
         "break_even_annual_spend": break_even_annual_spend,

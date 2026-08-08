@@ -231,6 +231,24 @@ class TransactionListTests(APITestCase):
         self.assertEqual(item["filename"], self.upload.filename)
         self.assertEqual(item["merchant_key"], "MCDONALDS")
         self.assertEqual(item["category"], "dining")
+        self.assertIn("truncated", resp.data)
+        self.assertFalse(resp.data["truncated"])
+
+    def test_count_is_total_when_list_is_truncated(self):
+        from apps.transactions.views import MAX_TRANSACTION_ITEMS
+
+        for i in range(MAX_TRANSACTION_ITEMS + 3):
+            seeds.make_transaction(
+                upload=self.upload,
+                user_card=self.user_card,
+                row_index=i,
+                merchant_key=f"M{i}",
+            )
+        resp = self.client.get(self.url)
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        self.assertEqual(resp.data["count"], MAX_TRANSACTION_ITEMS + 3)
+        self.assertTrue(resp.data["truncated"])
+        self.assertEqual(len(resp.data["transactions"]), MAX_TRANSACTION_ITEMS)
 
     def test_requires_auth(self):
         self.client.force_authenticate(user=None)

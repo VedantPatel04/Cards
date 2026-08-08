@@ -25,10 +25,7 @@ def _csv(*lines: str) -> bytes:
     return ("\n".join((HEADER, *lines)) + "\n").encode("utf-8")
 
 
-# ---------------------------------------------------------------------------
 # Happy path
-# ---------------------------------------------------------------------------
-
 class NormalizeCsvHappyPathTests(SimpleTestCase):
     def test_returns_one_dict_per_data_row(self):
         rows = normalize_csv(_csv(
@@ -91,10 +88,8 @@ class NormalizeCsvHappyPathTests(SimpleTestCase):
         self.assertEqual(row["amount"], Decimal("35.34"))
 
 
-# ---------------------------------------------------------------------------
-# Sign convention
-# ---------------------------------------------------------------------------
 
+# Sign convention
 class NormalizeCsvSignTests(SimpleTestCase):
     """Chase: spend negative. Us: spend positive, credits negative."""
 
@@ -114,11 +109,7 @@ class NormalizeCsvSignTests(SimpleTestCase):
         row = normalize_csv(_csv('07/16/2026,07/17/2026,BIG PURCHASE,Shopping,Sale,"-$1,234.56",'))[0]
         self.assertEqual(row["amount"], Decimal("1234.56"))
 
-
-# ---------------------------------------------------------------------------
 # Canonical category (the seam every future adapter plugs into)
-# ---------------------------------------------------------------------------
-
 class NormalizeCsvCategoryTests(SimpleTestCase):
     """
     The adapter owns provider vocabulary and hands the resolver a canonical
@@ -152,11 +143,7 @@ class NormalizeCsvCategoryTests(SimpleTestCase):
             with self.subTest(chase_text=chase_text):
                 self.assertIn(canonical, cats)
 
-
-# ---------------------------------------------------------------------------
 # Rows that are not transactions
-# ---------------------------------------------------------------------------
-
 class NormalizeCsvSkippedRowTests(SimpleTestCase):
     def test_header_only_file_returns_empty_list(self):
         self.assertEqual(normalize_csv((HEADER + "\n").encode("utf-8")), [])
@@ -187,11 +174,7 @@ class NormalizeCsvSkippedRowTests(SimpleTestCase):
         self.assertEqual([row["raw_description"] for row in rows], ["FIRST", "THIRD"])
         self.assertEqual([row["row_index"] for row in rows], [0, 2])
 
-
-# ---------------------------------------------------------------------------
 # Encoding
-# ---------------------------------------------------------------------------
-
 class NormalizeCsvEncodingTests(SimpleTestCase):
     def test_utf8_bom_is_stripped_from_first_header(self):
         """
@@ -207,11 +190,7 @@ class NormalizeCsvEncodingTests(SimpleTestCase):
         rows = normalize_csv(data)
         self.assertEqual(len(rows), 1)
 
-
-# ---------------------------------------------------------------------------
 # Rejected files (ValueError → the view answers 400)
-# ---------------------------------------------------------------------------
-
 class NormalizeCsvRejectionTests(SimpleTestCase):
     def test_empty_bytes_raise(self):
         with self.assertRaises(ValueError):
@@ -251,11 +230,19 @@ class NormalizeCsvRejectionTests(SimpleTestCase):
             normalize_csv(_csv("07/16/2026,07/17/2026,X,Groceries,Sale,-100000000.00,"))
         self.assertIn("row 0", str(ctx.exception))
 
+    def test_more_than_max_upload_rows_raises(self):
+        from services.csv_parser import MAX_UPLOAD_ROWS
 
-# ---------------------------------------------------------------------------
+        lines = [
+            f"07/16/2026,07/17/2026,MERCHANT {i},Shopping,Sale,-1.00,"
+            for i in range(MAX_UPLOAD_ROWS + 1)
+        ]
+        with self.assertRaises(ValueError) as ctx:
+            normalize_csv(_csv(*lines))
+        self.assertIn(str(MAX_UPLOAD_ROWS), str(ctx.exception))
+
+
 # Column length guards
-# ---------------------------------------------------------------------------
-
 class NormalizeCsvLengthTests(SimpleTestCase):
     def test_overlong_description_is_truncated_to_column_width(self):
         long_name = "A" * 400
@@ -263,10 +250,7 @@ class NormalizeCsvLengthTests(SimpleTestCase):
         self.assertEqual(len(row["raw_description"]), 255)
 
 
-# ---------------------------------------------------------------------------
 # The real sample file
-# ---------------------------------------------------------------------------
-
 class NormalizeCsvSampleFileTests(SimpleTestCase):
     """Parses the actual Chase export committed under data/sample_uploads/."""
 

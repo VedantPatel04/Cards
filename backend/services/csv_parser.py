@@ -49,6 +49,9 @@ CHASE_CATEGORY_MAP = {
 # the view instead of a DataError 500 from Postgres.
 MAX_DESCRIPTION_CHARS = 255
 MAX_ABS_AMOUNT = Decimal("99999999.99")
+# Hard cap on data rows per statement. Checked while parsing so oversized
+# files fail fast with a clear 400 instead of binding the ingest path.
+MAX_UPLOAD_ROWS = 5000
 
 
 def _clean_cells(raw_row: dict) -> dict:
@@ -166,6 +169,12 @@ def normalize_csv(file_bytes: bytes) -> list[dict]:
         }
 
         structured_data.append(normalized)
+
+        if len(structured_data) > MAX_UPLOAD_ROWS:
+            raise ValueError(
+                f"CSV has more than {MAX_UPLOAD_ROWS} data rows; "
+                f"split the statement or upload a smaller export."
+            )
 
     logger.debug("normalize_csv: parsed %s rows", len(structured_data))
     return structured_data

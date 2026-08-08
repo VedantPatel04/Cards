@@ -90,6 +90,9 @@ class SpendSummaryServiceTest(TestCase):
         self.assertEqual(s["period"]["latest"], date(2026, 1, 31))
         self.assertEqual(s["period"]["days_span"], 31)
         self.assertEqual(s["period"]["months_covered"], 1)
+        self.assertEqual(len(s["period"]["months_breakdown"]), 1)
+        self.assertEqual(s["period"]["months_breakdown"][0]["month"], "2026-01")
+        self.assertEqual(s["period"]["months_breakdown"][0]["transaction_count"], 6)
         # 270 × 12 / 1
         self.assertEqual(s["annualized"]["dining"], Decimal("3240.00"))
 
@@ -102,6 +105,7 @@ class SpendSummaryServiceTest(TestCase):
         self.assertIsNone(s["period"]["earliest"])
         self.assertEqual(s["period"]["days_span"], 0)
         self.assertEqual(s["period"]["months_covered"], 0)
+        self.assertEqual(s["period"]["months_breakdown"], [])
         self.assertEqual(s["categorized_pct"], Decimal("100.0"))
         self.assertEqual(set(s["by_category"].keys()), ALL_CATEGORIES)
         self.assertTrue(all(v == Decimal("0") for v in s["by_category"].values()))
@@ -165,3 +169,9 @@ class SpendSummaryAPITest(APITestCase):
         self.assertEqual(resp.data["transaction_count"], 1)
         self.assertEqual(resp.data["categorized_pct"], "100.0")
         self.assertEqual(resp.data["period"]["days_span"], 1)
+        self.assertIn("months_breakdown", resp.data["period"])
+        self.assertIsInstance(resp.data["period"]["months_breakdown"], list)
+        self.assertEqual(len(resp.data["period"]["months_breakdown"]), 1)
+        mb = resp.data["period"]["months_breakdown"][0]
+        self.assertIn("month", mb)
+        self.assertIn("transaction_count", mb)
