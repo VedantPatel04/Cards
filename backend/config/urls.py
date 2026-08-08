@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.urls import path
+from django.views.generic import RedirectView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 from apps.users.views import is_Authenticated, register
 from apps.users.wallet_views import wallet_delete, wallet_list_or_add
@@ -9,6 +10,7 @@ from apps.transactions.views import review_answer, review_queue, summary_view, t
 from apps.recommendations.views import recommendations_view
 
 urlpatterns = [
+    path('', RedirectView.as_view(pattern_name='token_obtain_pair', permanent=False)),
     path('admin/', admin.site.urls),
 
     # Auth
