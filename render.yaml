@@ -12,7 +12,7 @@ services:
     # No custom health path yet — avoid pointing at POST-only auth routes.
     envVars:
       - key: DJANGO_SETTINGS_MODULE
-        value: config.settings.production
+        value: config.settings.production # consumed by config.settings.production  - Render generates this :)
       - key: SECRET_KEY
         generateValue: true
       - key: DATABASE_URL
