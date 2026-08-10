@@ -70,9 +70,9 @@ export function DashboardPage() {
               value={`${summary.categorized_pct}%`}
             />
             <Stat
-              label="Statement months covered"
+              label="Months covered by statements"
               value={String(summary.period.months_covered)}
-              hint="Sum of ~30-day statement cycles across uploads — not calendar months."
+              hint="Sum of ~30-day statement cycles"
             />
             <Stat
               label="Unresolved amount"

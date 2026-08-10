@@ -46,61 +46,47 @@ export function RecommendationsPage() {
       ) : null}
 
       {data ? (
-        <>
-          <div className="border-b border-[var(--color-line)] pb-4">
-            <p className="text-sm text-[var(--color-muted)]">Confidence</p>
-            <p className="mt-1 text-xl font-semibold capitalize">
-              {data.confidence}
-            </p>
-            {data.confidence_note ? (
-              <p className="mt-2 max-w-prose text-sm text-[var(--color-muted)]">
-                {data.confidence_note}
-              </p>
-            ) : null}
-            <p className="mt-2 max-w-prose text-xs text-[var(--color-muted)]">
-              {data.value_basis.note} Point value:{' '}
-              {data.value_basis.point_value_cents}¢ ·{' '}
-              {data.value_basis.months_of_data} statement month
-              {data.value_basis.months_of_data === 1 ? '' : 's'} of data.
-            </p>
-          </div>
-
-          {cards.length === 0 ? (
-            <p className="text-[var(--color-muted)]">
-              No catalog recommendations yet. Seed catalog cards on the backend,
-              add spending via{' '}
-              <Link to="/upload" className="underline">
-                Upload
-              </Link>
-              , then return here.
-            </p>
-          ) : (
-            <ol className="flex flex-col gap-8">
-              {cards.map((card) => (
-                <RecommendationItem key={card.card_id} card={card} />
-              ))}
-            </ol>
-          )}
-        </>
+        cards.length === 0 ? (
+          <p className="text-[var(--color-muted)]">
+            No catalog recommendations yet. Seed catalog cards on the backend,
+            add spending via{' '}
+            <Link to="/upload" className="underline">
+              Upload
+            </Link>
+            , then return here.
+          </p>
+        ) : (
+          <ol className="flex flex-col gap-8">
+            {cards.map((card) => (
+              <RecommendationItem key={card.card_id} card={card} />
+            ))}
+          </ol>
+        )
       ) : null}
     </section>
   )
 }
 
+function humanizeLabel(value: string) {
+  return value.replaceAll('_', ' ')
+}
+
 function RecommendationItem({ card }: { card: RecommendationCard }) {
   return (
     <li className="border-b border-[var(--color-line)] pb-8">
-      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-        <span className="text-sm font-medium text-[var(--color-muted)]">
-          #{card.rank}
-        </span>
+      <div className="flex flex-col gap-1">
         <h2 className="text-xl font-semibold tracking-tight">
+          <span className="mr-2 text-sm font-medium text-[var(--color-muted)]">
+            #{card.rank}
+          </span>
           {card.card_name}
         </h2>
-        <span className="text-sm text-[var(--color-muted)]">
+        <p className="text-sm text-[var(--color-muted)]">
           {card.issuer}
-          {card.reward_currency ? ` · ${card.reward_currency}` : ''}
-        </span>
+          {card.reward_currency
+            ? ` · ${humanizeLabel(card.reward_currency)}`
+            : ''}
+        </p>
       </div>
 
       {card.rank_note ? (
@@ -109,11 +95,11 @@ function RecommendationItem({ card }: { card: RecommendationCard }) {
 
       <p className="mt-3 max-w-prose">{card.headline}</p>
 
-      <dl className="mt-4 grid gap-3 sm:grid-cols-2">
+      <dl className="mt-4 grid gap-x-8 gap-y-4 sm:grid-cols-2">
         <Metric
           label="First-year value"
           value={formatMoney(card.total_score)}
-          hint="Includes signup bonus when counted (total_score)."
+          hint="Includes signup bonus when it counts toward first-year value."
         />
         <Metric
           label="Ongoing annual value"
@@ -123,17 +109,18 @@ function RecommendationItem({ card }: { card: RecommendationCard }) {
         <Metric label="Annual fee" value={formatMoney(card.annual_fee)} />
         <Metric
           label="Signup bonus status"
-          value={card.signup_bonus_status.replaceAll('_', ' ')}
+          value={humanizeLabel(card.signup_bonus_status)}
           hint={card.signup_bonus_note || undefined}
         />
+        {card.break_even_annual_spend ? (
+          <Metric
+            className="sm:col-span-2"
+            label="Break-even annual spend"
+            value={formatMoney(card.break_even_annual_spend)}
+            hint="At your current category spending rates."
+          />
+        ) : null}
       </dl>
-
-      {card.break_even_annual_spend ? (
-        <p className="mt-3 text-sm text-[var(--color-muted)]">
-          Break-even annual spend (at your mix):{' '}
-          {formatMoney(card.break_even_annual_spend)}
-        </p>
-      ) : null}
 
       <details className="mt-4">
         <summary className="cursor-pointer text-sm font-medium">
@@ -162,13 +149,15 @@ function Metric({
   label,
   value,
   hint,
+  className = '',
 }: {
   label: string
   value: string
   hint?: string
+  className?: string
 }) {
   return (
-    <div>
+    <div className={className}>
       <dt className="text-sm text-[var(--color-muted)]">{label}</dt>
       <dd className="mt-1 text-lg font-semibold capitalize tracking-tight">
         {value}

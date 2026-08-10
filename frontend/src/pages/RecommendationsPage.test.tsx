@@ -49,14 +49,14 @@ describe('RecommendationsPage', () => {
     mockFetchRecommendations.mockReset()
   })
 
-  it('shows confidence and empty guidance when there are no cards', async () => {
+  it('shows empty guidance when there are no cards', async () => {
     mockFetchRecommendations.mockResolvedValue(baseResponse())
     renderPage()
 
-    expect(await screen.findByText('low')).toBeInTheDocument()
     expect(
-      screen.getByText(/No catalog recommendations yet/i),
+      await screen.findByText(/No catalog recommendations yet/i),
     ).toBeInTheDocument()
+    expect(screen.queryByText(/Confidence/i)).not.toBeInTheDocument()
     expect(screen.getByRole('link', { name: /Upload/i })).toHaveAttribute(
       'href',
       '/upload',
@@ -81,7 +81,7 @@ describe('RecommendationsPage', () => {
             card_id: 12,
             card_name: 'Freedom Unlimited',
             issuer: 'Chase',
-            reward_currency: 'cash',
+            reward_currency: 'cash_back',
             headline: 'Earns about $15.00 a year on your spending, with no annual fee.',
             spending_score: '15.00',
             annual_fee: '0.00',
@@ -91,7 +91,7 @@ describe('RecommendationsPage', () => {
             signup_bonus_detail: { status: 'insufficient_data' },
             total_score: '15.00',
             ongoing_annual_value: '15.00',
-            break_even_annual_spend: null,
+            break_even_annual_spend: '2500.00',
             explanation: [
               {
                 category: 'dining',
@@ -109,8 +109,10 @@ describe('RecommendationsPage', () => {
     renderPage()
 
     expect(await screen.findByText('Freedom Unlimited')).toBeInTheDocument()
-    expect(screen.getByText('medium')).toBeInTheDocument()
+    expect(screen.queryByText(/Confidence/i)).not.toBeInTheDocument()
+    expect(screen.queryByText('medium')).not.toBeInTheDocument()
     expect(screen.getByText(/#1/)).toBeInTheDocument()
+    expect(screen.getByText(/Chase · cash back/i)).toBeInTheDocument()
     expect(
       screen.getByText(/Earns about \$15\.00 a year on your spending/i),
     ).toBeInTheDocument()
@@ -129,5 +131,8 @@ describe('RecommendationsPage', () => {
     expect(
       screen.getByText(/Upload 1 more month\(s\) of statements/i),
     ).toBeInTheDocument()
+    expect(
+      screen.getByText('Break-even annual spend').closest('div'),
+    ).toHaveTextContent('$2,500.00')
   })
 })

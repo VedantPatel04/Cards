@@ -29,7 +29,7 @@ export function TransactionsPage() {
       <header>
         <h1 className="text-3xl font-semibold tracking-tight">Transactions</h1>
         <p className="mt-2 max-w-prose text-[var(--color-muted)]">
-          Your ledger rows, newest first. Filtering and pagination are not in
+          Your transaction history with the newest transactions listed first. Filtering and pagination are not in
           this module — the API returns at most 500 rows.
         </p>
       </header>
