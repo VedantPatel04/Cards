@@ -3,7 +3,8 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { GuestRoute, ProtectedRoute } from './components/ProtectedRoute'
 import { AppLayout } from './layouts/AppLayout'
 import { LoginPage, RegisterPage } from './pages/AuthPages'
-import { HomePage } from './pages/HomePage'
+import { PlaceholderPage } from './pages/PlaceholderPage'
+import { WalletPage } from './pages/WalletPage'
 
 export default function App() {
   return (
@@ -16,7 +17,52 @@ export default function App() {
 
         <Route element={<ProtectedRoute />}>
           <Route element={<AppLayout />}>
-            <Route path="/" element={<HomePage />} />
+            <Route
+              path="/"
+              element={
+                <PlaceholderPage
+                  title="Dashboard"
+                  note="Summary from /api/summary/ lands in the next modules. Use Wallet to add cards first."
+                />
+              }
+            />
+            <Route path="/wallet" element={<WalletPage />} />
+            <Route
+              path="/upload"
+              element={
+                <PlaceholderPage
+                  title="Upload"
+                  note="Multi-file CSV upload and upload management come next."
+                />
+              }
+            />
+            <Route
+              path="/review"
+              element={
+                <PlaceholderPage
+                  title="Review"
+                  note="Merchant categorization against /api/review/ comes next."
+                />
+              }
+            />
+            <Route
+              path="/recommendations"
+              element={
+                <PlaceholderPage
+                  title="Recommendations"
+                  note="Ranked cards from /api/recommendations/ come next."
+                />
+              }
+            />
+            <Route
+              path="/transactions"
+              element={
+                <PlaceholderPage
+                  title="Transactions"
+                  note="Transaction table from /api/transactions/ comes next."
+                />
+              }
+            />
           </Route>
         </Route>
 
