@@ -86,6 +86,7 @@ def transaction_list(request):
             "normalized_description": row.normalized_description,
             "merchant_key": row.merchant_key,
             "category": row.category,
+            "entry_type": row.entry_type,
             "resolution_source": row.resolution_source,
             "confidence": row.confidence,
         }
@@ -236,13 +237,17 @@ def summary_view(request):
 
     All-time spend totals across all wallet cards, by rewards category.
 
-    Returns net spend (refunds reduce category totals). Unresolved rows
-    (category="") are excluded from by_category and reported separately in
+    Returns purchase spend (entry_type spend + refund). Refunds reduce
+    category totals. Bill payments and statement adjustments are excluded
+    from by_category / total_spend but still appear on the transaction list
+    and still count toward statement-cycle months_covered.
+
+    Unresolved rows (category="") among spend/refund are reported in
     unresolved_count / unresolved_amount.
 
-    All 7 category buckets are always present even if zero. Negative totals
-    (e.g. other when card payments outweigh real spend) are not clamped —
-    the Day 6 Confidence Check (Stage 5) handles distortion detection.
+    All 7 category buckets are always present even if zero.
+    months_breakdown is calendar months (display); months_covered is
+    statement-cycle evidence used for annualize / signup.
 
     The Day 6 recommendation engine calls get_spend_summary() directly as a
     service; this view serialises the same output for the HTTP API.

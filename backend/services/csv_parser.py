@@ -12,6 +12,13 @@ import logging
 from datetime import datetime
 from decimal import Decimal, InvalidOperation
 
+from apps.transactions.models import (
+    ENTRY_ADJUSTMENT,
+    ENTRY_PAYMENT,
+    ENTRY_REFUND,
+    ENTRY_SPEND,
+)
+
 logger = logging.getLogger(__name__)
 
 CHASE_DATE_FORMAT = "%m/%d/%Y"
@@ -74,6 +81,29 @@ def _parse_amount(raw: str) -> Decimal:
     return Decimal(raw.replace("$", "").replace(",", ""))
 
 
+def _entry_type_from_chase(chase_type: str, description: str) -> str:
+    """
+    Map Chase Type → ledger role.
+
+    Payment / Adjustment are excluded from spend totals downstream.
+    Return nets against the purchase category.
+    Sale / Fee / unknown → spend.
+
+    Description fallback covers files that omit Type but still use Chase's
+    standard bill-payment label (also used by the data migration backfill).
+    """
+    t = (chase_type or "").strip().casefold()
+    if t == "payment":
+        return ENTRY_PAYMENT
+    if t == "return":
+        return ENTRY_REFUND
+    if t == "adjustment":
+        return ENTRY_ADJUSTMENT
+    if "payment thank you" in (description or "").casefold():
+        return ENTRY_PAYMENT
+    return ENTRY_SPEND
+
+
 def normalize_csv(file_bytes: bytes) -> list[dict]:
     """
     Parse a Chase CSV export into normalized rows.
@@ -88,6 +118,7 @@ def normalize_csv(file_bytes: bytes) -> list[dict]:
       amount          : Decimal
       transaction_date: date  (parsed from "Transaction Date", MM/DD/YYYY)
       row_index       : int   (0-based position in the file, for idempotency)
+      entry_type      : str   spend | refund | payment | adjustment
 
     Sign convention: Chase marks spend as negative; our Transactions model
     uses positive = spend / negative = refund. We negate Chase amounts here
@@ -152,10 +183,8 @@ def normalize_csv(file_bytes: bytes) -> list[dict]:
             description = description[:MAX_DESCRIPTION_CHARS]
 
         amount = -chase_amount  # negates chase amount so spend is positive
+        entry_type = _entry_type_from_chase(row.get("Type", ""), description)
         category = CHASE_CATEGORY_MAP.get(row["Category"], "")
-        # Chase leaves Category blank on card payments and some credits. Those
-        # are not spend, so asking a user to categorize them is noise — bucket
-        # them as "other" and keep the review queue to real purchases.
         if not category and amount <= 0:
             category = "other"
 
@@ -166,6 +195,7 @@ def normalize_csv(file_bytes: bytes) -> list[dict]:
             "amount": amount,
             "transaction_date": transaction_date,
             "row_index": row_index,
+            "entry_type": entry_type,
         }
 
         structured_data.append(normalized)

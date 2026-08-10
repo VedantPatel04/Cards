@@ -1,8 +1,8 @@
 # Dev & test workflows
 
-Operational truth for running and verifying the backend. **Not** an API reference — request/response shapes live in [`postman/Cards_API.postman_collection.json`](postman/Cards_API.postman_collection.json).
+Operational truth for running and verifying the backend. **Not** an API reference — request/response shapes live in `[postman/Cards_API.postman_collection.json](postman/Cards_API.postman_collection.json)`.
 
-Unless noted, run commands from `backend/` with the project venv active and `DJANGO_SETTINGS_MODULE=config.settings.local` (see [`settings-architecture.md`](settings-architecture.md)).
+Unless noted, run commands from `backend/` with the project venv active and `DJANGO_SETTINGS_MODULE=config.settings.local` (see `[settings-architecture.md](settings-architecture.md)`).
 
 ---
 
@@ -23,12 +23,14 @@ python manage.py runserver
 
 Printed credentials (always):
 
-| Field | Value |
-|-------|--------|
-| username | `user1` |
-| email | `user1@example.com` |
-| password | `user1Password` |
+
+| Field        | Value                                       |
+| ------------ | ------------------------------------------- |
+| username     | `user1`                                     |
+| email        | `user1@example.com`                         |
+| password     | `user1Password`                             |
 | user_card_id | printed integer (use for statement uploads) |
+
 
 Re-running `setup_dev` is safe: reseeds catalog/aliases, resets `user1`’s password, and **does not** duplicate a wallet card if one already exists.
 
@@ -43,6 +45,8 @@ python manage.py seed_global_merchants --clear  # wipe aliases table, then upser
 Redis (`REDIS_URL`, default `redis://localhost:6379/0`) caches user merchant answers. If Redis is down, uploads and review still work (fail-open); only override lookups skip the cache.
 
 ---
+
+
 
 ## 2. Wallet: catalog card vs custom card
 
@@ -71,23 +75,29 @@ Goal: prove both add paths and that catalog products stay recommendable while cu
 
 ---
 
+
+
 ## 3. Statement upload pipeline (sample Chase files)
 
 Prerequisite: authenticated `user1` and a wallet `user_card_id` (from `setup_dev` or workflow 2).
 
 Sample files (under `backend/data/sample_uploads/`):
 
-| File | Role |
-|------|------|
+
+| File                              | Role                                          |
+| --------------------------------- | --------------------------------------------- |
 | `Chase Transaction Statement.csv` | Short mixed statement (good first smoke test) |
-| `Chase_MAY_Transactions.csv` | Slightly larger real-ish May export |
+| `Chase_MAY_Transactions.csv`      | Slightly larger real-ish May export           |
+
+
+
 
 ### 3a. Happy path
 
 1. Upload CSV(s) with form fields `file` (repeat the key for multiple statements) + `user_card_id`.
 2. Confirm response:
-   - One file → `status: processed`, `summary.rows` matches data rows, `created` / `updated` as appropriate.
-   - Multiple files → `{ count, succeeded, failed, results[] }` with per-file `ok` / `summary` or `detail`.
+  - One file → `status: processed`, `summary.rows` matches data rows, `created` / `updated` as appropriate.
+  - Multiple files → `{ count, succeeded, failed, results[] }` with per-file `ok` / `summary` or `detail`.
 3. List transactions → each row has `card_name` / `issuer` joined from the wallet product; `category` and `resolution_source` populated.
 4. Open review queue → only merchants with `category == ""` appear. Empty queue is valid when coverage is 100%.
 
@@ -108,7 +118,7 @@ About 15 data rows. With globals seeded, expect **high / full coverage** (`needs
 
 - Global hits (examples): `TARGET` → shopping; `TACO BELL`, `CHIPOTLE` → dining  
 - Bank-mapped hits: Chase `Travel` / `Food & Drink` / `Shopping` → travel / dining / shopping  
-- Forced or mapped `other`: bills/utilities-style rows, professional services, card payment thank-you  
+- Forced or mapped `other`: bills/utilities-style rows, professional services, card payment thank-you
 
 Normalization quirks (not failures): e.g. `AMTRAK .COM…` may key as `AMTRAK COM` and resolve via **bank** travel even if the alias table has `AMTRAK`; long location strings (e.g. In-N-Out + city) may miss a short global key and still resolve via Chase’s category.
 
@@ -117,12 +127,14 @@ Normalization quirks (not failures): e.g. `AMTRAK .COM…` may key as `AMTRAK CO
 Only needed if upload `needs_review` > 0 or review queue is non-empty.
 
 1. List review queue → pick a `merchant_key` (highest spend first).
-2. Submit an answer with that key + a rewards category (`dining` \| `groceries` \| `travel` \| `gas` \| `entertainment` \| `shopping` \| `other`).
+2. Submit an answer with that key + a rewards category (`dining`  `groceries`  `travel`  `gas`  `entertainment`  `shopping`  `other`).
 3. List review again → that merchant gone.
 4. List transactions → those rows show the chosen category; `resolution_source` reflects user authority after backfill.
 5. Upload another statement containing the same merchant → should resolve from the user override (Redis cache and/or `MerchantResolution`), not reappear in review.
 
 ---
+
+
 
 ## 4. Refresh global aliases after editing JSON
 
@@ -138,6 +150,8 @@ Do **not** put raw Chase description strings in `merchant_key` — keys must mat
 
 ---
 
+
+
 ## 5. Automated tests (critical suites)
 
 ```bash
@@ -148,6 +162,8 @@ python manage.py test tests.test_wallet tests.test_review tests.test_summary tes
 Uses `config.settings.test` via the test runner. These suites cover wallet catalog/custom behavior, review isolation, spend summary (service + HTTP layer), resolver tiers (including dead Redis), upload pipeline, and Chase CSV parsing.
 
 ---
+
+
 
 ## 6. Spend summary
 
@@ -161,15 +177,18 @@ Returns all-time spend totals by rewards category across all wallet cards.
 
 **Key fields:**
 
-| Field | Notes |
-|-------|-------|
-| `by_category` | All 7 buckets always present; net spend (refunds reduce totals) |
-| `annualized` | Projected annual spend per category (`by_category × 12 / months_covered`) |
-| `period.months_covered` | Distinct calendar months holding a transaction — the extrapolation base |
-| `total_spend` | Sum of all `by_category` values (categorised only) |
-| `categorized_pct` | Count-based coverage; improves as you clear the review queue |
-| `unresolved_count` / `unresolved_amount` | Rows still needing review |
-| `period` | `earliest`, `latest` transaction date and `days_span` |
+
+| Field                                    | Notes                                                                               |
+| ---------------------------------------- | ----------------------------------------------------------------------------------- |
+| `by_category`                            | All 7 buckets always present; net spend (refunds reduce totals)                     |
+| `annualized`                             | Projected annual spend per category (`by_category × 12 / months_covered`)           |
+| `period.months_covered`                  | Statement-cycle evidence: sum over uploads of `max(1, round(span_days/30))`         |
+| `period.months_breakdown`                | Calendar-month histogram (display only; may list more months than `months_covered`) |
+| `total_spend`                            | Sum of purchase/refund `by_category` values (payments/adjustments excluded)         |
+| `categorized_pct`                        | Count-based coverage; improves as you clear the review queue                        |
+| `unresolved_count` / `unresolved_amount` | Rows still needing review                                                           |
+| `period`                                 | `earliest`, `latest` transaction date and `days_span`                               |
+
 
 **Normal flow:**
 
@@ -179,12 +198,15 @@ Returns all-time spend totals by rewards category across all wallet cards.
 
 **What to watch for:**
 
-- `other` can be negative when card payment rows outweigh real "other" spend — this is expected, not an error.
+- Bill payments and statement adjustments are excluded from spend totals (`entry_type` payment/adjustment). Refunds still reduce the matching category.
 - `categorized_pct < 100` means unresolved rows are excluded from `by_category`; answer review items to close the gap.
-- `days_span` is display only. Statements arrive with gaps, so two statements 68 days apart are **2 months** of evidence, not 3.4 — extrapolating on `days_span` would read the empty gap as months of zero spending. Always reason from `months_covered`.
+- `days_span` is display only. Do not extrapolate from it when uploads have gaps.
+- `months_covered` is the extrapolation base (statement cycles). `months_breakdown` can show more calendar months than `months_covered` when a cycle spills across month labels — that is expected.
 - Day 6 recommendations call this service internally; keeping coverage high produces more accurate recommendations.
 
 ---
+
+
 
 ## 7. Card recommendations
 
@@ -198,20 +220,22 @@ Returns up to 5 catalog cards scored against this user's all-time spend summary.
 
 **Key fields:**
 
-| Field | Notes |
-|-------|-------|
-| `confidence` / `confidence_note` | From summary quality (sparse / coverage / distortion) |
-| `value_basis` | `currency`, `months_of_data`, `point_value_cents` — the assumptions behind every number |
-| `recommendations[].rank` | Competition rank; ties share a rank (e.g. 1, 1, 3) |
-| `recommendations[].rank_note` | **Omitted entirely** unless this card ties with peers |
-| `headline` | One plain sentence: what the card is worth, or why the fee makes it a loss |
-| `spending_score` | Annual reward value: annualized spend × effective rate (negatives floored) |
-| `signup_bonus_*` | Status `met` / `not_met` / `insufficient_data` / `no_bonus` |
-| `total_score` | First year: `spending_score − annual_fee + signup_bonus_score` |
-| `ongoing_annual_value` | Every year after: `spending_score − annual_fee` (no bonus) |
-| `break_even_annual_spend` | Spend at this user's mix that would cover the fee; `null` when there is no fee |
-| `reward_currency` | `cash_back`, `points` or `miles`; points are converted before comparison |
-| `explanation` | Per-category published rate, effective rate, annualized spend, value |
+
+| Field                            | Notes                                                                                   |
+| -------------------------------- | --------------------------------------------------------------------------------------- |
+| `confidence` / `confidence_note` | From summary quality (sparse / coverage / distortion)                                   |
+| `value_basis`                    | `currency`, `months_of_data`, `point_value_cents` — the assumptions behind every number |
+| `recommendations[].rank`         | Competition rank; ties share a rank (e.g. 1, 1, 3)                                      |
+| `recommendations[].rank_note`    | **Omitted entirely** unless this card ties with peers                                   |
+| `headline`                       | One plain sentence: what the card is worth, or why the fee makes it a loss              |
+| `spending_score`                 | Annual reward value: annualized spend × effective rate (negatives floored)              |
+| `signup_bonus_*`                 | Status `met` / `not_met` / `insufficient_data` / `no_bonus`                             |
+| `total_score`                    | First year: `spending_score − annual_fee + signup_bonus_score`                          |
+| `ongoing_annual_value`           | Every year after: `spending_score − annual_fee` (no bonus)                              |
+| `break_even_annual_spend`        | Spend at this user's mix that would cover the fee; `null` when there is no fee          |
+| `reward_currency`                | `cash_back`, `points` or `miles`; points are converted before comparison                |
+| `explanation`                    | Per-category published rate, effective rate, annualized spend, value                    |
+
 
 **Normal flow:**
 
@@ -223,12 +247,14 @@ Returns up to 5 catalog cards scored against this user's all-time spend summary.
 
 - Length may be 0–5; do not assume exactly 5.
 - **Negative totals are a feature.** They mean the annual fee costs more than the card returns; `headline` and `break_even_annual_spend` say by how much and what it would take to flip.
-- Signup bonuses stay `insufficient_data` until `months_covered` reaches the card's window; the note says exactly how many more months to upload.
+- Signup bonus: if purchase spend already clears the required amount → `met` even with fewer statement-months than the card's window (early finish is allowed). If still under the bar and `months_covered` is short of the window → `insufficient_data` and the note says how many more months to upload.
 - Empty wallet still returns 200 with low confidence.
 - `by_category` (actual) drives bonus projection; `annualized` drives spending score — they are not interchangeable.
 - A card's issuer wording (`us_supermarkets`) is folded onto the 7 buckets by `reward_rule_aliases.json`. Adding a card with an unlisted label fails ingestion on purpose — map it there first, to a bucket or to `null`.
 
 ---
+
+
 
 ## 8. Automated end-to-end run
 
@@ -241,11 +267,13 @@ cd backend && python manage.py runserver   # terminal 1
 
 The script seeds (`setup_dev`), registers/logs in, resolves a wallet card, uploads both sample statements, clears the review queue, then asserts the Day 6 contract on `GET /api/recommendations/`: field set, 2-decimal money strings, `total_score = spending_score − annual_fee + signup_bonus_score` (±1¢ for independent rounding), valid bonus statuses, competition ranks, and a 401 without a token. It prints the ranked table plus the winner's per-category explanation and exits non-zero if any check fails.
 
-| Flag / env | Effect |
-|------------|--------|
-| `--no-setup` | Skip `setup_dev` (keep the DB exactly as-is) |
-| `BASE_URL=…` | Point at another host/port (default `http://127.0.0.1:8000`) |
-| `USERNAME` / `PASSWORD` | Run as someone other than `user1` |
+
+| Flag / env              | Effect                                                       |
+| ----------------------- | ------------------------------------------------------------ |
+| `--no-setup`            | Skip `setup_dev` (keep the DB exactly as-is)                 |
+| `BASE_URL=…`            | Point at another host/port (default `http://127.0.0.1:8000`) |
+| `USERNAME` / `PASSWORD` | Run as someone other than `user1`                            |
+
 
 Re-runnable: a re-uploaded statement returns `200` (refresh), and a statement already bound to a **different** wallet card returns `409` — the script then calls reassign rather than re-uploading, matching workflow 3d.
 
@@ -264,17 +292,22 @@ Run `demo_flow.sh` (or the upload steps in the GUI) first so there is spend to s
 
 ---
 
+
+
 ## Quick checklist
 
-| Goal | Command / action |
-|------|------------------|
-| Boot demo environment | `migrate` → `setup_dev` → `runserver` |
-| Catalog wallet card | Add by `card_product_id`; confirm `is_catalog: true` |
-| Custom wallet card | Add `name` + `issuer` + `network`; confirm absent from catalog list |
-| Smoke a statement | Upload a file under `data/sample_uploads/` with a real `user_card_id` |
-| Prove user override | Answer review → re-upload same merchant → stays categorized |
-| Update merchant globals | Edit aliases JSON → `seed_global_merchants` |
-| Spend summary | `GET /api/summary/` after uploading a statement |
-| Card recommendations | `GET /api/recommendations/` after summary looks sane |
-| Whole flow, automated | `./scripts/demo_flow.sh` against a running server |
-| API shapes | Postman collection only |
+
+| Goal                    | Command / action                                                      |
+| ----------------------- | --------------------------------------------------------------------- |
+| Boot demo environment   | `migrate` → `setup_dev` → `runserver`                                 |
+| Catalog wallet card     | Add by `card_product_id`; confirm `is_catalog: true`                  |
+| Custom wallet card      | Add `name` + `issuer` + `network`; confirm absent from catalog list   |
+| Smoke a statement       | Upload a file under `data/sample_uploads/` with a real `user_card_id` |
+| Prove user override     | Answer review → re-upload same merchant → stays categorized           |
+| Update merchant globals | Edit aliases JSON → `seed_global_merchants`                           |
+| Spend summary           | `GET /api/summary/` after uploading a statement                       |
+| Card recommendations    | `GET /api/recommendations/` after summary looks sane                  |
+| Whole flow, automated   | `./scripts/demo_flow.sh` against a running server                     |
+| API shapes              | Postman collection only                                               |
+
+
