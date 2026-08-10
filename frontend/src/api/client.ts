@@ -123,3 +123,33 @@ export async function apiClient<T>(
 
   return (await response.json()) as T
 }
+
+/**
+ * Multipart upload helper. Does not set Content-Type.
+ * Retries once after refresh on 401, same as apiClient.
+ */
+export async function apiFormData(
+  path: string,
+  formData: FormData,
+  retried = false,
+): Promise<Response> {
+  const headers = new Headers({ Accept: 'application/json' })
+  const access = getAccessToken()
+  if (access) headers.set('Authorization', `Bearer ${access}`)
+
+  const response = await fetch(`${getApiBaseUrl()}${path}`, {
+    method: 'POST',
+    headers,
+    body: formData,
+  })
+
+  if (response.status === 401 && !retried) {
+    const nextAccess = await refreshAccessToken()
+    if (!nextAccess) {
+      throw new ApiError(401, { detail: 'Session expired. Please log in again.' })
+    }
+    return apiFormData(path, formData, true)
+  }
+
+  return response
+}

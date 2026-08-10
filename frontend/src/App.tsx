@@ -4,6 +4,7 @@ import { GuestRoute, ProtectedRoute } from './components/ProtectedRoute'
 import { AppLayout } from './layouts/AppLayout'
 import { LoginPage, RegisterPage } from './pages/AuthPages'
 import { PlaceholderPage } from './pages/PlaceholderPage'
+import { UploadPage } from './pages/UploadPage'
 import { WalletPage } from './pages/WalletPage'
 
 export default function App() {
@@ -27,15 +28,7 @@ export default function App() {
               }
             />
             <Route path="/wallet" element={<WalletPage />} />
-            <Route
-              path="/upload"
-              element={
-                <PlaceholderPage
-                  title="Upload"
-                  note="Multi-file CSV upload and upload management come next."
-                />
-              }
-            />
+            <Route path="/upload" element={<UploadPage />} />
             <Route
               path="/review"
               element={

@@ -78,3 +78,58 @@ export type AddCustomCardRequest = {
   issuer: string
   network: string
 }
+
+export type UploadSummary = {
+  rows: number
+  merchants: number
+  created: number
+  updated: number
+  needs_review: number
+  coverage_pct: number
+}
+
+/** One file outcome after POST /api/upload/ (normalized for UI). */
+export type UploadFileResult = {
+  ok: boolean
+  filename: string
+  detail?: string
+  upload_id?: number
+  status?: string
+  user_card_id?: number
+  summary?: UploadSummary
+  http_status?: number
+  current_user_card_ids?: number[]
+  requested_user_card_id?: number
+}
+
+export type UploadBatchResponse = {
+  count: number
+  succeeded: number
+  failed: number
+  results: UploadFileResult[]
+}
+
+export type UploadListItem = {
+  upload_id: number
+  filename: string
+  status: string
+  transaction_count: number
+  user_card_id: number | null
+  card_name: string | null
+  issuer: string | null
+  created_at: string
+  updated_at: string
+}
+
+export type UploadListResponse = {
+  count: number
+  uploads: UploadListItem[]
+}
+
+export type ReassignUploadResponse = {
+  upload_id: number
+  user_card_id: number
+  card_name: string
+  issuer: string
+  transactions_updated: number
+}

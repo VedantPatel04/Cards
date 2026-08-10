@@ -18,4 +18,5 @@ Requires the backend API on `:8000` with CORS allowing `http://localhost:5173`
 - `npm run dev` — Vite dev server
 - `npm run build` — typecheck + production build
 - `npm run lint` — oxlint
+- `npm test` — Vitest (critical unit/UI tests)
 - `npm run preview` — preview production build
