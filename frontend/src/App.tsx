@@ -1,10 +1,13 @@
+/** as a note for myself, this file is the "urls.py" for the frontend */
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 
 import { GuestRoute, ProtectedRoute } from './components/ProtectedRoute'
 import { AppLayout } from './layouts/AppLayout'
 import { LoginPage, RegisterPage } from './pages/AuthPages'
-import { PlaceholderPage } from './pages/PlaceholderPage'
+import { DashboardPage } from './pages/DashboardPage'
+import { RecommendationsPage } from './pages/RecommendationsPage'
 import { ReviewPage } from './pages/ReviewPage'
+import { TransactionsPage } from './pages/TransactionsPage'
 import { UploadPage } from './pages/UploadPage'
 import { WalletPage } from './pages/WalletPage'
 
@@ -19,36 +22,12 @@ export default function App() {
 
         <Route element={<ProtectedRoute />}>
           <Route element={<AppLayout />}>
-            <Route
-              path="/"
-              element={
-                <PlaceholderPage
-                  title="Dashboard"
-                  note="Summary from /api/summary/ lands in the next modules. Use Wallet to add cards first."
-                />
-              }
-            />
+            <Route path="/" element={<DashboardPage />} />
             <Route path="/wallet" element={<WalletPage />} />
             <Route path="/upload" element={<UploadPage />} />
             <Route path="/review" element={<ReviewPage />} />
-            <Route
-              path="/recommendations"
-              element={
-                <PlaceholderPage
-                  title="Recommendations"
-                  note="Ranked cards from /api/recommendations/ come next."
-                />
-              }
-            />
-            <Route
-              path="/transactions"
-              element={
-                <PlaceholderPage
-                  title="Transactions"
-                  note="Transaction table from /api/transactions/ comes next."
-                />
-              }
-            />
+            <Route path="/recommendations" element={<RecommendationsPage />} />
+            <Route path="/transactions" element={<TransactionsPage />} />
           </Route>
         </Route>
 
