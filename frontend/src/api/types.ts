@@ -1,4 +1,4 @@
-/** Shapes returned by the Django/DRF backend. Keep monetary values as strings elsewhere. */
+/** Shapes returned by the Django/DRF backend.*/
 
 export type User = {
   id: number
@@ -131,5 +131,31 @@ export type ReassignUploadResponse = {
   user_card_id: number
   card_name: string
   issuer: string
+  transactions_updated: number
+}
+
+export type ReviewMerchant = {
+  merchant_key: string
+  display_name: string
+  sample_description: string
+  transaction_count: number
+  total_amount: MoneyString
+}
+
+export type ReviewQueueResponse = {
+  count: number
+  truncated: boolean
+  categories: string[]
+  merchants: ReviewMerchant[]
+}
+
+export type ReviewAnswerRequest = {
+  merchant_key: string
+  category: string
+}
+
+export type ReviewAnswerResponse = {
+  merchant_key: string
+  category: string
   transactions_updated: number
 }

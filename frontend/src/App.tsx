@@ -4,6 +4,7 @@ import { GuestRoute, ProtectedRoute } from './components/ProtectedRoute'
 import { AppLayout } from './layouts/AppLayout'
 import { LoginPage, RegisterPage } from './pages/AuthPages'
 import { PlaceholderPage } from './pages/PlaceholderPage'
+import { ReviewPage } from './pages/ReviewPage'
 import { UploadPage } from './pages/UploadPage'
 import { WalletPage } from './pages/WalletPage'
 
@@ -29,15 +30,7 @@ export default function App() {
             />
             <Route path="/wallet" element={<WalletPage />} />
             <Route path="/upload" element={<UploadPage />} />
-            <Route
-              path="/review"
-              element={
-                <PlaceholderPage
-                  title="Review"
-                  note="Merchant categorization against /api/review/ comes next."
-                />
-              }
-            />
+            <Route path="/review" element={<ReviewPage />} />
             <Route
               path="/recommendations"
               element={
