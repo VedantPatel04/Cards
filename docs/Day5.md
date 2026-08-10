@@ -16,10 +16,14 @@ This is Stage 1 (Transaction Analysis) in `docs/Recommendation_Engine_Architectu
 
 ## Decisions Made
 
-### Net spend — `Sum(amount)` per category
-Refunds (negative amounts) reduce the category total. A dining refund reduces `by_category["dining"]`. Card payments land in `other` as negatives and reduce that bucket.
+### Spend totals — purchases and refunds only
+`by_category` / `total_spend` sum rows with `entry_type` of `spend` or `refund`. Refunds (negative amounts) reduce the matching category. A dining refund reduces `by_category["dining"]`.
 
-**Why:** Gross-only spend would overstate value, and the recommendation engine's Confidence Check (Stage 5) already flags refund distortion.
+**Bill payments** (`entry_type=payment`) and **statement adjustments** (`entry_type=adjustment`) stay on the transaction ledger but are **excluded** from spend totals. Paying your credit card bill is not purchase spend for signup-bonus or rewards math.
+
+**Why (revised):** The earlier rule that let payments land in `other` as negatives understated true purchase spend (e.g. ~$655 purchases − ~$384 payments → ~$271). Issuers award bonuses on purchases, not on net-of-payments.
+
+Chase `Type` is mapped in `csv_parser` (`Sale`/`Fee` → spend, `Return` → refund, `Payment` → payment, `Adjustment` → adjustment). Existing DB rows with description containing `Payment Thank You` are backfilled to `payment` on migrate; other legacy credits need a re-upload to pick up `Type`.
 
 ### Unresolved `""` excluded from `by_category`, reported as metadata
 Rows with `category=""` are intentionally absent from spend totals. They appear as `unresolved_count` and `unresolved_amount` so the confidence check knows how much spend is uncategorised.
@@ -29,8 +33,8 @@ Rows with `category=""` are intentionally absent from spend totals. They appear 
 ### All 7 buckets always present
 `by_category` and `annualized` always include all 7 reward categories even if zero. The Day 6 scorer iterates over all categories without guarding for missing keys.
 
-### Negative totals are valid
-`other` can be negative when card payment rows outweigh real "other" spend. This is not clamped. Stage 5 handles distortion detection.
+### Period includes the full ledger
+`transaction_count` and `months_breakdown` include payments/adjustments. `months_covered` is statement-cycle evidence (per-upload ~30-day spans); a payment-only upload still contributes at least 1 via `max(1, …)`.
 
 ### Scope: all-time, all wallet cards, no query filters
 MVP aggregates everything the user has uploaded. Date range and per-card filters are not in scope for Day 5 or 6.
@@ -42,12 +46,14 @@ Stage 1 of the recommendation pipeline outputs "annualized estimates." The aggre
 annualized[c] = by_category[c] × 12 / months_covered
 ```
 
-### Coverage is counted in months, not calendar days *(revised Day 7)*
-`months_covered` is the number of distinct calendar months holding at least one transaction. `days_span` is still reported, but **must not** be used to extrapolate.
+### Coverage is counted in statement cycles, not calendar months *(revised)*
+`months_covered` sums, per upload, `max(1, round(inclusive_span_days / 30))`. That matches ~30-day billing statements: a mid-month cycle that lands in two calendar months still counts as **one** month of evidence. Two statement files that spill across three calendar labels still count as **two**.
 
-**Why:** statements arrive with gaps. An April statement plus a July one is 103 calendar days apart but only two months of evidence, and the 68 empty days in between are missing records, not months of zero spending. Dividing by 103 days understated every annualised figure by roughly a third and made signup-bonus projections fail on data that was never uploaded.
+`months_breakdown` stays a **calendar-month** histogram for display/debugging and is intentionally separate from `months_covered`.
 
-**Known limitation:** a single statement straddling a month boundary (15 Apr – 14 May) counts as 2 months, which understates annualised spend. Conservative in the direction of not overselling a card.
+`days_span` is still reported, but **must not** be used to extrapolate (gaps between uploads would look like zero-spend months).
+
+**Why:** counting distinct calendar months of `transaction_date` invented extra months from statement spillover (e.g. Jan+Feb files → Dec/Jan/Feb = 3). Signup and annualization then understated monthly averages.
 
 **Day 6 usage note:** spending score uses `annualized`; signup-bonus projection uses actual `by_category` (not annualized) scaled by `months_covered`. See `docs/Day6-7.md`.
 
@@ -135,7 +141,7 @@ python manage.py test tests.test_summary --verbosity=2
 ```
 
 **`SpendSummaryServiceTest`** (3 tests):
-- `test_truth_dataset` — nets (incl. refund + negative `other`), unresolved metadata, zero-fill, period, annualised math
+- `test_truth_dataset` — nets (refund reduces dining; payment excluded), unresolved metadata, zero-fill, period, annualised math
 - `test_empty_wallet` — zeroed structure, no exceptions
 - `test_user_isolation` — other user's txs never appear
 

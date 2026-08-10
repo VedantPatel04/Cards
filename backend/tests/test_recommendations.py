@@ -151,8 +151,9 @@ class SignupBonusTest(TestCase):
         ingest_card_catalog()
         self.freedom = _catalog_card("Freedom Unlimited", "Chase")
 
-    def test_insufficient_data_counts_whole_months_still_needed(self):
-        r = score_card(self.freedom, _ann(), _by(dining=Decimal("5000.00")), months_covered=1)
+    def test_insufficient_data_when_under_threshold_with_partial_months(self):
+        """Partial months only block evaluation when spend has not cleared the bar."""
+        r = score_card(self.freedom, _ann(), _by(dining=Decimal("100.00")), months_covered=1)
         self.assertEqual(r["signup_bonus_status"], "insufficient_data")
         self.assertEqual(r["signup_bonus_score"], ZERO)
         self.assertIn("Upload 2 more month(s)", r["signup_bonus_note"])
@@ -161,6 +162,7 @@ class SignupBonusTest(TestCase):
         self.assertEqual(d["months_of_data"], 1)
         self.assertEqual(d["months_needed"], 2)
         self.assertEqual(d["period_months"], 3)
+        self.assertEqual(d["positive_actual_spend"], "100.00")
         self.assertIn("required_spend", d)
 
     def test_no_data_at_all_is_insufficient_not_a_crash(self):
@@ -168,6 +170,24 @@ class SignupBonusTest(TestCase):
         self.assertEqual(r["signup_bonus_status"], "insufficient_data")
         self.assertIn("Upload 3 more month(s)", r["signup_bonus_note"])
         self.assertEqual(r["signup_bonus_detail"]["months_of_data"], 0)
+
+    def test_early_spend_clears_bonus_without_full_window(self):
+        """Hitting the required spend early is met — the window is a maximum."""
+        r = score_card(
+            self.freedom,
+            _ann(),
+            _by(dining=Decimal("655.74")),
+            months_covered=2,
+        )
+        self.assertEqual(r["signup_bonus_status"], "met")
+        self.assertEqual(r["signup_bonus_score"], self.freedom.signup_bonus)
+        self.assertIn("already clears", r["signup_bonus_note"])
+        d = r["signup_bonus_detail"]
+        self.assertEqual(d["status"], "met")
+        self.assertEqual(d["positive_actual_spend"], "655.74")
+        self.assertEqual(d["months_of_data"], 2)
+        self.assertEqual(d["period_months"], 3)
+        self.assertTrue(d["met_early"])
 
     def test_not_met(self):
         r = score_card(self.freedom, _ann(), _by(dining=Decimal("100.00")), months_covered=3)
@@ -198,7 +218,7 @@ class SignupBonusTest(TestCase):
         self.assertEqual(r["signup_bonus_score"], ZERO)
         self.assertEqual(r["signup_bonus_detail"], {"status": "no_bonus"})
 
-    def test_statements_with_a_gap_are_counted_as_months_not_calendar_days(self):
+    def test_under_threshold_with_gap_still_needs_more_months(self):
         r = score_card(self.freedom, _ann(), _by(dining=Decimal("409.08")), months_covered=2)
         self.assertEqual(r["signup_bonus_status"], "insufficient_data")
         self.assertIn("Upload 1 more month(s)", r["signup_bonus_note"])

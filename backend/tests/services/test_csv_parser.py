@@ -45,6 +45,7 @@ class NormalizeCsvHappyPathTests(SimpleTestCase):
                 "amount",
                 "transaction_date",
                 "row_index",
+                "entry_type",
             },
         )
 
@@ -96,10 +97,35 @@ class NormalizeCsvSignTests(SimpleTestCase):
     def test_chase_negative_spend_becomes_positive(self):
         row = normalize_csv(_csv("07/16/2026,07/17/2026,WAL-MART,Groceries,Sale,-35.34,"))[0]
         self.assertEqual(row["amount"], Decimal("35.34"))
+        self.assertEqual(row["entry_type"], "spend")
 
     def test_chase_positive_credit_becomes_negative(self):
         row = normalize_csv(_csv("07/16/2026,07/17/2026,PAYMENT THANK YOU,,Payment,250.00,"))[0]
         self.assertEqual(row["amount"], Decimal("-250.00"))
+        self.assertEqual(row["entry_type"], "payment")
+
+    def test_return_is_refund_entry_type(self):
+        row = normalize_csv(
+            _csv("07/16/2026,07/17/2026,SPRINGHILL SUITES,Travel,Return,179.14,")
+        )[0]
+        self.assertEqual(row["amount"], Decimal("-179.14"))
+        self.assertEqual(row["entry_type"], "refund")
+        self.assertEqual(row["category"], "travel")
+
+    def test_adjustment_is_adjustment_entry_type(self):
+        row = normalize_csv(
+            _csv("07/16/2026,07/17/2026,STATEMENT CREDIT,Fees & Adjustments,Adjustment,40.20,")
+        )[0]
+        self.assertEqual(row["amount"], Decimal("-40.20"))
+        self.assertEqual(row["entry_type"], "adjustment")
+        self.assertEqual(row["category"], "other")
+
+    def test_fee_is_spend(self):
+        row = normalize_csv(
+            _csv("07/16/2026,07/17/2026,FOREIGN TRANSACTION FEE,Fees & Adjustments,Fee,-0.99,")
+        )[0]
+        self.assertEqual(row["amount"], Decimal("0.99"))
+        self.assertEqual(row["entry_type"], "spend")
 
     def test_zero_amount_stays_zero(self):
         row = normalize_csv(_csv("07/16/2026,07/17/2026,ADJUSTMENT,,Adjustment,0.00,"))[0]
@@ -134,6 +160,7 @@ class NormalizeCsvCategoryTests(SimpleTestCase):
         """Card payments have no Chase category and are not spend to categorize."""
         row = normalize_csv(_csv("07/16/2026,07/17/2026,PAYMENT,,Payment,250.00,"))[0]
         self.assertEqual(row["category"], "other")
+        self.assertEqual(row["entry_type"], "payment")
 
     def test_every_mapped_bucket_is_a_rewards_category(self):
         from services.category_resolver import reward_categories

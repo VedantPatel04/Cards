@@ -107,6 +107,7 @@ def make_transaction(upload=None, user_card=None, **overrides):
         "transaction_date": date(2026, 1, 1),
         "description": "coffee",
         "row_index": 0,
+        "entry_type": "spend",
     }
     defaults.update(overrides)
     return Transactions.objects.create(**defaults)

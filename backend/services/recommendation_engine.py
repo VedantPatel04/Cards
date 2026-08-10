@@ -102,9 +102,9 @@ def score_card(card, annualized: dict, by_category: dict, months_covered: int) -
     annualized -> spending_score; by_category -> signup bonus MUST NOT BE swapped.
     positive_actual excludes unresolved_amount.
 
-    months_covered is how many distinct calendar months hold transactions, not
-    the calendar distance between the first and last one. A statement from
-    April and one from July is two months of evidence, not three and a half.
+    months_covered is statement-cycle evidence from the spend summary (per-upload
+    ~30-day spans summed), not distinct calendar months of transaction_date.
+    A mid-month billing cycle in one file counts as one month of data.
     """
     rule_map = fold_rules_to_buckets(card)
     rate_factor = _rate_factor(card)
@@ -129,13 +129,39 @@ def score_card(card, annualized: dict, by_category: dict, months_covered: int) -
 
     # the signup bonus
     period_months = card.signup_bonus_spend_period_months
+    positive_actual = sum((max(v, ZERO) for v in by_category.values()), ZERO)
+
     if card.signup_bonus == 0:
         signup_bonus_score = ZERO
         signup_bonus_status = "no_bonus"
         signup_bonus_note = ""
         signup_bonus_detail: dict = {"status": "no_bonus"}
+    elif positive_actual >= card.signup_bonus_required_spending:
+        signup_bonus_score = _bonus_in_dollars(card)
+        signup_bonus_status = "met"
+        shown_actual = positive_actual.quantize(CENTS, rounding=ROUND_HALF_UP)
+        signup_bonus_note = (
+            f"Your spending of ${shown_actual} already clears the "
+            f"${card.signup_bonus_required_spending} required"
+            + (
+                f" within {months_covered} month(s) of statements"
+                if months_covered > 0
+                else ""
+            )
+            + f" (card allows up to {period_months} months)."
+        )
+        signup_bonus_detail = {
+            "status": "met",
+            "positive_actual_spend": str(shown_actual),
+            "required_spend": str(
+                card.signup_bonus_required_spending.quantize(CENTS, rounding=ROUND_HALF_UP)
+            ),
+            "period_months": period_months,
+            "months_of_data": months_covered,
+            "met_early": months_covered < period_months,
+        }
     elif months_covered < period_months:
-        # Covers months_covered == 0 too, so there is no division by zero below.
+        # Under the spend bar and not enough statement-months, ask for more uploads
         months_needed = period_months - months_covered
         signup_bonus_score = ZERO
         signup_bonus_status = "insufficient_data"
@@ -149,12 +175,14 @@ def score_card(card, annualized: dict, by_category: dict, months_covered: int) -
             "months_of_data": months_covered,
             "months_needed": months_needed,
             "period_months": period_months,
+            "positive_actual_spend": str(
+                positive_actual.quantize(CENTS, rounding=ROUND_HALF_UP)
+            ),
             "required_spend": str(
                 card.signup_bonus_required_spending.quantize(CENTS, rounding=ROUND_HALF_UP)
             ),
         }
     else:
-        positive_actual = sum((max(v, ZERO) for v in by_category.values()), ZERO)
         monthly_average = positive_actual / Decimal(months_covered)
         projected = monthly_average * Decimal(period_months)
         shown = projected.quantize(CENTS, rounding=ROUND_HALF_UP)

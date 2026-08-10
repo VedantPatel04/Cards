@@ -11,6 +11,19 @@ SOURCE_GLOBAL = "global"  # admin-curated GlobalMerchantAlias (tier 3)
 SOURCE_BANK = "bank"      # adapter's bank category (tier 4)
 SOURCE_NONE = ""          # genuinely unresolved or categorizedto "other"
 
+ENTRY_SPEND = "spend"
+ENTRY_REFUND = "refund"
+ENTRY_PAYMENT = "payment"
+ENTRY_ADJUSTMENT = "adjustment"
+ENTRY_TYPE_CHOICES = (
+    (ENTRY_SPEND, "Spend"),
+    (ENTRY_REFUND, "Refund"),
+    (ENTRY_PAYMENT, "Payment"),
+    (ENTRY_ADJUSTMENT, "Adjustment"),
+)
+# Rows that count toward by_category spending AKA ottal_spend
+SPEND_SUMMARY_ENTRY_TYPES = (ENTRY_SPEND, ENTRY_REFUND)
+
 
 class Transactions(models.Model):
     class Meta:
@@ -34,6 +47,14 @@ class Transactions(models.Model):
 
     # 0.0–1.0: user=1.0, global=0.9, bank=0.7, unresolved=0.0
     confidence = models.FloatField(default=0.0)
+
+    #spend, refund, payment, adjustment — see module constants above
+    entry_type = models.CharField(
+        max_length=16,
+        choices=ENTRY_TYPE_CHOICES,
+        default=ENTRY_SPEND,
+        db_index=True,
+    )
 
     # sign convention: positive = spend, negative = refund / credit
     amount = models.DecimalField(max_digits=10, decimal_places=2)

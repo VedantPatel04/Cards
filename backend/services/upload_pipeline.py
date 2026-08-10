@@ -10,7 +10,7 @@ from __future__ import annotations
 import logging
 from django.db import transaction
 
-from apps.transactions.models import UNRESOLVED_CATEGORY, Transactions
+from apps.transactions.models import ENTRY_SPEND, UNRESOLVED_CATEGORY, Transactions
 from services.category_resolver import ResolutionResult, resolve_category
 from services.csv_parser import normalize_csv
 from services.merchant_normalize import merchant_key, normalized_display
@@ -32,6 +32,7 @@ _TX_WRITE_FIELDS = [
     "merchant_key",
     "resolution_source",
     "confidence",
+    "entry_type",
 ]
 
 
@@ -60,6 +61,8 @@ def _build_tx_fields(row: dict, user_card, result: ResolutionResult) -> dict:
         "merchant_key": merchant_key(row.get("raw_description")),
         "resolution_source": result.source,
         "confidence": result.confidence,
+        # Adapter must set entry_type ... default spend only if an older caller omitted it - should not happen for normalize_csv output
+        "entry_type": row.get("entry_type") or ENTRY_SPEND,
     }
 
 
