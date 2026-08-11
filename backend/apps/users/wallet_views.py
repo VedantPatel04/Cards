@@ -22,7 +22,7 @@ on list/upload until a later cleanup.
 
 from decimal import Decimal
 
-from django.db import transaction as db_transaction
+from django.db import IntegrityError, transaction as db_transaction
 from django.db.models import Count
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
@@ -82,7 +82,14 @@ def _attach_card(user, card: Card_Products):
             status=status.HTTP_400_BAD_REQUEST,
         )
 
-    entry = User_cards.objects.create(user=user, card=card, is_active=True)
+    try:
+        entry = User_cards.objects.create(user=user, card=card, is_active=True)
+    except IntegrityError:
+        # Race: concurrent request added the same card between the exists() check and create().
+        return Response(
+            {"detail": "That card already exists in your wallet."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
     return Response(_wallet_item(entry), status=status.HTTP_201_CREATED)
 
 
@@ -128,18 +135,27 @@ def _wallet_add_custom(request):
     if existing is not None:
         return _attach_card(request.user, existing)
 
-    card = Card_Products.objects.create(
-        name=name,
-        issuer=issuer,
-        network=network,
-        card_type="credit",
-        is_active=True,
-        is_catalog=False,
-        annual_fee=_ZERO,
-        base_reward_rate=_ZERO,
-        signup_bonus=_ZERO,
-        signup_bonus_required_spending=_ZERO,
-    )
+    try:
+        card = Card_Products.objects.create(
+            name=name,
+            issuer=issuer,
+            network=network,
+            card_type="credit",
+            is_active=True,
+            is_catalog=False,
+            annual_fee=_ZERO,
+            base_reward_rate=_ZERO,
+            signup_bonus=_ZERO,
+            signup_bonus_required_spending=_ZERO,
+        )
+    except IntegrityError:
+        # Race: another request created the same name+issuer simultaneously.
+        card = Card_Products.objects.filter(name__iexact=name, issuer__iexact=issuer).first()
+        if card is None:
+            return Response(
+                {"detail": "A conflict occurred creating that card. Please try again."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
     return _attach_card(request.user, card)
 
 

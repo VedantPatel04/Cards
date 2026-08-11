@@ -19,7 +19,6 @@ logger = logging.getLogger(__name__)
 
 STATUS_PENDING = "pending"
 STATUS_PROCESSED = "processed"
-STATUS_FAILED = "failed"
 
 # Fields we write on both create and update.
 _TX_WRITE_FIELDS = [
@@ -75,16 +74,7 @@ def ingest_transactions(upload, user_card, rows: list[dict]) -> dict:
     coverage_pct.
     """
     if not rows:
-        upload.status = STATUS_PROCESSED
-        upload.save(update_fields=["status", "updated_at"])
-        return {
-            "rows": 0,
-            "merchants": 0,
-            "created": 0,
-            "updated": 0,
-            "needs_review": 0,
-            "coverage_pct": 100.0,
-        }
+        raise ValueError("No transactions found in this file.")
 
     user_id = user_card.user_id
 
@@ -95,13 +85,13 @@ def ingest_transactions(upload, user_card, rows: list[dict]) -> dict:
         if rkey not in resolution_by_key:
             resolution_by_key[rkey] = resolve_category(row, user_id)
 
-    #fetch all transactions existing in db for this upload in 1 query
+    #fetch all transactions existing in db for this upload
     existing: dict[int, Transactions] = {
         tx.row_index: tx
         for tx in Transactions.objects.filter(upload=upload)
     }
 
-    # create vs. update lisrs
+    # create vs. update lists
     to_create: list[Transactions] = []
     to_update: list[Transactions] = []
     needs_review = 0
@@ -124,7 +114,6 @@ def ingest_transactions(upload, user_card, rows: list[dict]) -> dict:
                 Transactions(upload=upload, row_index=row["row_index"], **fields)
             )
 
-    # create or update in ONE BULK WRITE
     with transaction.atomic():
         if to_create:
             Transactions.objects.bulk_create(to_create, batch_size=500)

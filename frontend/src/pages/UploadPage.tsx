@@ -158,8 +158,7 @@ export function UploadPage() {
       ? 'Failed to load upload data.'
       : null)
 
-  // Explain why submit is disabled once the user has started the form
-  // (avoids a permanent red error on first paint).
+  // Only shown after the user starts filling the form — avoids a permanent error on first paint
   const uploadBlockReason = uploadMutation.isPending
     ? null
     : files.length > 0 && !userCardId
@@ -222,10 +221,8 @@ export function UploadPage() {
               CSV files
             </span>
             {/*
-              Must NOT live inside a <label>. A label that contains (or is
-              htmlFor-linked to) a file input makes the entire label hit-target
-              open the picker — including surrounding text and empty space.
-              Only the Choose files button may call input.click().
+              File input is intentionally NOT inside a <label> — a label wrapping
+              a file input makes the entire hit area open the picker
             */}
             <input
               key={fileInputKey}

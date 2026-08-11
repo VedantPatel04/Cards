@@ -139,6 +139,13 @@ class UploadEndpointTests(APITestCase):
         self.assertFalse(Uploads.objects.filter(user=self.user).exists())
         self.assertNotIn("upload_id", resp.data)
 
+    def test_empty_csv_returns_400_and_does_not_leave_upload(self):
+        empty = _chase_csv()  # header only, no data rows
+        resp = self._post(content=empty, filename="empty.csv")
+        self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("No transactions found", resp.data["detail"])
+        self.assertFalse(Uploads.objects.filter(user=self.user).exists())
+
     def test_list_uploads(self):
         created = self._post()
         resp = self.client.get(self.list_url)

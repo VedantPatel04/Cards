@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'rest_framework_simplejwt',
+    'drf_spectacular',
 
     # Local apps
     'apps.users',
@@ -79,6 +80,18 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_THROTTLE_RATES': {
+        'auth': '5/min',   # /api/register/ and /api/token/
+    },
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Cards API',
+    'DESCRIPTION': 'Credit card rewards tracking API.',
+    'VERSION': '1.0.0',
+    # Schema endpoint is only mounted in DEBUG mode — no need to serve it inline.
+    'SERVE_INCLUDE_SCHEMA': False,
 }
 
 LANGUAGE_CODE = 'en-us'

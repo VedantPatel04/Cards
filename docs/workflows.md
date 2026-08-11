@@ -1,8 +1,6 @@
-# Dev & test workflows
+# Backend workflows
 
-Operational truth for running and verifying the backend. **Not** an API reference — request/response shapes live in `[postman/Cards_API.postman_collection.json](postman/Cards_API.postman_collection.json)`.
-
-Unless noted, run commands from `backend/` with the project venv active and `DJANGO_SETTINGS_MODULE=config.settings.local` (see `[settings-architecture.md](settings-architecture.md)`).
+Run commands from `backend/` with the venv active and `DJANGO_SETTINGS_MODULE=config.settings.local` (see [settings-architecture.md](settings-architecture.md)). API request/response shapes: [postman/Cards_API.postman_collection.json](postman/Cards_API.postman_collection.json).
 
 ---
 

@@ -110,6 +110,12 @@ class ProcessUploadIdempotencyTests(PipelineTestCase):
 
 
 class UnresolvedRowTests(PipelineTestCase):
+    def test_empty_csv_raises_value_error(self):
+        header_only = _csv()  # no data rows
+        with self.assertRaises(ValueError) as ctx:
+            process_upload(self.upload, self.user_card, header_only)
+        self.assertIn("No transactions found", str(ctx.exception))
+
     def test_unknown_chase_category_goes_to_review_queue(self):
         file_bytes = _csv(
             "07/16/2026,07/17/2026,MYSTERY VENDOR 44,Sponsorships,Sale,-10.00,",

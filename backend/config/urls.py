@@ -1,8 +1,9 @@
+from django.conf import settings
 from django.contrib import admin
 from django.urls import path
 from django.views.generic import RedirectView
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
-from apps.users.views import RegisterView, is_Authenticated
+from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
+from apps.users.views import LoginView, RegisterView, health_check, is_Authenticated
 from apps.users.wallet_views import wallet_delete, wallet_list_or_add
 from apps.cards.views import catalog_list
 from apps.uploads.views import upload_delete, upload_list, upload_reassign, upload_transactions
@@ -14,8 +15,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # Auth
+    path('api/health/', health_check, name='health_check'),
     path('api/register/', RegisterView.as_view(), name='register'),
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/', LoginView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
 
@@ -41,3 +43,12 @@ urlpatterns = [
     path('api/summary/', summary_view, name='spend_summary'),
     path('api/recommendations/', recommendations_view, name='recommendations'),
 ]
+
+# Swagger UI — dev/local only
+if settings.DEBUG:
+    from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerUIView
+
+    urlpatterns += [
+        path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+        path('api/docs/', SpectacularSwaggerUIView.as_view(url_name='schema'), name='swagger-ui'),
+    ]

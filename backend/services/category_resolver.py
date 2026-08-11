@@ -25,7 +25,7 @@ Call invalidate_global_alias_cache() after seeding new data.
 
 from __future__ import annotations
 import json
-import logging #for debugging babayy
+import logging
 import os
 from typing import NamedTuple
 from django.conf import settings

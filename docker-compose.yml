@@ -49,7 +49,8 @@ services:
       ALLOWED_HOSTS: localhost,127.0.0.1,web
       # Production settings default this to true; local HTTP would break without it.
       SECURE_SSL_REDIRECT: "false"
-      CORS_ALLOWED_ORIGINS: "http://localhost:5173"
+      # Vite may bind 5173 or the next free port (5174…). Allow both for local UI.
+      CORS_ALLOWED_ORIGINS: "http://localhost:5173,http://localhost:5174,http://127.0.0.1:5173,http://127.0.0.1:5174"
     depends_on:
       db:
         condition: service_healthy

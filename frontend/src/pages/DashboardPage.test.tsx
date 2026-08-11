@@ -116,7 +116,7 @@ describe('DashboardPage', () => {
     expect(await screen.findByText('$320.00')).toBeInTheDocument()
     expect(screen.getByText('83.3%')).toBeInTheDocument()
     expect(
-      screen.getByText('Statement months covered').closest('div'),
+      screen.getByText('Months covered by statements').closest('div'),
     ).toHaveTextContent('1')
     expect(screen.getByText('$75.00')).toBeInTheDocument()
     expect(screen.getByText('$270.00')).toBeInTheDocument()

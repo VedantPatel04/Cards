@@ -1,18 +1,3 @@
-# CI
-#
-# Job test:
-# Runs the existing Django suite with config.settings.test (SQLite in-memory).
-# No Postgres/Redis services required: tests mock or fail-open around Redis.
-# Python 3.12 matches the Docker image, not the optional 3.14 laptop venv.
-#
-# Job frontend:
-# npm ci → lint → test → build in frontend/ (Vite + Vitest + oxlint).
-#
-# Job docker:
-# Builds backend/Dockerfile to prove the image still builds. Does NOT push and
-# does NOT deploy to Render.
-
-
 name: CI
 
 on:
@@ -38,10 +23,13 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Run tests
-        run: python manage.py test --settings=config.settings.test
+      - name: Run tests with coverage
+        run: coverage run --source=apps,services manage.py test --settings=config.settings.test
         env:
           DJANGO_SETTINGS_MODULE: config.settings.test
+
+      - name: Coverage report
+        run: coverage report
 
   frontend:
     runs-on: ubuntu-latest
@@ -63,8 +51,8 @@ jobs:
       - name: Lint
         run: npm run lint
 
-      - name: Test
-        run: npm test
+      - name: Test with coverage
+        run: npm run test -- --coverage
 
       - name: Production build
         run: npm run build

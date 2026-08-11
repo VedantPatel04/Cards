@@ -9,7 +9,7 @@ services:
     plan: free
     dockerfilePath: ./backend/Dockerfile
     dockerContext: ./backend
-    # No custom health path yet — avoid pointing at POST-only auth routes.
+    healthCheckPath: /api/health/
     envVars:
       - key: DJANGO_SETTINGS_MODULE
         value: config.settings.production # consumed by config.settings.production  - Render generates this :)

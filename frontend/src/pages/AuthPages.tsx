@@ -29,7 +29,7 @@ export function LoginPage() {
       await login({ username, password })
       navigate(from, { replace: true })
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Login failed.')
+      setError(err instanceof ApiError ? err.message : networkOrUnknown(err, 'Login failed.'))
     } finally {
       setSubmitting(false)
     }
@@ -99,7 +99,11 @@ export function RegisterPage() {
       await register({ username, email, password, password2 })
       navigate('/', { replace: true })
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Registration failed.')
+      setError(
+        err instanceof ApiError
+          ? err.message
+          : networkOrUnknown(err, 'Registration failed.'),
+      )
     } finally {
       setSubmitting(false)
     }
@@ -225,4 +229,12 @@ function ErrorText({ children }: { children: ReactNode }) {
       {children}
     </p>
   )
+}
+
+/** TypeError from fetch usually means CORS block or API unreachable. */
+function networkOrUnknown(err: unknown, fallback: string): string {
+  if (err instanceof TypeError) {
+    return 'Cannot reach the API. Is the backend running, and is this UI origin in CORS_ALLOWED_ORIGINS?'
+  }
+  return fallback
 }
