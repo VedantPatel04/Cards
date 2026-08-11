@@ -112,7 +112,7 @@ export function RegisterPage() {
   return (
     <AuthShell
       title="Create account"
-      subtitle="Registers against the local API, then signs you in."
+      subtitle="Please fill out all details below to create an account"
     >
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
         <Field

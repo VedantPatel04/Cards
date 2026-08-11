@@ -172,8 +172,8 @@ export function UploadPage() {
       <header>
         <h1 className="text-3xl font-semibold tracking-tight">Upload</h1>
         <p className="mt-2 max-w-prose text-[var(--color-muted)]">
-          Attach Chase CSVs to one wallet card. You can select multiple files
-          and upload them in one request. Per-file results appear below.
+          Attach your Chase CSV/Spreadsheet transaction statements to a card from your Wallet. You can select multiple files
+          and upload them in one request.
         </p>
       </header>
 

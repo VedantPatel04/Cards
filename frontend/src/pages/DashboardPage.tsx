@@ -30,8 +30,7 @@ export function DashboardPage() {
       <header>
         <h1 className="text-3xl font-semibold tracking-tight">Dashboard</h1>
         <p className="mt-2 max-w-prose text-[var(--color-muted)]">
-          Spend summary from your uploaded statements. Totals use purchase and
-          refund rows only; bill payments are excluded from spend math.
+          Spending summary from your uploaded statements 
         </p>
       </header>
 
