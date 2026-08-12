@@ -87,9 +87,22 @@ REST_FRAMEWORK = {
 
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Cards API',
-    'DESCRIPTION': 'Credit card rewards tracking API.',
+    'DESCRIPTION': (
+        'Credit card rewards API. Obtain a JWT via `POST /api/token/`, then use '
+        '**Authorize** in Swagger UI and paste: `Bearer <access>`.\n\n'
+        'Try it out is enabled — requests run against this same API host.'
+    ),
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
+    #public docs in every environment
+    'SERVE_PERMISSIONS': ['rest_framework.permissions.AllowAny'],
+    'SERVE_AUTHENTICATION': [],
+    'SWAGGER_UI_SETTINGS': {
+        'deepLinking': True,
+        'persistAuthorization': True,
+        'tryItOutEnabled': True,
+        'displayRequestDuration': True,
+    },
 }
 
 LANGUAGE_CODE = 'en-us'

@@ -1,6 +1,7 @@
 from django.db import connection as _db_connection
 from django.db import transaction as db_transaction
 
+from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.generics import CreateAPIView
@@ -8,6 +9,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView as _BaseTokenView
 
+from config.api_schema import AccountDeleteSerializer
 from services.merchant_cache import cache_delete_user
 
 from .models import CustomUser
@@ -55,6 +57,13 @@ def is_Authenticated(request):
     return Response({"message": "Authenticated."}, status=status.HTTP_200_OK)
 
 
+@extend_schema_view(
+    get=extend_schema(responses={200: UserSerializer}),
+    delete=extend_schema(
+        request=AccountDeleteSerializer,
+        responses={204: None, 400: dict},
+    ),
+)
 @api_view(["GET", "DELETE"])
 @permission_classes([IsAuthenticated])
 def account_view(request):

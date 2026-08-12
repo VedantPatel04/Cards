@@ -13,6 +13,7 @@ from decimal import ROUND_HALF_UP, Decimal
 
 from django.db import transaction as db_transaction
 from django.db.models import Count, Max, Sum
+from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -27,6 +28,7 @@ from apps.transactions.models import (
 from services.category_resolver import is_valid_category, reward_categories
 from services.merchant_cache import cache_set
 from services.spending_aggregator import get_spend_summary
+from config.api_schema import ReviewAnswerSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -156,6 +158,10 @@ def review_queue(request):
     )
 
 
+@extend_schema(
+    request=ReviewAnswerSerializer,
+    responses={200: dict, 400: dict, 404: dict},
+)
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def review_answer(request):

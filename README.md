@@ -1,9 +1,18 @@
 # Cards
 
-Credit card rewards optimizer. Upload Chase transaction statements, review uncategorized merchants, and get ranked card recommendations based on your actual spending.
+Hi friend / recruiter / peer / stalker :P
 
-**Stack:** Django 6 · DRF · PostgreSQL · Redis · React 19 · TypeScript · Vite · Tailwind  
-**Deploy target:** Render (API + Redis) · Supabase (Postgres) · Vercel (UI)
+Is your Chase credit card expiring soon and you can't find the right one to sign up for next? This platform ranks the best credit cards avilable in August 2026 against your real spending - organized by categories - so you can pick your next great credit card.
+
+Upload Chase transaction statements, review uncategorized merchants, and get ranked recommendations from your wallet and the catalog.
+
+## Tech stack
+
+| Layer | Tools |
+| --- | --- |
+| Backend | Django 6, DRF, PostgreSQL, Redis |
+| Frontend | React 19, TypeScript, Vite, Tailwind |
+| Deploy | Render (API + Redis), Supabase (Postgres), Vercel (UI) |
 
 ---
 
@@ -17,6 +26,11 @@ docker compose exec web python manage.py setup_dev   # seed catalog + demo user
 ```
 
 Django runs on `http://localhost:8000`. `setup_dev` prints demo credentials.
+
+Interactive API docs (Swagger UI, Try it out enabled): [`http://localhost:8000/api/docs/`](http://localhost:8000/api/docs/)  
+Raw OpenAPI schema: [`http://localhost:8000/api/schema/`](http://localhost:8000/api/schema/)
+
+On Render, the same paths are on your API host — `https://<your-render-host>/api/docs/` (not the Vercel frontend).
 
 ### Frontend
 
@@ -63,5 +77,5 @@ GitHub Actions on every push and PR (`.github/workflows/ci.yml`):
 backend/    Django API — apps/, services/, config/
 frontend/   Vite + React SPA
 docs/       Developer workflows, architecture docs, Postman collection
-scripts/    End-to-end smoke test (demo_flow.sh)
+scripts/    End-to-end demo of just the backend endpoints (demo_flow.sh)
 ```
