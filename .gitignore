@@ -34,3 +34,4 @@ frontend/.env
 .DS_Store
 *.swp
 .idea/
+.cursor/
