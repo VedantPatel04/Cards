@@ -20,7 +20,7 @@ ACCOUNT_DELETE_CONFIRM = "DELETE"
 
 
 class RegisterView(CreateAPIView):
-    """Public signup. serializer_class powers the browsable HTML form fields."""
+    """Create a new user account."""
 
     serializer_class = RegisterSerializer
     permission_classes = [AllowAny]
@@ -34,13 +34,14 @@ class RegisterView(CreateAPIView):
 
 
 class LoginView(_BaseTokenView):
-    """JWT token endpoint with IP-based rate limiting."""
+    """Issue JWT access and refresh tokens for a valid username and password."""
     throttle_classes = [AuthRateThrottle]
 
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def health_check(request):
+    """Report API and database availability."""
     try:
         _db_connection.ensure_connection()
         return Response({"status": "ok", "db": "ok"})
@@ -54,27 +55,27 @@ def health_check(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def is_Authenticated(request):
+    """Confirm the request carries a valid JWT."""
     return Response({"message": "Authenticated."}, status=status.HTTP_200_OK)
 
 
 @extend_schema_view(
-    get=extend_schema(responses={200: UserSerializer}),
+    get=extend_schema(
+        responses={200: UserSerializer},
+        description="Return the signed-in user's profile.",
+    ),
     delete=extend_schema(
         request=AccountDeleteSerializer,
         responses={204: None, 400: dict},
+        description=(
+            "Permanently delete the signed-in account and owned data "
+            "after password confirmation."
+        ),
     ),
 )
 @api_view(["GET", "DELETE"])
 @permission_classes([IsAuthenticated])
 def account_view(request):
-    """
-    GET /api/account/ — profile for the signed-in user.
-    DELETE /api/account/ — hard-delete the account and all owned data.
-
-    DELETE body: {"password": "<current>", "confirm": "DELETE"}
-    Cascades: wallet cards, uploads, transactions, merchant resolutions,
-    and owned custom Card_Products. Also clears this user's Redis merchant cache.
-    """
     if request.method == "GET":
         return Response(UserSerializer(request.user).data, status=status.HTTP_200_OK)
     return _account_delete(request)
