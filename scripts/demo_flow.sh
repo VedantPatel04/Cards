@@ -13,7 +13,6 @@ set -uo pipefail
 
 BASE_URL="${BASE_URL:-http://127.0.0.1:8000}"
 USERNAME="${USERNAME:-user1}"
-EMAIL="${EMAIL:-user1@example.com}"
 PASSWORD="${PASSWORD:-user1Password}"
 RUN_SETUP=1
 [[ "${1:-}" == "--no-setup" ]] && RUN_SETUP=0
@@ -89,7 +88,7 @@ fi
 
 step "1. Register"
 api POST /api/register/ -H 'Content-Type: application/json' \
-  -d "{\"username\":\"$USERNAME\",\"email\":\"$EMAIL\",\"password\":\"$PASSWORD\",\"password2\":\"$PASSWORD\"}"
+  -d "{\"username\":\"$USERNAME\",\"password\":\"$PASSWORD\",\"password2\":\"$PASSWORD\"}"
 expect_code "register (201 new / 400 already exists)" "201,400"
 
 step "2. Get token"

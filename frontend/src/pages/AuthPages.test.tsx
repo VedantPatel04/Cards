@@ -92,7 +92,6 @@ describe('RegisterPage', () => {
     renderRegister()
 
     await user.type(screen.getByLabelText('Username'), 'alice')
-    await user.type(screen.getByLabelText('Email'), 'alice@example.com')
     await user.type(screen.getByLabelText('Password'), 'Sup3rSecret!')
     await user.type(screen.getByLabelText('Confirm password'), 'different!')
     await user.click(screen.getByRole('button', { name: /Create account/i }))
@@ -112,7 +111,6 @@ describe('RegisterPage', () => {
     renderRegister()
 
     await user.type(screen.getByLabelText('Username'), 'alice')
-    await user.type(screen.getByLabelText('Email'), 'alice@example.com')
     await user.type(screen.getByLabelText('Password'), 'Sup3rSecret!')
     await user.type(screen.getByLabelText('Confirm password'), 'Sup3rSecret!')
     await user.click(screen.getByRole('button', { name: /Create account/i }))
@@ -129,7 +127,6 @@ describe('RegisterPage', () => {
     renderRegister()
 
     await user.type(screen.getByLabelText('Username'), 'alice')
-    await user.type(screen.getByLabelText('Email'), 'alice@example.com')
     await user.type(screen.getByLabelText('Password'), 'Sup3rSecret!')
     await user.type(screen.getByLabelText('Confirm password'), 'Sup3rSecret!')
     await user.click(screen.getByRole('button', { name: /Create account/i }))
@@ -137,7 +134,6 @@ describe('RegisterPage', () => {
     await waitFor(() => {
       expect(registerMock).toHaveBeenCalledWith({
         username: 'alice',
-        email: 'alice@example.com',
         password: 'Sup3rSecret!',
         password2: 'Sup3rSecret!',
       })

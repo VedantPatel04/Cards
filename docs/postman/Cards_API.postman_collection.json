@@ -14,7 +14,6 @@
   "variable": [
     { "key": "baseUrl", "value": "http://127.0.0.1:8000", "type": "string" },
     { "key": "username", "value": "user1", "type": "string" },
-    { "key": "email", "value": "user1@example.com", "type": "string" },
     { "key": "password", "value": "user1Password", "type": "string" },
     { "key": "access_token", "value": "", "type": "string" },
     { "key": "refresh_token", "value": "", "type": "string" },
@@ -34,7 +33,7 @@
         "header": [{ "key": "Content-Type", "value": "application/json" }],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"username\": \"{{username}}\",\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\",\n  \"password2\": \"{{password}}\"\n}"
+          "raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"{{password}}\",\n  \"password2\": \"{{password}}\"\n}"
         },
         "url": {
           "raw": "{{baseUrl}}/api/register/",
@@ -510,7 +509,7 @@
           "host": ["{{baseUrl}}"],
           "path": ["api", "recommendations", ""]
         },
-        "description": "Protected. Top ≤5 catalog cards scored against this user's spend summary.\n\nEvery money field is estimated US dollars per year — see `value_basis` in the response.\n\nResponse fields:\n- confidence / confidence_note: reliability of the underlying summary\n- value_basis: currency, months_of_data, point_value_cents\n- recommendations[]: rank, card_id, card_name, issuer, reward_currency, headline, spending_score, annual_fee, signup_bonus_score/status/note, total_score, ongoing_annual_value, break_even_annual_spend, explanation[]\n- rank_note is **omitted** unless the card ties with another\n\nFormulas:\n- spending uses annualized spend × effective rate%; negatives floored to 0\n- annualized = by_category × 12 / months_covered (months holding transactions, not calendar span)\n- points/miles convert at value_basis.point_value_cents before entering any dollar figure\n- signup bonus uses actual by_category; insufficient_data until months_covered reaches the card's window\n- total_score = spending_score − annual_fee + signup_bonus_score (first year)\n- ongoing_annual_value = spending_score − annual_fee (every year after)\n- break_even_annual_spend: spend at this user's mix that would cover the fee; null when there is no fee\n- residual ties share Olympic rank (e.g. 1,1,3) with rank_note\n\nNegative totals are meaningful: the annual fee costs more than the card returns.\n\nEmpty wallet still returns 200 (often confidence=low). Run Upload + Summary first for meaningful ranks. Clear review queue to raise confidence."
+        "description": "Protected. Top ≤5 catalog cards scored against this user's spend summary.\n\nEvery money field is estimated US dollars per year — see `value_basis` in the response.\n\nResponse fields:\n- confidence / confidence_note: reliability of the underlying summary\n- value_basis: currency, months_of_data, point_value_cents\n- recommendations[]: rank, card_id, card_name, issuer, reward_currency, headline, spending_score, annual_fee, signup_bonus_score/status/note, total_score, ongoing_annual_value, break_even_annual_spend, explanation[]\n- rank_note is **omitted** unless the card ties with another\n\nFormulas:\n- spending uses annualized spend × effective rate%; negatives floored to 0\n- annualized = by_category × 12 / months_covered (months holding transactions, not calendar span)\n- points/miles convert at value_basis.point_value_cents before entering any dollar figure\n- signup bonus uses actual by_category; insufficient_data until months_covered reaches the card's window\n- total_score = spending_score − annual_fee + signup_bonus_score (first year)\n- ongoing_annual_value = spending_score − annual_fee (every year after)\n- break_even_annual_spend: spend at this user's mix that would cover the fee; null when there is no fee\n- residual ties share Olympic rank (e.g. 1,1,3) with rank_note\n\nNegative totals are meaningful: the annual fee costs more than the card returns.\n\nZero transactions → recommendations: [] (still 200, often confidence=low). Ranking needs statement spend. Run Upload + Summary first for meaningful ranks. Clear review queue to raise confidence."
       }
     },
     {

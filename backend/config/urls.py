@@ -3,7 +3,13 @@ from django.contrib import admin
 from django.urls import path
 from django.views.generic import RedirectView
 from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
-from apps.users.views import LoginView, RegisterView, health_check, is_Authenticated
+from apps.users.views import (
+    LoginView,
+    RegisterView,
+    account_view,
+    health_check,
+    is_Authenticated,
+)
 from apps.users.wallet_views import wallet_delete, wallet_list_or_add
 from apps.cards.views import catalog_list
 from apps.uploads.views import upload_delete, upload_list, upload_reassign, upload_transactions
@@ -22,6 +28,7 @@ urlpatterns = [
     path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
 
     path('api/isAuthenticated/', is_Authenticated, name='ping'),
+    path('api/account/', account_view, name='account'),
 
     # Catalog + wallet
     path('api/cards/', catalog_list, name='catalog_list'),

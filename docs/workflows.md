@@ -25,7 +25,6 @@ Printed credentials (always):
 | Field        | Value                                       |
 | ------------ | ------------------------------------------- |
 | username     | `user1`                                     |
-| email        | `user1@example.com`                         |
 | password     | `user1Password`                             |
 | user_card_id | printed integer (use for statement uploads) |
 
@@ -244,9 +243,10 @@ Returns up to 5 catalog cards scored against this user's all-time spend summary.
 **What to watch for:**
 
 - Length may be 0–5; do not assume exactly 5.
+- **Zero transactions → empty `recommendations`.** Ranking needs statement spend; without it the API still returns 200 with low confidence and an empty list (not zero-value fee-only rankings).
 - **Negative totals are a feature.** They mean the annual fee costs more than the card returns; `headline` and `break_even_annual_spend` say by how much and what it would take to flip.
 - Signup bonus: if purchase spend already clears the required amount → `met` even with fewer statement-months than the card's window (early finish is allowed). If still under the bar and `months_covered` is short of the window → `insufficient_data` and the note says how many more months to upload.
-- Empty wallet still returns 200 with low confidence.
+- Empty wallet / no uploads still returns 200 with low confidence and `recommendations: []`.
 - `by_category` (actual) drives bonus projection; `annualized` drives spending score — they are not interchangeable.
 - A card's issuer wording (`us_supermarkets`) is folded onto the 7 buckets by `reward_rule_aliases.json`. Adding a card with an unlisted label fails ingestion on purpose — map it there first, to a bucket or to `null`.
 

@@ -101,16 +101,20 @@ def recommendations_view(request):
     annualized = summary["annualized"]
     by_category = summary["by_category"]
     months_covered = summary["period"]["months_covered"]
-
-    valid_cards = get_valid_cards()
-    scored_cards = [
-        score_card(card, annualized, by_category, months_covered)
-        for card in valid_cards
-    ]
-    top_cards = select_top_cards(scored_cards, annualized, limit=TOP_N)
-
     confidence, confidence_note = compute_confidence(summary)
-    recommendations = [_serialize(scored) for scored in top_cards]
+
+    # No statement spend → nothing to rank against. Zero/negative "value"
+    # rankings from annual fees alone are not recommendations.
+    if summary["transaction_count"] == 0:
+        recommendations = []
+    else:
+        valid_cards = get_valid_cards()
+        scored_cards = [
+            score_card(card, annualized, by_category, months_covered)
+            for card in valid_cards
+        ]
+        top_cards = select_top_cards(scored_cards, annualized, limit=TOP_N)
+        recommendations = [_serialize(scored) for scored in top_cards]
 
     return Response(
         {

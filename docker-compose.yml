@@ -36,20 +36,19 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8000:8000"
-    # All required runtime env is set below. Do not rely on backend/.env inside
-    # the container (that file targets host-based manage.py → localhost).
+    #all required runtime env is set below, backend/.env is NOT used.
     environment:
       DJANGO_SETTINGS_MODULE: config.settings.production
       # Compose-internal DNS names — not localhost.
       DATABASE_URL: postgres://${POSTGRES_USER:-cards}:${POSTGRES_PASSWORD:-cards}@db:5432/${POSTGRES_DB:-cards_db}
-      # Local compose Postgres has no TLS; production/Render leave this unset (defaults true).
+      # the  compose Postgres has no TLS and production/Render leave this unset
       DATABASE_SSL_REQUIRE: "false"
       REDIS_URL: redis://redis:6379/0
       SECRET_KEY: ${SECRET_KEY:-compose-only-dev-secret-not-for-production}
       ALLOWED_HOSTS: localhost,127.0.0.1,web
-      # Production settings default this to true; local HTTP would break without it.
+      # production settings default this to true,  local HTTP would break without it.
       SECURE_SSL_REDIRECT: "false"
-      # Vite may bind 5173 or the next free port (5174…). Allow both for local UI.
+      # Vite may bind 5173 or the next free port (5174), allow both for the local UI testing.
       CORS_ALLOWED_ORIGINS: "http://localhost:5173,http://localhost:5174,http://127.0.0.1:5173,http://127.0.0.1:5174"
     depends_on:
       db:

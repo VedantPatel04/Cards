@@ -31,8 +31,7 @@ export function RecommendationsPage() {
           Recommendations
         </h1>
         <p className="mt-2 max-w-prose text-[var(--color-muted)]">
-          Ranked catalog cards from the backend. Values are estimates — this
-          page does not recompute scores.
+          Ranked catalog cards from the backend, values are estimates.
         </p>
       </header>
 
@@ -48,8 +47,7 @@ export function RecommendationsPage() {
       {data ? (
         cards.length === 0 ? (
           <p className="text-[var(--color-muted)]">
-            No catalog recommendations yet. Seed catalog cards on the backend,
-            add spending via{' '}
+            No recommendations yet. Upload transaction statements via{' '}
             <Link to="/upload" className="underline">
               Upload
             </Link>
@@ -69,6 +67,13 @@ export function RecommendationsPage() {
 
 function humanizeLabel(value: string) {
   return value.replaceAll('_', ' ')
+}
+
+function firstYearSavingsHint(card: RecommendationCard) {
+  if (card.signup_bonus_status === 'no_bonus') {
+    return 'No signup bonus'
+  }
+  return `Includes ${formatMoney(card.signup_bonus_score)} signup bonus`
 }
 
 function RecommendationItem({ card }: { card: RecommendationCard }) {
@@ -97,14 +102,14 @@ function RecommendationItem({ card }: { card: RecommendationCard }) {
 
       <dl className="mt-4 grid gap-x-8 gap-y-4 sm:grid-cols-2">
         <Metric
-          label="First-year value"
+          label="First-year savings"
           value={formatMoney(card.total_score)}
-          hint="Includes signup bonus when it counts toward first-year value."
+          hint={firstYearSavingsHint(card)}
         />
         <Metric
-          label="Ongoing annual value"
+          label="Ongoing annual savings"
           value={formatMoney(card.ongoing_annual_value)}
-          hint="Excludes one-time signup bonus."
+          hint="Without signup bonus"
         />
         <Metric label="Annual fee" value={formatMoney(card.annual_fee)} />
         <Metric

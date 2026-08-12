@@ -133,9 +133,12 @@ def ingest_card_catalog():
     processed_card_ids = set()
 
     for card_product in card_data:
+        # Lookup by catalog identity only (owner=None). Never upsert onto a
+        # user-owned custom row that happens to share name+issuer.
         card_obj, created = Card_Products.objects.update_or_create(
             name=card_product["name"],
             issuer=card_product["issuer"],
+            owner=None,
             defaults={
                 "network": card_product["network"],
                 "card_type": card_product["card_type"],
@@ -187,9 +190,11 @@ def ingest_card_catalog():
         deleted_count, _ = stale.delete()
         rules_deleted += deleted_count
 
-    #mark anything NOT in this snapshot as inactive
-    # soft-delete (is_active=False) rather than hard-delete because User_cards may reference these rows
-    cards_deactivated = Card_Products.objects.filter(is_active=True).exclude(
+    # Soft-deactivate catalog products missing from this snapshot only.
+    # Custom (user-owned) cards must not be touched by catalog ingest.
+    cards_deactivated = Card_Products.objects.filter(
+        is_active=True, is_catalog=True, owner__isnull=True
+    ).exclude(
         id__in=processed_card_ids
     ).update(is_active=False)
 

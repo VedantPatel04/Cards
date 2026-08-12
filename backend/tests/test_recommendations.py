@@ -93,8 +93,8 @@ class RuleFoldingTest(TestCase):
         ingest_card_catalog()
 
     def test_multiple_travel_rules_fold_to_the_lowest_rate(self):
-        # Sapphire pays 5% via the Chase portal, 3% on vacation rentals and 2%
-        # on everything else that is travel. Only the 2% is unconditional.
+        # Portal 5x is null-mapped (unscored). Vacation rentals 3x and
+        # other_travel 2x fold onto travel; keep the lowest unconditional rate.
         folded = fold_rules_to_buckets(_catalog_card("Sapphire Preferred", "Chase"))
         self.assertEqual(folded["travel"], Decimal("2.00"))
 
@@ -103,13 +103,38 @@ class RuleFoldingTest(TestCase):
         self.assertEqual(folded["groceries"], Decimal("6.00"))
         self.assertEqual(folded["entertainment"], Decimal("6.00"))
         self.assertEqual(folded["travel"], Decimal("3.00"))
+
     def test_unscored_rule_is_ignored_and_falls_back_to_base_rate(self):
-        # Discover's only rule is a rotating, activation-gated category mapped
-        # to null, so travel spend earns the 1% base rate rather than 5%.
-        discover = _catalog_card("Discover it Cash Back", "Discover")
-        self.assertEqual(fold_rules_to_buckets(discover), {})
-        r = score_card(discover, _ann(travel=Decimal("1000.00")), _by(), 1)
+        # A rule mapped to null (rotating / activation-gated) is not scored;
+        # spend falls back to the card's base rate rather than the published 5%.
+        card = seeds.make_card(
+            name="Rotating Perk Card",
+            issuer="TestBank",
+            is_catalog=True,
+            base_reward_rate=Decimal("1.00"),
+        )
+        seeds.make_reward_rule(
+            card=card,
+            category="rotating_quarterly_categories",
+            reward_unit="cash_back",
+            reward_rate=Decimal("5.00"),
+        )
+        self.assertEqual(fold_rules_to_buckets(card), {})
+        r = score_card(card, _ann(travel=Decimal("1000.00")), _by(), 1)
         self.assertEqual(r["spending_score"], Decimal("10.00"))
+
+    def test_portal_only_travel_rules_fall_back_to_base(self):
+        # Platinum / Venture X only publish portal travel rates. Those labels
+        # map to null so ordinary travel spend uses base, not the portal %.
+        platinum = _catalog_card("Platinum Card", "American Express")
+        self.assertNotIn("travel", fold_rules_to_buckets(platinum))
+        r = score_card(platinum, _ann(travel=Decimal("1000.00")), _by(), 1)
+        self.assertEqual(r["spending_score"], Decimal("10.00"))
+
+        venture_x = _catalog_card("Venture X Rewards", "Capital One")
+        self.assertNotIn("travel", fold_rules_to_buckets(venture_x))
+        r = score_card(venture_x, _ann(travel=Decimal("1000.00")), _by(), 1)
+        self.assertEqual(r["spending_score"], Decimal("20.00"))
 
 
 class RewardCurrencyTest(TestCase):
@@ -181,7 +206,11 @@ class SignupBonusTest(TestCase):
         )
         self.assertEqual(r["signup_bonus_status"], "met")
         self.assertEqual(r["signup_bonus_score"], self.freedom.signup_bonus)
-        self.assertIn("already clears", r["signup_bonus_note"])
+        self.assertEqual(
+            r["signup_bonus_note"],
+            "Your spending of $655.74 clears the $500.00 required "
+            "within 3 months of signing up for the card to earn the bonus.",
+        )
         d = r["signup_bonus_detail"]
         self.assertEqual(d["status"], "met")
         self.assertEqual(d["positive_actual_spend"], "655.74")
@@ -193,7 +222,11 @@ class SignupBonusTest(TestCase):
         r = score_card(self.freedom, _ann(), _by(dining=Decimal("100.00")), months_covered=3)
         self.assertEqual(r["signup_bonus_status"], "not_met")
         self.assertEqual(r["signup_bonus_score"], ZERO)
-        self.assertIn("short of", r["signup_bonus_note"])
+        self.assertEqual(
+            r["signup_bonus_note"],
+            "Your spending of $100.00 falls short of the $500.00 required "
+            "within 3 months of signing up for the card to earn the bonus.",
+        )
         d = r["signup_bonus_detail"]
         self.assertEqual(d["status"], "not_met")
         self.assertEqual(d["positive_actual_spend"], "100.00")
@@ -332,22 +365,39 @@ class RecommendationsAPITest(APITestCase):
         self.user = seeds.make_user()
         self.client.force_authenticate(user=self.user)
 
+    def _seed_spend(self, amount=Decimal("100.00"), category="dining"):
+        card = Card_Products.objects.get(name="Freedom Unlimited", issuer="Chase")
+        user_card = seeds.make_user_card(user=self.user, card=card)
+        upload = seeds.make_upload(user=self.user)
+        return seeds.make_transaction(
+            upload=upload,
+            user_card=user_card,
+            category=category,
+            amount=amount,
+            row_index=0,
+        )
+
     def test_auth_required(self):
         self.client.force_authenticate(user=None)
         self.assertEqual(self.client.get(self.url).status_code, status.HTTP_401_UNAUTHORIZED)
 
-    def test_wire_shape_empty_wallet(self):
+    def test_no_recommendations_without_transactions(self):
+        resp = self.client.get(self.url)
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        self.assertEqual(resp.data["recommendations"], [])
+        self.assertEqual(resp.data["confidence"], "low")
+        self.assertEqual(resp.data["value_basis"]["months_of_data"], 0)
+
+    def test_wire_shape_with_spend(self):
+        self._seed_spend()
         resp = self.client.get(self.url)
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         self.assertIn("confidence", resp.data)
         self.assertIn("confidence_note", resp.data)
         self.assertIn("value_basis", resp.data)
         self.assertIn("recommendations", resp.data)
+        self.assertGreater(len(resp.data["recommendations"]), 0)
         self.assertLessEqual(len(resp.data["recommendations"]), 5)
-        self.assertEqual(resp.data["confidence"], "low")
-
-        if not resp.data["recommendations"]:
-            return
 
         rec = resp.data["recommendations"][0]
         for key in (
@@ -365,12 +415,14 @@ class RecommendationsAPITest(APITestCase):
         self.assertIsInstance(rec["explanation"], list)
 
     def test_rank_note_only_present_on_ties(self):
+        self._seed_spend()
         resp = self.client.get(self.url)
         for rec in resp.data["recommendations"]:
             if "rank_note" in rec:
                 self.assertIn("Tied with", rec["rank_note"])
 
     def test_returns_at_most_five_even_with_a_larger_catalog(self):
+        self._seed_spend()
         self.assertGreater(Card_Products.objects.filter(is_catalog=True).count(), 5)
         resp = self.client.get(self.url)
         self.assertEqual(len(resp.data["recommendations"]), 5)
@@ -379,6 +431,7 @@ class RecommendationsAPITest(APITestCase):
         self.assertEqual(ranks[0], 1)
 
     def test_user_scoping(self):
+        self._seed_spend(amount=Decimal("50.00"))
         baseline = self.client.get(self.url).data
         shared = Card_Products.objects.get(name="Freedom Unlimited", issuer="Chase")
         other = seeds.make_user_card(card=shared)
@@ -401,6 +454,7 @@ class RecommendationsAPITest(APITestCase):
         )
 
     def test_response_handles_fewer_than_the_limit(self):
+        self._seed_spend()
         Card_Products.objects.filter(is_catalog=True).update(is_active=False)
         Card_Products.objects.filter(name="Active Cash").update(is_active=True)
         resp = self.client.get(self.url)

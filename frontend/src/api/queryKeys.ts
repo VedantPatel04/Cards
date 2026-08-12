@@ -1,5 +1,6 @@
 /** TanStack Query keys — invalidate after uploads, review answers, or wallet deletes */
 export const queryKeys = {
+  account: ['account'] as const,
   catalog: ['catalog'] as const,
   wallet: ['wallet'] as const,
   uploads: ['uploads'] as const,

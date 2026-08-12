@@ -14,7 +14,6 @@ class RegisterEndpointTests(APITestCase):
         self.url = reverse("register")
         self.payload = {
             "username": "alice",
-            "email": "alice@example.com",
             "password": "Sup3rSecret!pw",
             "password2": "Sup3rSecret!pw",
         }
@@ -24,9 +23,10 @@ class RegisterEndpointTests(APITestCase):
         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
 
         user = CustomUser.objects.get(username="alice")
-        self.assertEqual(user.email, "alice@example.com")
         self.assertFalse(user.is_superuser)
         self.assertFalse(user.is_staff)
+        self.assertEqual(resp.data["username"], "alice")
+        self.assertNotIn("email", resp.data)
 
     def test_password_is_hashed_not_stored_plaintext(self):
         self.client.post(self.url, self.payload, format="json")
@@ -47,17 +47,21 @@ class RegisterEndpointTests(APITestCase):
 
     def test_rejects_duplicate_username(self):
         self.client.post(self.url, self.payload, format="json")
-        dup = {**self.payload, "email": "other@example.com"}
-        resp = self.client.post(self.url, dup, format="json")
+        resp = self.client.post(self.url, self.payload, format="json")
         self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(CustomUser.objects.filter(username="alice").count(), 1)
 
-    def test_rejects_duplicate_email(self):
-        self.client.post(self.url, self.payload, format="json")
-        dup = {**self.payload, "username": "bob"}
-        resp = self.client.post(self.url, dup, format="json")
-        self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertFalse(CustomUser.objects.filter(username="bob").exists())
+    def test_ignores_email_if_client_still_sends_it(self):
+        """Legacy clients may still POST email; it must not be stored or returned."""
+        from django.core.exceptions import FieldDoesNotExist
+
+        payload = {**self.payload, "email": "alice@example.com"}
+        resp = self.client.post(self.url, payload, format="json")
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        self.assertNotIn("email", resp.data)
+        self.assertTrue(CustomUser.objects.filter(username="alice").exists())
+        with self.assertRaises(FieldDoesNotExist):
+            CustomUser._meta.get_field("email")
 
     def test_register_is_public(self):
         resp = self.client.post(self.url, self.payload, format="json")

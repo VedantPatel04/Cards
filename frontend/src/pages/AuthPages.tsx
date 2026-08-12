@@ -79,7 +79,6 @@ export function RegisterPage() {
   const navigate = useNavigate()
 
   const [username, setUsername] = useState('')
-  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [password2, setPassword2] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -96,7 +95,7 @@ export function RegisterPage() {
 
     setSubmitting(true)
     try {
-      await register({ username, email, password, password2 })
+      await register({ username, password, password2 })
       navigate('/', { replace: true })
     } catch (err) {
       setError(
@@ -112,7 +111,7 @@ export function RegisterPage() {
   return (
     <AuthShell
       title="Create account"
-      subtitle="Please fill out all details below to create an account"
+      subtitle="Choose a username and password to get started."
     >
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
         <Field
@@ -121,15 +120,6 @@ export function RegisterPage() {
           autoComplete="username"
           value={username}
           onChange={setUsername}
-          required
-        />
-        <Field
-          label="Email"
-          name="email"
-          type="email"
-          autoComplete="email"
-          value={email}
-          onChange={setEmail}
           required
         />
         <Field

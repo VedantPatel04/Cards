@@ -3,6 +3,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 
 import { GuestRoute, ProtectedRoute } from './components/ProtectedRoute'
 import { AppLayout } from './layouts/AppLayout'
+import { AccountSettingsPage } from './pages/AccountSettingsPage'
 import { LoginPage, RegisterPage } from './pages/AuthPages'
 import { DashboardPage } from './pages/DashboardPage'
 import { RecommendationsPage } from './pages/RecommendationsPage'
@@ -28,6 +29,7 @@ export default function App() {
             <Route path="/review" element={<ReviewPage />} />
             <Route path="/recommendations" element={<RecommendationsPage />} />
             <Route path="/transactions" element={<TransactionsPage />} />
+            <Route path="/account" element={<AccountSettingsPage />} />
           </Route>
         </Route>
 

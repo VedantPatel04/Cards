@@ -55,3 +55,18 @@ def cache_delete(user_id: int, merchant_key: str) -> None:
         redis_client.delete(_key(user_id, merchant_key))
     except redis.RedisError:
         return
+
+
+def cache_delete_user(user_id: int) -> None:
+    """
+    Drop every merchant-cache key for a user (account deletion).
+
+    Uses SCAN so we never block Redis with KEYS. Fail-open on Redis errors.
+    """
+    pattern = f"merchant:{user_id}:*"
+    try:
+        keys = list(redis_client.scan_iter(match=pattern, count=200))
+        if keys:
+            redis_client.delete(*keys)
+    except redis.RedisError:
+        return

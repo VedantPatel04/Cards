@@ -4,7 +4,7 @@ import os
 from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
-load_dotenv(BASE_DIR / ".env")  # loads backend/.env when present; no-op if missing
+load_dotenv(BASE_DIR / ".env")  # loads backend/.env
 
 # Intentionally unset in base — each environment module must set SECRET_KEY.
 # Production must refuse to start without an explicit env value.
@@ -38,7 +38,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    # CorsMiddleware should sit above CommonMiddleware so preflight is handled early.
     'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -90,7 +89,6 @@ SPECTACULAR_SETTINGS = {
     'TITLE': 'Cards API',
     'DESCRIPTION': 'Credit card rewards tracking API.',
     'VERSION': '1.0.0',
-    # Schema endpoint is only mounted in DEBUG mode — no need to serve it inline.
     'SERVE_INCLUDE_SCHEMA': False,
 }
 
@@ -105,7 +103,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
 MERCHANT_CACHE_TTL = int(os.environ.get("MERCHANT_CACHE_TTL", 60 * 60 * 24 * 30))  # 30 days
 
-# Empty until a frontend origin is configured via env (comma-separated).
 CORS_ALLOWED_ORIGINS = [
     origin.strip()
     for origin in os.environ.get("CORS_ALLOWED_ORIGINS", "").split(",")

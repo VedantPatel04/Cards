@@ -19,15 +19,15 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ('username', 'email', 'password', 'password2')
+        fields = ("username", "password", "password2")
 
     def validate(self, attrs):
-        if attrs['password'] != attrs['password2']:
+        if attrs["password"] != attrs["password2"]:
             raise serializers.ValidationError({"password": "Passwords do not match."})
         return attrs
 
     def create(self, validated_data):
-        validated_data.pop('password2')
+        validated_data.pop("password2")
         user = CustomUser.objects.create_user(**validated_data)
         return user
 
@@ -36,4 +36,4 @@ class UserSerializer(serializers.ModelSerializer):
     # password excluded — safe to return in profile/registration responses
     class Meta:
         model = CustomUser
-        fields = ('id', 'username', 'email')
+        fields = ("id", "username")

@@ -10,7 +10,7 @@ import redis
 from django.test import SimpleTestCase, override_settings
 
 import services.merchant_cache as cache_module
-from services.merchant_cache import cache_get, cache_set
+from services.merchant_cache import cache_delete_user, cache_get, cache_set
 
 
 def _make_client(get_return=None):
@@ -75,3 +75,24 @@ class CacheSetTests(SimpleTestCase):
         client.set.side_effect = redis.ConnectionError("down")
         with patch.object(cache_module, "redis_client", client):
             cache_set(7, "MCDONALDS", "dining")  # must not raise
+
+
+class CacheDeleteUserTests(SimpleTestCase):
+    def test_scans_and_deletes_user_namespace(self):
+        client = MagicMock()
+        client.scan_iter.return_value = iter(
+            ["merchant:7:AMAZON", "merchant:7:TARGET"]
+        )
+        with patch.object(cache_module, "redis_client", client):
+            cache_delete_user(7)
+        client.scan_iter.assert_called_once_with(match="merchant:7:*", count=200)
+        client.delete.assert_called_once_with(
+            "merchant:7:AMAZON", "merchant:7:TARGET"
+        )
+
+    def test_no_keys_skips_delete(self):
+        client = MagicMock()
+        client.scan_iter.return_value = iter([])
+        with patch.object(cache_module, "redis_client", client):
+            cache_delete_user(7)
+        client.delete.assert_not_called()

@@ -36,6 +36,9 @@ export function AppLayout() {
           <NavLink to="/transactions" className={navLinkClass}>
             Transactions
           </NavLink>
+          <NavLink to="/account" className={navLinkClass}>
+            Account
+          </NavLink>
           <button
             type="button"
             onClick={logout}

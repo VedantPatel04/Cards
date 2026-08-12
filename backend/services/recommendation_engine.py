@@ -140,22 +140,17 @@ def score_card(card, annualized: dict, by_category: dict, months_covered: int) -
         signup_bonus_score = _bonus_in_dollars(card)
         signup_bonus_status = "met"
         shown_actual = positive_actual.quantize(CENTS, rounding=ROUND_HALF_UP)
+        required = card.signup_bonus_required_spending.quantize(
+            CENTS, rounding=ROUND_HALF_UP
+        )
         signup_bonus_note = (
-            f"Your spending of ${shown_actual} already clears the "
-            f"${card.signup_bonus_required_spending} required"
-            + (
-                f" within {months_covered} month(s) of statements"
-                if months_covered > 0
-                else ""
-            )
-            + f" (card allows up to {period_months} months)."
+            f"Your spending of ${shown_actual} clears the ${required} required "
+            f"within {period_months} months of signing up for the card to earn the bonus."
         )
         signup_bonus_detail = {
             "status": "met",
             "positive_actual_spend": str(shown_actual),
-            "required_spend": str(
-                card.signup_bonus_required_spending.quantize(CENTS, rounding=ROUND_HALF_UP)
-            ),
+            "required_spend": str(required),
             "period_months": period_months,
             "months_of_data": months_covered,
             "met_early": months_covered < period_months,
@@ -165,10 +160,13 @@ def score_card(card, annualized: dict, by_category: dict, months_covered: int) -
         months_needed = period_months - months_covered
         signup_bonus_score = ZERO
         signup_bonus_status = "insufficient_data"
+        required = card.signup_bonus_required_spending.quantize(
+            CENTS, rounding=ROUND_HALF_UP
+        )
         signup_bonus_note = (
-            f"Upload {months_needed} more month(s) of statements to evaluate this "
-            f"card's {_bonus_label(card)} signup bonus, which needs "
-            f"${card.signup_bonus_required_spending} of spend in {period_months} months."
+            f"Upload {months_needed} more month(s) of statements to evaluate the "
+            f"{_bonus_label(card)} signup bonus (${required} required in "
+            f"{period_months} months)."
         )
         signup_bonus_detail = {
             "status": "insufficient_data",
@@ -178,27 +176,28 @@ def score_card(card, annualized: dict, by_category: dict, months_covered: int) -
             "positive_actual_spend": str(
                 positive_actual.quantize(CENTS, rounding=ROUND_HALF_UP)
             ),
-            "required_spend": str(
-                card.signup_bonus_required_spending.quantize(CENTS, rounding=ROUND_HALF_UP)
-            ),
+            "required_spend": str(required),
         }
     else:
         monthly_average = positive_actual / Decimal(months_covered)
         projected = monthly_average * Decimal(period_months)
         shown = projected.quantize(CENTS, rounding=ROUND_HALF_UP)
+        required = card.signup_bonus_required_spending.quantize(
+            CENTS, rounding=ROUND_HALF_UP
+        )
         if projected >= card.signup_bonus_required_spending:
             signup_bonus_score = _bonus_in_dollars(card)
             signup_bonus_status = "met"
             signup_bonus_note = (
-                f"Your spending projects to ${shown} over {period_months} months, "
-                f"clearing the ${card.signup_bonus_required_spending} required."
+                f"Your spending of ${shown} clears the ${required} required "
+                f"within {period_months} months of signing up for the card to earn the bonus."
             )
         else:
             signup_bonus_score = ZERO
             signup_bonus_status = "not_met"
             signup_bonus_note = (
-                f"Your spending projects to ${shown} over {period_months} months, "
-                f"short of the ${card.signup_bonus_required_spending} required."
+                f"Your spending of ${shown} falls short of the ${required} required "
+                f"within {period_months} months of signing up for the card to earn the bonus."
             )
         signup_bonus_detail = {
             "status": signup_bonus_status,
@@ -207,9 +206,7 @@ def score_card(card, annualized: dict, by_category: dict, months_covered: int) -
             ),
             "monthly_average": str(monthly_average.quantize(CENTS, rounding=ROUND_HALF_UP)),
             "projected_spend": str(shown),
-            "required_spend": str(
-                card.signup_bonus_required_spending.quantize(CENTS, rounding=ROUND_HALF_UP)
-            ),
+            "required_spend": str(required),
             "period_months": period_months,
             "months_of_data": months_covered,
         }
