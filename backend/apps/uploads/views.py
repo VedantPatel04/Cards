@@ -22,10 +22,12 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from drf_spectacular.utils import extend_schema
 
 from apps.transactions.models import Transactions
 from apps.uploads.models import Uploads
 from apps.users.models import User_cards
+from config.api_schema import UploadCreateSerializer, UploadReassignSerializer
 from services.upload_pipeline import STATUS_PENDING, STATUS_PROCESSED, process_upload
 
 logger = logging.getLogger(__name__)
@@ -207,6 +209,10 @@ def _ingest_one_file(user, uploaded_file, user_card):
     )
 
 
+@extend_schema(
+    request=UploadCreateSerializer,
+    responses={200: dict, 201: dict, 207: dict, 400: dict, 409: dict},
+)
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def upload_transactions(request):
@@ -275,6 +281,7 @@ def upload_list(request):
     return Response({"count": len(items), "uploads": items}, status=status.HTTP_200_OK)
 
 
+@extend_schema(request=UploadReassignSerializer, responses={200: dict, 400: dict, 404: dict})
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def upload_reassign(request, upload_id: int):

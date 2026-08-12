@@ -27,6 +27,7 @@ from decimal import Decimal
 
 from django.db import IntegrityError, transaction as db_transaction
 from django.db.models import Count
+from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -35,6 +36,7 @@ from rest_framework.response import Response
 from apps.cards.models import Card_Products
 from apps.uploads.models import Uploads
 from apps.users.models import User_cards
+from config.api_schema import WalletCreateSerializer
 
 _ZERO = Decimal("0.00")
 
@@ -52,6 +54,20 @@ def _wallet_item(entry: User_cards) -> dict:
     }
 
 
+@extend_schema_view(
+    get=extend_schema(
+        responses={200: dict},
+        description="List active wallet entries for the authenticated user.",
+    ),
+    post=extend_schema(
+        request=WalletCreateSerializer,
+        responses={201: dict, 400: dict},
+        description=(
+            "Add a card: `card_product_id` (catalog) or "
+            "`name` + `issuer` + `network` (custom)."
+        ),
+    ),
+)
 @api_view(["GET", "POST"])
 @permission_classes([IsAuthenticated])
 def wallet_list_or_add(request):

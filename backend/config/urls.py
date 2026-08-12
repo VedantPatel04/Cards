@@ -1,7 +1,7 @@
-from django.conf import settings
 from django.contrib import admin
 from django.urls import path
 from django.views.generic import RedirectView
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 from apps.users.views import (
     LoginView,
@@ -49,13 +49,12 @@ urlpatterns = [
     # Spend summary + recommendations
     path('api/summary/', summary_view, name='spend_summary'),
     path('api/recommendations/', recommendations_view, name='recommendations'),
+
+    # OpenAPI schema + Swagger UI (public in all environments)
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path(
+        'api/docs/',
+        SpectacularSwaggerView.as_view(url_name='schema'),
+        name='swagger-ui',
+    ),
 ]
-
-# Swagger UI — dev/local only
-if settings.DEBUG:
-    from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerUIView
-
-    urlpatterns += [
-        path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
-        path('api/docs/', SpectacularSwaggerUIView.as_view(url_name='schema'), name='swagger-ui'),
-    ]
