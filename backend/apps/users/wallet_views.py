@@ -57,14 +57,14 @@ def _wallet_item(entry: User_cards) -> dict:
 @extend_schema_view(
     get=extend_schema(
         responses={200: dict},
-        description="List active wallet entries for the authenticated user.",
+        description="List active wallet cards for the signed-in user.",
     ),
     post=extend_schema(
         request=WalletCreateSerializer,
         responses={201: dict, 400: dict},
         description=(
-            "Add a card: `card_product_id` (catalog) or "
-            "`name` + `issuer` + `network` (custom)."
+            "Add a catalog card by product id, or a custom card by "
+            "name, issuer, and network."
         ),
     ),
 )
@@ -232,14 +232,7 @@ def _wallet_add(request):
 @api_view(["DELETE"])
 @permission_classes([IsAuthenticated])
 def wallet_delete(request, wallet_id: int):
-    """
-    DELETE /api/wallet/<wallet_id>/
-
-    Hard-deletes this user's wallet entry (and its transactions). Uploads
-    for this user that no longer have any transactions are removed.
-    Orphan custom Card_Products rows owned by this user are removed when
-    nothing else references them.
-    """
+    """Remove a wallet card and its related transactions."""
     entry = (
         User_cards.objects.select_related("card")
         .filter(pk=wallet_id, user=request.user)

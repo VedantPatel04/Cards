@@ -88,9 +88,8 @@ REST_FRAMEWORK = {
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Cards API',
     'DESCRIPTION': (
-        'Credit card rewards API. Obtain a JWT via `POST /api/token/`, then use '
-        '**Authorize** in Swagger UI and paste: `Bearer <access>`.\n\n'
-        'Try it out is enabled — requests run against this same API host.'
+        'Credit card rewards API. Get a JWT from `POST /api/token/`, then click '
+        '**Authorize** and enter `Bearer <access>`.'
     ),
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,

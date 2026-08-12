@@ -91,12 +91,7 @@ def _serialize(scored: dict) -> dict:
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def recommendations_view(request):
-    """
-    GET /api/recommendations/
-
-    Authenticated. Uses request.user only — no body, no path params.
-    recommendations length may be 0–5; ties share a rank and carry rank_note.
-    """
+    """Rank catalog cards against the signed-in user's spending."""
     summary = get_spend_summary(request.user)
     annualized = summary["annualized"]
     by_category = summary["by_category"]

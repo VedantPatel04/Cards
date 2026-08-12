@@ -57,15 +57,7 @@ def _money(value) -> str:
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def transaction_list(request):
-    """
-    GET /api/transactions/
-
-    This user's transactions, newest first. card_name / issuer are joined from
-    the wallet -> catalog product; the FK (user_card_id) is kept for uploads.
-
-    count is the total matching rows. At most MAX_TRANSACTION_ITEMS are
-    returned; truncated is true when more exist.
-    """
+    """List the signed-in user's transactions, newest first."""
     qs = (
         _user_transactions(request.user)
         .select_related("user_card__card", "upload")
@@ -108,16 +100,7 @@ def transaction_list(request):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def review_queue(request):
-    """
-    GET /api/review/
-
-    Distinct merchants with at least one uncategorized transaction, largest
-    total spend first — answering the top of this list moves the most dollars,
-    so a user who answers three questions and stops still gets a useful result.
-
-    count is the total matching merchant groups. At most MAX_REVIEW_ITEMS are
-    returned; truncated is true when more exist.
-    """
+    """List uncategorized merchants for the signed-in user, highest spend first."""
     groups_qs = (
         _user_transactions(request.user)
         .filter(category=UNRESOLVED_CATEGORY)
@@ -165,16 +148,7 @@ def review_queue(request):
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def review_answer(request):
-    """
-    POST /api/review/answer/  {"merchant_key": "TRADER JOES", "category": "groceries"}
-
-    Saves the answer as this user's override and applies it to every one of
-    their transactions for that merchant — including rows already categorized
-    by the bank, because the user is the authority on their own spend.
-
-    Re-posting is safe: the override is an upsert and the backfill is an UPDATE
-    to a fixed value.
-    """
+    """Assign a rewards category to a merchant and apply it to matching transactions."""
     merchant_key = str(request.data.get("merchant_key") or "").strip()
     category = str(request.data.get("category") or "").strip()
 
@@ -238,26 +212,7 @@ def review_answer(request):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def summary_view(request):
-    """
-    GET /api/summary/
-
-    All-time spend totals across all wallet cards, by rewards category.
-
-    Returns purchase spend (entry_type spend + refund). Refunds reduce
-    category totals. Bill payments and statement adjustments are excluded
-    from by_category / total_spend but still appear on the transaction list
-    and still count toward statement-cycle months_covered.
-
-    Unresolved rows (category="") among spend/refund are reported in
-    unresolved_count / unresolved_amount.
-
-    All 7 category buckets are always present even if zero.
-    months_breakdown is calendar months (display); months_covered is
-    statement-cycle evidence used for annualize / signup.
-
-    The Day 6 recommendation engine calls get_spend_summary() directly as a
-    service; this view serialises the same output for the HTTP API.
-    """
+    """Return all-time spend totals by rewards category."""
     summary = get_spend_summary(request.user)
     period = summary["period"]
 

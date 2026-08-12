@@ -27,11 +27,7 @@ def _catalog_item(card: Card_Products) -> dict:
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def catalog_list(request):
-    """
-    GET /api/cards/
-
-    Shows all catalog products (is_catalog=True). Use these ids with POST /api/wallet/.
-    """
+    """List active catalog credit cards available to add to a wallet."""
     cards = (
         Card_Products.objects.filter(is_active=True, is_catalog=True).order_by("issuer", "name")
     )

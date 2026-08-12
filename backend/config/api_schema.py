@@ -10,31 +10,31 @@ from rest_framework import serializers
 
 class UploadCreateSerializer(serializers.Serializer):
     user_card_id = serializers.IntegerField(
-        help_text="Active wallet entry id to attach the statement(s) to.",
+        help_text="Active wallet card id for the statement upload.",
     )
     file = serializers.FileField(
         required=False,
-        help_text="Single Chase CSV. Prefer this for one file.",
+        help_text="Single Chase CSV file.",
     )
     files = serializers.ListField(
         child=serializers.FileField(),
         required=False,
-        help_text="One or more Chase CSVs (batch). Use instead of or with file.",
+        help_text="One or more Chase CSV files.",
     )
 
 
 class UploadReassignSerializer(serializers.Serializer):
     user_card_id = serializers.IntegerField(
-        help_text="Active wallet entry id to move this upload's transactions onto.",
+        help_text="Active wallet card id to move this upload onto.",
     )
 
 
 class WalletCreateSerializer(serializers.Serializer):
-    """Either catalog id OR custom name/issuer/network (not both required)."""
+    """Catalog product id, or custom name plus issuer plus network."""
 
     card_product_id = serializers.IntegerField(
         required=False,
-        help_text="Catalog product id. Alternative to name/issuer/network.",
+        help_text="Catalog product id when adding from the catalog.",
     )
     name = serializers.CharField(required=False)
     issuer = serializers.CharField(required=False)

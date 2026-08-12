@@ -216,14 +216,7 @@ def _ingest_one_file(user, uploaded_file, user_card):
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def upload_transactions(request):
-    """
-    POST /api/upload/  (multipart: file|files=<csv>+, user_card_id=<int>)
-
-    One file → same response shape as before (no batch wrapper).
-    Multiple files → {count, succeeded, failed, results[]} with per-file ok/detail.
-    Same bytes + same card → refresh rows (200).
-    Same bytes + different card → 409; use reassign instead.
-    """
+    """Import one or more Chase statement CSVs onto an active wallet card."""
     uploaded_files = _collect_upload_files(request)
     if not uploaded_files:
         return Response(
@@ -275,7 +268,7 @@ def upload_transactions(request):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def upload_list(request):
-    """GET /api/uploads/ — this user's statement imports, newest first."""
+    """List the signed-in user's statement imports, newest first."""
     uploads = Uploads.objects.filter(user=request.user).order_by("-created_at", "-id")
     items = [_serialize_upload(u) for u in uploads]
     return Response({"count": len(items), "uploads": items}, status=status.HTTP_200_OK)
@@ -285,12 +278,7 @@ def upload_list(request):
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def upload_reassign(request, upload_id: int):
-    """
-    POST /api/uploads/<upload_id>/reassign/  {"user_card_id": N}
-
-    Moves every transaction on this import to another active wallet card.
-    Use when a statement was attached to the wrong card.
-    """
+    """Move an import's transactions onto a different active wallet card."""
     upload = Uploads.objects.filter(pk=upload_id, user=request.user).first()
     if upload is None:
         return Response(
@@ -324,11 +312,7 @@ def upload_reassign(request, upload_id: int):
 @api_view(["DELETE"])
 @permission_classes([IsAuthenticated])
 def upload_delete(request, upload_id: int):
-    """
-    DELETE /api/uploads/<upload_id>/
-
-    Hard-deletes this user's statement import. Related transactions cascade.
-    """
+    """Permanently delete a statement import and its transactions."""
     upload = Uploads.objects.filter(pk=upload_id, user=request.user).first()
     if upload is None:
         return Response(
