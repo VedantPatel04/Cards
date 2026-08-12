@@ -18,7 +18,6 @@ from apps.users.models import User_cards
 User = get_user_model()
 
 DEMO_USERNAME = "user1"
-DEMO_EMAIL = "user1@example.com"
 DEMO_PASSWORD = "user1Password"
 
 
@@ -32,12 +31,8 @@ class Command(BaseCommand):
         self.stdout.write("Seeding global merchant aliases…")
         call_command("seed_global_merchants")
 
-        user, created = User.objects.get_or_create(
-            username=DEMO_USERNAME,
-            defaults={"email": DEMO_EMAIL},
-        )
+        user, created = User.objects.get_or_create(username=DEMO_USERNAME)
         # Keep login credentials stable even if the user already existed.
-        user.email = DEMO_EMAIL
         user.set_password(DEMO_PASSWORD)
         user.save()
         self.stdout.write(
@@ -71,7 +66,6 @@ class Command(BaseCommand):
             "\n".join([
                 "Ready for Postman:",
                 f"  username:     {DEMO_USERNAME}",
-                f"  email:        {DEMO_EMAIL}",
                 f"  password:     {DEMO_PASSWORD}",
                 f"  user_card_id: {entry.pk}",
             ])

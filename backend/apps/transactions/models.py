@@ -9,7 +9,7 @@ UNRESOLVED_CATEGORY = ""
 SOURCE_USER = "user"      # user's own override (tier 1/2)
 SOURCE_GLOBAL = "global"  # admin-curated GlobalMerchantAlias (tier 3)
 SOURCE_BANK = "bank"      # adapter's bank category (tier 4)
-SOURCE_NONE = ""          # genuinely unresolved or categorizedto "other"
+SOURCE_NONE = ""          # genuinely unresolved or categorized to "other"
 
 ENTRY_SPEND = "spend"
 ENTRY_REFUND = "refund"
@@ -21,7 +21,7 @@ ENTRY_TYPE_CHOICES = (
     (ENTRY_PAYMENT, "Payment"),
     (ENTRY_ADJUSTMENT, "Adjustment"),
 )
-# Rows that count toward by_category spending AKA ottal_spend
+# Rows that count toward by_category spending
 SPEND_SUMMARY_ENTRY_TYPES = (ENTRY_SPEND, ENTRY_REFUND)
 
 
@@ -35,7 +35,7 @@ class Transactions(models.Model):
     # this is the rewards category - it is "" when it needs user review
     category = models.CharField(max_length=32, blank=True, default=UNRESOLVED_CATEGORY)
 
-    # this is an opqau comparison key (UPPERCASE). Used to key overrides and backfills
+    # opaque comparison key (UPPERCASE) — used to key overrides and backfills
     merchant_key = models.CharField(max_length=255, blank=True, default="", db_index=True)
 
     # Human-readable version of merchant_key (title-cased) Shown prominently

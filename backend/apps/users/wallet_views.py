@@ -5,14 +5,17 @@ POST accepts either:
   { "card_product_id": N }                         — add from catalog
   { "name", "issuer", "network" }                  — custom / free-text card
 
-If name+issuer already exists as a Card_Products row (catalog or prior custom),
-that product is attached (Option A). Custom creates use is_catalog=False,
-zero reward fields, and no Reward_Rules.
+Custom cards are user-scoped (Card_Products.owner). Name+issuer matching:
+  1. Active catalog product (shared) → attach
+  2. This user's own custom product → attach
+  3. Else create a new custom row owned by this user
+
+Never attach another user's custom Card_Products row.
 
 DELETE is a hard delete: Transactions cascade with the wallet row. Statement
 imports (Uploads) left with zero transactions for this user are removed too.
-If the product was custom (is_catalog=False) and no other wallet still
-references it, the orphan Card_Products row is deleted as well.
+If the product was custom and owned by this user with no remaining wallet
+refs, the orphan Card_Products row is deleted as well.
 
 Card_Products.is_active still matters for catalog lifecycle (ingest soft-
 deactivates removed snapshot products). Inactive products cannot be added.
@@ -22,7 +25,7 @@ on list/upload until a later cleanup.
 
 from decimal import Decimal
 
-from django.db import transaction as db_transaction
+from django.db import IntegrityError, transaction as db_transaction
 from django.db.models import Count
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
@@ -82,7 +85,14 @@ def _attach_card(user, card: Card_Products):
             status=status.HTTP_400_BAD_REQUEST,
         )
 
-    entry = User_cards.objects.create(user=user, card=card, is_active=True)
+    try:
+        entry = User_cards.objects.create(user=user, card=card, is_active=True)
+    except IntegrityError:
+        # Race: concurrent request added the same card between the exists() check and create().
+        return Response(
+            {"detail": "That card already exists in your wallet."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
     return Response(_wallet_item(entry), status=status.HTTP_201_CREATED)
 
 
@@ -97,7 +107,7 @@ def _wallet_add_by_product_id(request, raw_id):
 
     # Add-by-id is the catalog picker path: must be an active catalog product.
     card = Card_Products.objects.filter(
-        pk=card_product_id, is_active=True, is_catalog=True
+        pk=card_product_id, is_active=True, is_catalog=True, owner__isnull=True
     ).first()
     if card is None:
         return Response(
@@ -111,6 +121,7 @@ def _wallet_add_custom(request):
     name = str(request.data.get("name") or "").strip()
     issuer = str(request.data.get("issuer") or "").strip()
     network = str(request.data.get("network") or "").strip()
+    user = request.user
 
     missing = [
         field
@@ -123,24 +134,55 @@ def _wallet_add_custom(request):
             status=status.HTTP_400_BAD_REQUEST,
         )
 
-    # Option A: name+issuer match attaches the existing product (catalog or custom).
-    existing = Card_Products.objects.filter(name__iexact=name, issuer__iexact=issuer).first()
-    if existing is not None:
-        return _attach_card(request.user, existing)
-
-    card = Card_Products.objects.create(
-        name=name,
-        issuer=issuer,
-        network=network,
-        card_type="credit",
+    # Prefer an active catalog product with this name+issuer (shared intentionally).
+    catalog = Card_Products.objects.filter(
+        name__iexact=name,
+        issuer__iexact=issuer,
+        is_catalog=True,
         is_active=True,
+        owner__isnull=True,
+    ).first()
+    if catalog is not None:
+        return _attach_card(user, catalog)
+
+    # Otherwise only this user's own custom product — never another tenant's.
+    existing = Card_Products.objects.filter(
+        name__iexact=name,
+        issuer__iexact=issuer,
         is_catalog=False,
-        annual_fee=_ZERO,
-        base_reward_rate=_ZERO,
-        signup_bonus=_ZERO,
-        signup_bonus_required_spending=_ZERO,
-    )
-    return _attach_card(request.user, card)
+        owner=user,
+    ).first()
+    if existing is not None:
+        return _attach_card(user, existing)
+
+    try:
+        card = Card_Products.objects.create(
+            name=name,
+            issuer=issuer,
+            network=network,
+            card_type="credit",
+            is_active=True,
+            is_catalog=False,
+            owner=user,
+            annual_fee=_ZERO,
+            base_reward_rate=_ZERO,
+            signup_bonus=_ZERO,
+            signup_bonus_required_spending=_ZERO,
+        )
+    except IntegrityError:
+        # Race: concurrent create of the same owned custom.
+        card = Card_Products.objects.filter(
+            name__iexact=name,
+            issuer__iexact=issuer,
+            is_catalog=False,
+            owner=user,
+        ).first()
+        if card is None:
+            return Response(
+                {"detail": "A conflict occurred creating that card. Please try again."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+    return _attach_card(user, card)
 
 
 def _wallet_add(request):
@@ -179,8 +221,8 @@ def wallet_delete(request, wallet_id: int):
 
     Hard-deletes this user's wallet entry (and its transactions). Uploads
     for this user that no longer have any transactions are removed.
-    Orphan custom Card_Products rows are removed when nothing else
-    references them.
+    Orphan custom Card_Products rows owned by this user are removed when
+    nothing else references them.
     """
     entry = (
         User_cards.objects.select_related("card")
@@ -198,6 +240,7 @@ def wallet_delete(request, wallet_id: int):
         entry.delete()
         if (
             not card.is_catalog
+            and card.owner_id == request.user.pk
             and not User_cards.objects.filter(card_id=card.pk).exists()
         ):
             card.delete()

@@ -101,6 +101,7 @@ class WalletTests(APITestCase):
 
         product = Card_Products.objects.get(pk=resp.data["card_product_id"])
         self.assertFalse(product.is_catalog)
+        self.assertEqual(product.owner_id, self.user.pk)
         self.assertEqual(product.base_reward_rate, 0)
         self.assertEqual(product.reward_rules.count(), 0)
         self.assertNotIn(product.pk, {

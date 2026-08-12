@@ -14,7 +14,10 @@ export function AppLayout() {
         <NavLink to="/" className="text-xl font-semibold tracking-tight">
           Cards
         </NavLink>
-        <nav className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
+        <nav
+          className="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs sm:gap-x-4 sm:text-sm"
+          aria-label="Main"
+        >
           <NavLink to="/" className={navLinkClass} end>
             Dashboard
           </NavLink>
@@ -32,6 +35,9 @@ export function AppLayout() {
           </NavLink>
           <NavLink to="/transactions" className={navLinkClass}>
             Transactions
+          </NavLink>
+          <NavLink to="/account" className={navLinkClass}>
+            Account
           </NavLink>
           <button
             type="button"

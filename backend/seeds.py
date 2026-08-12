@@ -31,7 +31,6 @@ def make_user(**overrides):
     n = _next()
     defaults = {
         "username": f"user{n}",
-        "email": f"user{n}@example.com",
         "password": "Sup3rSecret!pw",
     }
     defaults.update(overrides)

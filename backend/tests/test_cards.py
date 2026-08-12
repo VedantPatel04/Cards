@@ -16,6 +16,38 @@ class CardProductsConstraintTests(TestCase):
             with transaction.atomic():
                 seeds.make_card(name="Sapphire", issuer="Chase")
 
+    def test_custom_cards_unique_per_owner_not_globally(self):
+        a = seeds.make_user()
+        b = seeds.make_user()
+        Card_Products.objects.create(
+            name="Campus Visa",
+            issuer="Local CU",
+            network="Visa",
+            card_type="credit",
+            is_catalog=False,
+            owner=a,
+            annual_fee="0.00",
+            base_reward_rate="0.00",
+            signup_bonus="0.00",
+            signup_bonus_required_spending="0.00",
+        )
+        Card_Products.objects.create(
+            name="Campus Visa",
+            issuer="Local CU",
+            network="Visa",
+            card_type="credit",
+            is_catalog=False,
+            owner=b,
+            annual_fee="0.00",
+            base_reward_rate="0.00",
+            signup_bonus="0.00",
+            signup_bonus_required_spending="0.00",
+        )
+        self.assertEqual(
+            Card_Products.objects.filter(name="Campus Visa", issuer="Local CU").count(),
+            2,
+        )
+
     def test_same_name_different_issuer_allowed(self):
         seeds.make_card(name="Platinum", issuer="Amex")
         seeds.make_card(name="Platinum", issuer="Citi")
@@ -169,6 +201,33 @@ class CardIngestionReconciliationTests(TestCase):
             ingest_card_catalog() #sapphire card is now fed into ingest_card_catalog() --> set to inactive now since new snapshot is trimmed
         removed = Card_Products.objects.get(name=catalog[0]["name"], issuer=catalog[0]["issuer"])
         self.assertFalse(removed.is_active)  # soft-deleted, not hard-deleted
+
+    def test_ingest_does_not_deactivate_custom_cards(self):
+        ingest_card_catalog()
+        user = seeds.make_user()
+        custom = Card_Products.objects.create(
+            name="My Local Card",
+            issuer="Credit Union",
+            network="Visa",
+            card_type="credit",
+            is_active=True,
+            is_catalog=False,
+            owner=user,
+            annual_fee="0.00",
+            base_reward_rate="0.00",
+            signup_bonus="0.00",
+            signup_bonus_required_spending="0.00",
+        )
+        catalog = load_card_catalog()
+        with patch(
+            "services.card_catalog_ingestion.load_card_catalog",
+            return_value=catalog[:1],
+        ):
+            ingest_card_catalog()
+        custom.refresh_from_db()
+        self.assertTrue(custom.is_active)
+        self.assertFalse(custom.is_catalog)
+        self.assertEqual(custom.owner_id, user.pk)
 
     def test_removed_card_row_still_exists_for_fk_safety(self):
         # User_cards may reference removed cards — hard-delete would break that FK

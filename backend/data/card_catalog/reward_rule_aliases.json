@@ -5,20 +5,19 @@
   "groceries": "groceries",
   "us_supermarkets": "groceries",
   "online_groceries": "groceries",
+  "grocery_stores": "groceries",
 
   "travel": "travel",
-  "travel_via_chase_travel": "travel",
   "other_travel": "travel",
   "vacation_rentals": "travel",
   "transit": "travel",
   "flights": "travel",
-  "citi_travel_hotels_cars_attractions": "travel",
-  "hotels_vacation_rentals_cars_via_cap1_travel": "travel",
-  "prepaid_hotels_via_amex_travel": "travel",
-  "prepaid_cars_and_cruises_via_amex_travel": "travel",
+  "us_gas_stations_and_transit": "travel",
+  "air_travel_and_other_hotels": "travel",
 
   "gas": "gas",
   "gas_and_ev_charging": "gas",
+  "us_gas_stations": "gas",
 
   "entertainment": "entertainment",
   "streaming": "entertainment",
@@ -26,8 +25,26 @@
 
   "shopping": "shopping",
   "drugstore": "shopping",
+  "online_retail_us": "shopping",
 
   "other": "other",
+  "gym_and_fitness_memberships": "other",
 
-  "rotating_q3_2026_gas_ev_transit_drugstore": null
+  "rotating_quarterly_categories": null,
+
+  "travel_via_chase_travel": null,
+  "flights_and_hotels_booked_direct": null,
+  "flights_direct_or_via_amex_travel": null,
+  "prepaid_hotels_via_amex_travel": null,
+  "prepaid_cars_and_cruises_via_amex_travel": null,
+  "citi_travel_hotels_cars_attractions": null,
+  "hotels_vacation_rentals_cars_via_cap1_travel": null,
+  "hotels_vacation_rentals_and_rental_cars_via_cap1_travel": null,
+  "hotels_and_rental_cars_via_cap1_travel": null,
+  "flights_and_vacation_rentals_via_cap1_travel": null,
+  "entertainment_via_cap1_entertainment_portal": null,
+  "hotels_via_renowned_hotels_and_resorts": null,
+  "hyatt_hotel_stays": null,
+  "rent_and_mortgage_payments": null,
+  "everyday_purchases": null
 }

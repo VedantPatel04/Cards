@@ -136,8 +136,7 @@ export function WalletPage() {
       <header>
         <h1 className="text-3xl font-semibold tracking-tight">Wallet</h1>
         <p className="mt-2 max-w-prose text-[var(--color-muted)]">
-          Cards you own. Catalog picks score rewards; custom cards track spend
-          only (no reward rules).
+          Cards you own
         </p>
       </header>
 
@@ -232,20 +231,23 @@ export function WalletPage() {
       <form onSubmit={onAddCustom} className="flex max-w-md flex-col gap-3">
         <h2 className="text-lg font-semibold">Add custom card</h2>
         <p className="text-sm text-[var(--color-muted)]">
-          Requires name, issuer, and network. If name+issuer already exist in
-          the catalog, that product is attached instead of creating a duplicate.
+          Requires the name, issuer(bank), and network of your card
         </p>
         <Field
           label="Name"
           value={customName}
           onChange={setCustomName}
           required
+          placeholder="e.g. Sapphire Preferred"
+          lettersOnly
         />
         <Field
           label="Issuer"
           value={customIssuer}
           onChange={setCustomIssuer}
           required
+          placeholder="e.g. Chase"
+          lettersOnly
         />
         <Field
           label="Network"
@@ -253,6 +255,7 @@ export function WalletPage() {
           onChange={setCustomNetwork}
           required
           placeholder="e.g. Visa"
+          lettersOnly
         />
         <button
           type="submit"
@@ -289,21 +292,30 @@ function Field({
   onChange,
   required,
   placeholder,
+  lettersOnly,
 }: {
   label: string
   value: string
   onChange: (value: string) => void
   required?: boolean
   placeholder?: string
+  lettersOnly?: boolean
 }) {
   return (
     <label className="flex flex-col gap-1.5 text-sm">
       <span className="font-medium">{label}</span>
       <input
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) => {
+          const next = lettersOnly
+            ? e.target.value.replace(/[^\p{L}\s]/gu, '')
+            : e.target.value
+          onChange(next)
+        }}
         required={required}
         placeholder={placeholder}
+        inputMode={lettersOnly ? 'text' : undefined}
+        autoComplete="off"
         className="rounded border border-[var(--color-line)] bg-white px-3 py-2 outline-none focus:border-[var(--color-ink)]"
       />
     </label>

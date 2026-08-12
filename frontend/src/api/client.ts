@@ -76,10 +76,7 @@ async function refreshAccessToken(): Promise<string | null> {
   return refreshInFlight
 }
 
-/**
- * JSON API client for the Django backend.
- * Attaches Bearer access token; on 401 refreshes once and retries the request.
- */
+/** JSON API client. Attaches Bearer token; on 401 refreshes once and retries */
 export async function apiClient<T>(
   path: string,
   options: RequestOptions = {},
@@ -124,10 +121,7 @@ export async function apiClient<T>(
   return (await response.json()) as T
 }
 
-/**
- * Multipart upload helper. Does not set Content-Type.
- * Retries once after refresh on 401, same as apiClient.
- */
+/** Multipart upload helper. Does not set Content-Type and retries once on 401. */
 export async function apiFormData(
   path: string,
   formData: FormData,

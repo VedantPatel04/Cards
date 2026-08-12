@@ -26,3 +26,20 @@ export function login(payload: LoginRequest): Promise<TokenPair> {
 export function pingAuth(): Promise<{ message: string }> {
   return apiClient<{ message: string }>('/api/isAuthenticated/')
 }
+
+export function fetchAccount(): Promise<User> {
+  return apiClient<User>('/api/account/')
+}
+
+export type DeleteAccountRequest = {
+  password: string
+  confirm: 'DELETE'
+}
+
+/** Hard-deletes the signed-in account and all owned data. */
+export function deleteAccount(payload: DeleteAccountRequest): Promise<void> {
+  return apiClient<void>('/api/account/', {
+    method: 'DELETE',
+    body: payload,
+  })
+}

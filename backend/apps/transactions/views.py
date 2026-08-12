@@ -160,7 +160,7 @@ def review_queue(request):
 @permission_classes([IsAuthenticated])
 def review_answer(request):
     """
-    POST /api/review/  {"merchant_key": "TRADER JOES", "category": "groceries"}
+    POST /api/review/answer/  {"merchant_key": "TRADER JOES", "category": "groceries"}
 
     Saves the answer as this user's override and applies it to every one of
     their transactions for that merchant — including rows already categorized

@@ -29,7 +29,7 @@ export function LoginPage() {
       await login({ username, password })
       navigate(from, { replace: true })
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Login failed.')
+      setError(err instanceof ApiError ? err.message : networkOrUnknown(err, 'Login failed.'))
     } finally {
       setSubmitting(false)
     }
@@ -79,7 +79,6 @@ export function RegisterPage() {
   const navigate = useNavigate()
 
   const [username, setUsername] = useState('')
-  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [password2, setPassword2] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -96,10 +95,14 @@ export function RegisterPage() {
 
     setSubmitting(true)
     try {
-      await register({ username, email, password, password2 })
+      await register({ username, password, password2 })
       navigate('/', { replace: true })
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Registration failed.')
+      setError(
+        err instanceof ApiError
+          ? err.message
+          : networkOrUnknown(err, 'Registration failed.'),
+      )
     } finally {
       setSubmitting(false)
     }
@@ -108,7 +111,7 @@ export function RegisterPage() {
   return (
     <AuthShell
       title="Create account"
-      subtitle="Registers against the local API, then signs you in."
+      subtitle="Choose a username and password to get started."
     >
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
         <Field
@@ -117,15 +120,6 @@ export function RegisterPage() {
           autoComplete="username"
           value={username}
           onChange={setUsername}
-          required
-        />
-        <Field
-          label="Email"
-          name="email"
-          type="email"
-          autoComplete="email"
-          value={email}
-          onChange={setEmail}
           required
         />
         <Field
@@ -225,4 +219,12 @@ function ErrorText({ children }: { children: ReactNode }) {
       {children}
     </p>
   )
+}
+
+/** TypeError from fetch usually means CORS block or API unreachable. */
+function networkOrUnknown(err: unknown, fallback: string): string {
+  if (err instanceof TypeError) {
+    return 'Cannot reach the API. Is the backend running, and is this UI origin in CORS_ALLOWED_ORIGINS?'
+  }
+  return fallback
 }
