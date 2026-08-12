@@ -83,16 +83,16 @@ describe('GuestRoute', () => {
           <Route element={<GuestRoute />}>
             <Route path="/login" element={<div>Login page</div>} />
           </Route>
-          <Route path="/" element={<div>Home page</div>} />
+          <Route path="/dashboard" element={<div>Dashboard page</div>} />
         </Routes>
       </MemoryRouter>,
     )
 
     expect(screen.getByText('Login page')).toBeInTheDocument()
-    expect(screen.queryByText('Home page')).not.toBeInTheDocument()
+    expect(screen.queryByText('Dashboard page')).not.toBeInTheDocument()
   })
 
-  it('redirects authenticated users away from /login to home', () => {
+  it('redirects authenticated users away from /login to dashboard', () => {
     useAuthMock.mockReturnValue({ status: 'authenticated' })
 
     render(
@@ -101,12 +101,30 @@ describe('GuestRoute', () => {
           <Route element={<GuestRoute />}>
             <Route path="/login" element={<div>Login page</div>} />
           </Route>
-          <Route path="/" element={<div>Home page</div>} />
+          <Route path="/dashboard" element={<div>Dashboard page</div>} />
         </Routes>
       </MemoryRouter>,
     )
 
-    expect(screen.getByText('Home page')).toBeInTheDocument()
+    expect(screen.getByText('Dashboard page')).toBeInTheDocument()
     expect(screen.queryByText('Login page')).not.toBeInTheDocument()
+  })
+
+  it('redirects authenticated users away from / to dashboard', () => {
+    useAuthMock.mockReturnValue({ status: 'authenticated' })
+
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <Routes>
+          <Route element={<GuestRoute />}>
+            <Route path="/" element={<div>Welcome page</div>} />
+          </Route>
+          <Route path="/dashboard" element={<div>Dashboard page</div>} />
+        </Routes>
+      </MemoryRouter>,
+    )
+
+    expect(screen.getByText('Dashboard page')).toBeInTheDocument()
+    expect(screen.queryByText('Welcome page')).not.toBeInTheDocument()
   })
 })

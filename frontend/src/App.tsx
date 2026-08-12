@@ -11,19 +11,21 @@ import { ReviewPage } from './pages/ReviewPage'
 import { TransactionsPage } from './pages/TransactionsPage'
 import { UploadPage } from './pages/UploadPage'
 import { WalletPage } from './pages/WalletPage'
+import { WelcomePage } from './pages/WelcomePage'
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route element={<GuestRoute />}>
+          <Route path="/" element={<WelcomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
         </Route>
 
         <Route element={<ProtectedRoute />}>
           <Route element={<AppLayout />}>
-            <Route path="/" element={<DashboardPage />} />
+            <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/wallet" element={<WalletPage />} />
             <Route path="/upload" element={<UploadPage />} />
             <Route path="/review" element={<ReviewPage />} />

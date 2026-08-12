@@ -1,5 +1,37 @@
 @import "tailwindcss";
 
+/* Landing page tokens from the design prototype. New names only — do not
+   redefine --color-ink / --color-paper / --color-accent used by other pages. */
+@theme {
+  --color-cream: oklch(0.982 0.005 85);
+  --color-navy: oklch(0.22 0.05 255);
+  --color-amber: oklch(0.55 0.15 55);
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@utility animate-fade-in-up {
+  animation: fade-in-up 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in-up {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
 :root {
   color-scheme: light;
   --color-ink: #14213d;
@@ -24,6 +56,9 @@ body {
   min-height: 100vh;
 }
 
-a {
-  color: inherit;
+
+@layer base {
+  a {
+    color: inherit;
+  }
 }
