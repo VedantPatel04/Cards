@@ -1,14 +1,16 @@
 # Cards
 
-Hi friend / recruiter / peer / stalker :P
+### Hi friend / recruiter / peer / stalker :P
 
-Is your Chase credit card expiring soon and you can't find the right one to sign up for next? This platform ranks the best credit cards avilable in August 2026 against your real spending - organized by categories - so you can pick your next great credit card.
+Is your Chase credit card expiring soon and you can't find the right one to sign up for next? 
 
-Upload Chase transaction statements, review uncategorized merchants, and get ranked recommendations from your wallet and the catalog.
+This platform ranks the best credit cards available in August 2026 against your real spending - organized by categories - so you can pick your next favorite credit card!
 
-Check it out [here!](https://newcardforme.vercel.app/login)
+Upload Chase transaction statements and get ranked credit card recommendations.
 
-[Just the Endpoints](https://cards-api-ke5n.onrender.com/api/docs/)
+[Check out the product here!](https://newcardforme.vercel.app/)
+
+[API Swagger Docs](https://cards-api-ke5n.onrender.com/api/docs/)
 ## Tech stack
 
 | Layer | Tools |

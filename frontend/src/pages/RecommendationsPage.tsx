@@ -31,7 +31,7 @@ export function RecommendationsPage() {
           Recommendations
         </h1>
         <p className="mt-2 max-w-prose text-[var(--color-muted)]">
-          Ranked catalog cards from the backend, values are estimates.
+          The best cards for YOU - based on your spending.
         </p>
       </header>
 

@@ -11,14 +11,17 @@ export function AppLayout() {
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-5xl flex-col px-4 py-6">
       <header className="mb-8 flex flex-col gap-4 border-b border-[var(--color-line)] pb-4 sm:flex-row sm:items-center sm:justify-between">
-        <NavLink to="/" className="text-xl font-semibold tracking-tight">
+        <NavLink
+          to="/dashboard"
+          className="text-xl font-semibold tracking-tight"
+        >
           Cards
         </NavLink>
         <nav
           className="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs sm:gap-x-4 sm:text-sm"
           aria-label="Main"
         >
-          <NavLink to="/" className={navLinkClass} end>
+          <NavLink to="/dashboard" className={navLinkClass}>
             Dashboard
           </NavLink>
           <NavLink to="/wallet" className={navLinkClass}>

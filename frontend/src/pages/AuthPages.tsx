@@ -14,7 +14,7 @@ export function LoginPage() {
     'from' in location.state &&
     typeof (location.state as { from: unknown }).from === 'string'
       ? (location.state as { from: string }).from
-      : '/'
+      : '/dashboard'
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -56,17 +56,13 @@ export function LoginPage() {
           required
         />
         {error ? <ErrorText>{error}</ErrorText> : null}
-        <button
-          type="submit"
-          disabled={submitting}
-          className="mt-2 rounded bg-[var(--color-ink)] px-4 py-2.5 text-white disabled:opacity-60"
-        >
+        <button type="submit" disabled={submitting} className={authSubmitClass}>
           {submitting ? 'Signing in…' : 'Sign in'}
         </button>
       </form>
       <p className="mt-6 text-sm text-[var(--color-muted)]">
         No account?{' '}
-        <Link to="/register" className="underline">
+        <Link to="/register" className={authLinkClass}>
           Register
         </Link>
       </p>
@@ -96,7 +92,7 @@ export function RegisterPage() {
     setSubmitting(true)
     try {
       await register({ username, password, password2 })
-      navigate('/', { replace: true })
+      navigate('/dashboard', { replace: true })
     } catch (err) {
       setError(
         err instanceof ApiError
@@ -141,23 +137,25 @@ export function RegisterPage() {
           required
         />
         {error ? <ErrorText>{error}</ErrorText> : null}
-        <button
-          type="submit"
-          disabled={submitting}
-          className="mt-2 rounded bg-[var(--color-ink)] px-4 py-2.5 text-white disabled:opacity-60"
-        >
+        <button type="submit" disabled={submitting} className={authSubmitClass}>
           {submitting ? 'Creating…' : 'Create account'}
         </button>
       </form>
       <p className="mt-6 text-sm text-[var(--color-muted)]">
         Already registered?{' '}
-        <Link to="/login" className="underline">
+        <Link to="/login" className={authLinkClass}>
           Log in
         </Link>
       </p>
     </AuthShell>
   )
 }
+
+const authSubmitClass =
+  'mt-2 inline-flex w-full items-center justify-center rounded-md bg-navy px-6 py-3 text-sm font-medium text-cream transition-colors hover:bg-navy/90 focus:outline-none focus:ring-2 focus:ring-amber focus:ring-offset-2 focus:ring-offset-cream disabled:opacity-60'
+
+const authLinkClass =
+  'font-medium text-navy underline underline-offset-4 transition-colors hover:text-amber'
 
 function AuthShell({
   title,
@@ -169,14 +167,25 @@ function AuthShell({
   children: ReactNode
 }) {
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-md flex-col justify-center px-4 py-10">
-      <p className="mb-2 text-sm font-medium tracking-wide text-[var(--color-accent)]">
-        Cards
-      </p>
-      <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
-      <p className="mt-2 text-[var(--color-muted)]">{subtitle}</p>
-      <div className="mt-8">{children}</div>
-    </div>
+    <main className="flex min-h-screen items-center justify-center bg-cream px-6 py-16">
+      <div className="w-full max-w-md">
+        <Link
+          to="/"
+          className="animate-fade-in-up text-sm font-semibold tracking-wide text-amber"
+        >
+          Cards
+        </Link>
+        <h1 className="animate-fade-in-up mt-3 text-3xl font-bold tracking-tight text-navy [animation-delay:80ms]">
+          {title}
+        </h1>
+        <p className="animate-fade-in-up mt-2 text-[var(--color-muted)] [animation-delay:160ms]">
+          {subtitle}
+        </p>
+        <div className="animate-fade-in-up mt-8 [animation-delay:240ms]">
+          {children}
+        </div>
+      </div>
+    </main>
   )
 }
 
@@ -207,7 +216,7 @@ function Field({
         required={required}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="rounded border border-[var(--color-line)] bg-white px-3 py-2 outline-none focus:border-[var(--color-ink)]"
+        className="rounded-md border border-[var(--color-line)] bg-white px-3 py-2 outline-none transition-colors focus:border-navy focus:ring-2 focus:ring-amber focus:ring-offset-2 focus:ring-offset-cream"
       />
     </label>
   )

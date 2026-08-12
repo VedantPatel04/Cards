@@ -23,7 +23,7 @@ function renderLogin(initialPath = '/login') {
     <MemoryRouter initialEntries={[initialPath]}>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/" element={<div>Home page</div>} />
+        <Route path="/dashboard" element={<div>Dashboard page</div>} />
       </Routes>
     </MemoryRouter>,
   )
@@ -34,7 +34,7 @@ function renderRegister() {
     <MemoryRouter initialEntries={['/register']}>
       <Routes>
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/" element={<div>Home page</div>} />
+        <Route path="/dashboard" element={<div>Dashboard page</div>} />
       </Routes>
     </MemoryRouter>,
   )
@@ -45,7 +45,7 @@ describe('LoginPage', () => {
     loginMock.mockReset()
   })
 
-  it('navigates home after a successful login', async () => {
+  it('navigates to dashboard after a successful login', async () => {
     const user = userEvent.setup()
     loginMock.mockResolvedValue(undefined)
     renderLogin()
@@ -60,7 +60,7 @@ describe('LoginPage', () => {
         password: 'secret',
       })
     })
-    expect(await screen.findByText('Home page')).toBeInTheDocument()
+    expect(await screen.findByText('Dashboard page')).toBeInTheDocument()
   })
 
   it('shows an error and stays on login when credentials fail', async () => {
@@ -78,7 +78,7 @@ describe('LoginPage', () => {
       await screen.findByRole('alert'),
     ).toHaveTextContent(/No active account found/i)
     expect(screen.getByRole('button', { name: /Sign in/i })).toBeInTheDocument()
-    expect(screen.queryByText('Home page')).not.toBeInTheDocument()
+    expect(screen.queryByText('Dashboard page')).not.toBeInTheDocument()
   })
 })
 
@@ -100,7 +100,7 @@ describe('RegisterPage', () => {
       /Passwords do not match/i,
     )
     expect(registerMock).not.toHaveBeenCalled()
-    expect(screen.queryByText('Home page')).not.toBeInTheDocument()
+    expect(screen.queryByText('Dashboard page')).not.toBeInTheDocument()
   })
 
   it('shows an API error when the username is already taken', async () => {
@@ -118,10 +118,10 @@ describe('RegisterPage', () => {
     expect(await screen.findByRole('alert')).toHaveTextContent(
       /A user with that username already exists/i,
     )
-    expect(screen.queryByText('Home page')).not.toBeInTheDocument()
+    expect(screen.queryByText('Dashboard page')).not.toBeInTheDocument()
   })
 
-  it('navigates home after successful registration', async () => {
+  it('navigates to dashboard after successful registration', async () => {
     const user = userEvent.setup()
     registerMock.mockResolvedValue(undefined)
     renderRegister()
@@ -138,6 +138,6 @@ describe('RegisterPage', () => {
         password2: 'Sup3rSecret!',
       })
     })
-    expect(await screen.findByText('Home page')).toBeInTheDocument()
+    expect(await screen.findByText('Dashboard page')).toBeInTheDocument()
   })
 })

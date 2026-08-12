@@ -21,7 +21,7 @@ export function ProtectedRoute() {
   return <Outlet />
 }
 
-/** Send already-authenticated users away from /login and /register. */
+/** Send already-authenticated users away from /, /login, and /register. */
 export function GuestRoute() {
   const { status } = useAuth()
 
@@ -34,7 +34,7 @@ export function GuestRoute() {
   }
 
   if (status === 'authenticated') {
-    return <Navigate to="/" replace />
+    return <Navigate to="/dashboard" replace />
   }
 
   return <Outlet />
