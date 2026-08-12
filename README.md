@@ -6,6 +6,9 @@ Is your Chase credit card expiring soon and you can't find the right one to sign
 
 Upload Chase transaction statements, review uncategorized merchants, and get ranked recommendations from your wallet and the catalog.
 
+Check it out [here!](https://newcardforme.vercel.app/login)
+
+[Just the Endpoints](https://cards-api-ke5n.onrender.com/api/docs/)
 ## Tech stack
 
 | Layer | Tools |
