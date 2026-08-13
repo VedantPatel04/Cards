@@ -12,6 +12,7 @@ describe('WelcomePage', () => {
       </MemoryRouter>,
     )
 
+    expect(screen.getByText('NewCardForMe')).toBeInTheDocument()
     expect(
       screen.getByRole('heading', {
         name: /Find your next favorite credit card/i,

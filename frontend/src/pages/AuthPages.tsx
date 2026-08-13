@@ -36,7 +36,7 @@ export function LoginPage() {
   }
 
   return (
-    <AuthShell title="Log in" subtitle="Use your Cards username and password.">
+    <AuthShell title="Log in" subtitle="Use your username and password to login.">
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
         <Field
           label="Username"
@@ -173,7 +173,7 @@ function AuthShell({
           to="/"
           className="animate-fade-in-up text-sm font-semibold tracking-wide text-amber"
         >
-          Cards
+          NewCardForMe
         </Link>
         <h1 className="animate-fade-in-up mt-3 text-3xl font-bold tracking-tight text-navy [animation-delay:80ms]">
           {title}

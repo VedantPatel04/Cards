@@ -15,7 +15,7 @@ export function AppLayout() {
           to="/dashboard"
           className="text-xl font-semibold tracking-tight"
         >
-          Cards
+          NewCardForMe
         </NavLink>
         <nav
           className="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs sm:gap-x-4 sm:text-sm"
