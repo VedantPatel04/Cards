@@ -9,7 +9,7 @@ export function WelcomePage() {
     <main className="flex min-h-screen items-center justify-center bg-cream px-6 py-16">
       <div className="w-fit max-w-full">
         <span className="animate-fade-in-up text-sm font-semibold tracking-wide text-amber">
-          Cards
+          NewCardForMe
         </span>
         <h1 className="animate-fade-in-up mt-3 whitespace-nowrap text-4xl font-bold tracking-tight text-navy max-sm:whitespace-normal [animation-delay:80ms]">
           Find your next favorite credit card
