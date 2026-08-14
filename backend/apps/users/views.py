@@ -7,9 +7,13 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework_simplejwt.views import TokenObtainPairView as _BaseTokenView
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView as _BaseTokenView,
+    TokenRefreshView as _TokenRefreshView,
+    TokenVerifyView as _TokenVerifyView,
+)
 
-from config.api_schema import AccountDeleteSerializer
+from config.api_schema import TAG_AUTH, AccountDeleteSerializer
 from services.merchant_cache import cache_delete_user
 
 from .models import CustomUser
@@ -19,6 +23,7 @@ from .throttles import AuthRateThrottle
 ACCOUNT_DELETE_CONFIRM = "DELETE"
 
 
+@extend_schema(tags=[TAG_AUTH])
 class RegisterView(CreateAPIView):
     """Create a new user account."""
 
@@ -33,11 +38,23 @@ class RegisterView(CreateAPIView):
         return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
 
 
+@extend_schema(tags=[TAG_AUTH])
 class LoginView(_BaseTokenView):
     """Issue JWT access and refresh tokens for a valid username and password."""
     throttle_classes = [AuthRateThrottle]
 
 
+@extend_schema(tags=[TAG_AUTH])
+class TokenRefreshView(_TokenRefreshView):
+    """Issue a new access token from a valid refresh token."""
+
+
+@extend_schema(tags=[TAG_AUTH])
+class TokenVerifyView(_TokenVerifyView):
+    """Confirm a JWT is valid."""
+
+
+@extend_schema(exclude=True)
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def health_check(request):
@@ -52,6 +69,7 @@ def health_check(request):
         )
 
 
+@extend_schema(tags=[TAG_AUTH])
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def is_Authenticated(request):
@@ -61,10 +79,12 @@ def is_Authenticated(request):
 
 @extend_schema_view(
     get=extend_schema(
+        tags=[TAG_AUTH],
         responses={200: UserSerializer},
         description="Return the signed-in user's profile.",
     ),
     delete=extend_schema(
+        tags=[TAG_AUTH],
         request=AccountDeleteSerializer,
         responses={204: None, 400: dict},
         description=(

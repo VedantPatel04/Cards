@@ -6,7 +6,9 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from drf_spectacular.utils import extend_schema
 
+from config.api_schema import TAG_RECOMMENDATIONS
 from services.recommendation_engine import (
     compute_confidence,
     get_valid_cards,
@@ -88,6 +90,7 @@ def _serialize(scored: dict) -> dict:
     return item
 
 
+@extend_schema(tags=[TAG_RECOMMENDATIONS])
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def recommendations_view(request):

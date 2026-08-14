@@ -27,7 +27,7 @@ from drf_spectacular.utils import extend_schema
 from apps.transactions.models import Transactions
 from apps.uploads.models import Uploads
 from apps.users.models import User_cards
-from config.api_schema import UploadCreateSerializer, UploadReassignSerializer
+from config.api_schema import TAG_UPLOADS, UploadCreateSerializer, UploadReassignSerializer
 from services.upload_pipeline import STATUS_PENDING, STATUS_PROCESSED, process_upload
 
 logger = logging.getLogger(__name__)
@@ -210,6 +210,7 @@ def _ingest_one_file(user, uploaded_file, user_card):
 
 
 @extend_schema(
+    tags=[TAG_UPLOADS],
     request=UploadCreateSerializer,
     responses={200: dict, 201: dict, 207: dict, 400: dict, 409: dict},
 )
@@ -265,6 +266,7 @@ def upload_transactions(request):
     return Response(body, status=overall)
 
 
+@extend_schema(tags=[TAG_UPLOADS])
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def upload_list(request):
@@ -274,7 +276,11 @@ def upload_list(request):
     return Response({"count": len(items), "uploads": items}, status=status.HTTP_200_OK)
 
 
-@extend_schema(request=UploadReassignSerializer, responses={200: dict, 400: dict, 404: dict})
+@extend_schema(
+    tags=[TAG_UPLOADS],
+    request=UploadReassignSerializer,
+    responses={200: dict, 400: dict, 404: dict},
+)
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def upload_reassign(request, upload_id: int):
@@ -309,6 +315,7 @@ def upload_reassign(request, upload_id: int):
     )
 
 
+@extend_schema(tags=[TAG_UPLOADS])
 @api_view(["DELETE"])
 @permission_classes([IsAuthenticated])
 def upload_delete(request, upload_id: int):

@@ -36,7 +36,7 @@ from rest_framework.response import Response
 from apps.cards.models import Card_Products
 from apps.uploads.models import Uploads
 from apps.users.models import User_cards
-from config.api_schema import WalletCreateSerializer
+from config.api_schema import TAG_WALLET, WalletCreateSerializer
 
 _ZERO = Decimal("0.00")
 
@@ -56,10 +56,12 @@ def _wallet_item(entry: User_cards) -> dict:
 
 @extend_schema_view(
     get=extend_schema(
+        tags=[TAG_WALLET],
         responses={200: dict},
         description="List active wallet cards for the signed-in user.",
     ),
     post=extend_schema(
+        tags=[TAG_WALLET],
         request=WalletCreateSerializer,
         responses={201: dict, 400: dict},
         description=(
@@ -229,6 +231,7 @@ def _wallet_add(request):
     )
 
 
+@extend_schema(tags=[TAG_WALLET])
 @api_view(["DELETE"])
 @permission_classes([IsAuthenticated])
 def wallet_delete(request, wallet_id: int):

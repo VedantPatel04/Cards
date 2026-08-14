@@ -42,3 +42,25 @@ class PublicSchemaDocsTests(APITestCase):
         # Try it out needs a documented multipart body for uploads.
         upload_post = paths["/api/upload/"]["post"]
         self.assertIn("requestBody", upload_post)
+
+        self.assertNotIn("/api/health/", paths)
+
+        def tags_for(path, method):
+            return paths[path][method]["tags"]
+
+        self.assertEqual(tags_for("/api/cards/", "get"), ["Wallet"])
+        self.assertEqual(tags_for("/api/wallet/", "get"), ["Wallet"])
+        self.assertEqual(tags_for("/api/wallet/", "post"), ["Wallet"])
+        self.assertEqual(tags_for("/api/wallet/{wallet_id}/", "delete"), ["Wallet"])
+
+        self.assertEqual(tags_for("/api/register/", "post"), ["Auth"])
+        self.assertEqual(tags_for("/api/isAuthenticated/", "get"), ["Auth"])
+        self.assertEqual(tags_for("/api/token/", "post"), ["Auth"])
+
+        self.assertEqual(tags_for("/api/upload/", "post"), ["Uploads"])
+        self.assertEqual(tags_for("/api/uploads/", "get"), ["Uploads"])
+        self.assertEqual(tags_for("/api/uploads/{upload_id}/", "delete"), ["Uploads"])
+        self.assertEqual(
+            tags_for("/api/uploads/{upload_id}/reassign/", "post"),
+            ["Uploads"],
+        )

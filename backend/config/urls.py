@@ -2,10 +2,11 @@ from django.contrib import admin
 from django.urls import path
 from django.views.generic import RedirectView
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
-from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 from apps.users.views import (
     LoginView,
     RegisterView,
+    TokenRefreshView,
+    TokenVerifyView,
     account_view,
     health_check,
     is_Authenticated,

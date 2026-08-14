@@ -96,6 +96,13 @@ SPECTACULAR_SETTINGS = {
     #public docs in every environment
     'SERVE_PERMISSIONS': ['rest_framework.permissions.AllowAny'],
     'SERVE_AUTHENTICATION': [],
+    'TAGS': [
+        {'name': 'Auth', 'description': 'Register, login, session, and account.'},
+        {'name': 'Wallet', 'description': 'Catalog products and the signed-in user\'s wallet.'},
+        {'name': 'Uploads', 'description': 'Chase statement imports and reassignment.'},
+        {'name': 'Transactions', 'description': 'Ledger, merchant review, and spend summary.'},
+        {'name': 'Recommendations', 'description': 'Ranked catalog cards against your spending.'},
+    ],
     'SWAGGER_UI_SETTINGS': {
         'deepLinking': True,
         'persistAuthorization': True,
