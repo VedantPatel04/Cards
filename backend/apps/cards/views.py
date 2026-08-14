@@ -6,8 +6,10 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from drf_spectacular.utils import extend_schema
 
 from apps.cards.models import Card_Products
+from config.api_schema import TAG_WALLET
 
 
 def _catalog_item(card: Card_Products) -> dict:
@@ -24,6 +26,7 @@ def _catalog_item(card: Card_Products) -> dict:
     }
 
 
+@extend_schema(tags=[TAG_WALLET])
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def catalog_list(request):

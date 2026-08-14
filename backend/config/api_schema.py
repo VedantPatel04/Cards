@@ -7,6 +7,13 @@ They are not used for runtime validation — the views keep their own parsing.
 
 from rest_framework import serializers
 
+# Swagger UI group tags
+TAG_AUTH = "Auth"
+TAG_WALLET = "Wallet"
+TAG_UPLOADS = "Uploads"
+TAG_TRANSACTIONS = "Transactions"
+TAG_RECOMMENDATIONS = "Recommendations"
+
 
 class UploadCreateSerializer(serializers.Serializer):
     user_card_id = serializers.IntegerField(

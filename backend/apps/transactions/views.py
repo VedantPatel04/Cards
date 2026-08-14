@@ -28,7 +28,7 @@ from apps.transactions.models import (
 from services.category_resolver import is_valid_category, reward_categories
 from services.merchant_cache import cache_set
 from services.spending_aggregator import get_spend_summary
-from config.api_schema import ReviewAnswerSerializer
+from config.api_schema import TAG_TRANSACTIONS, ReviewAnswerSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -54,6 +54,7 @@ def _money(value) -> str:
     return str((value or Decimal("0")).quantize(CENTS, rounding=ROUND_HALF_UP))
 
 
+@extend_schema(tags=[TAG_TRANSACTIONS])
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def transaction_list(request):
@@ -97,6 +98,7 @@ def transaction_list(request):
     )
 
 
+@extend_schema(tags=[TAG_TRANSACTIONS])
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def review_queue(request):
@@ -142,6 +144,7 @@ def review_queue(request):
 
 
 @extend_schema(
+    tags=[TAG_TRANSACTIONS],
     request=ReviewAnswerSerializer,
     responses={200: dict, 400: dict, 404: dict},
 )
@@ -209,6 +212,7 @@ def review_answer(request):
     )
 
 
+@extend_schema(tags=[TAG_TRANSACTIONS])
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def summary_view(request):
