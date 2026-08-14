@@ -8,7 +8,9 @@ This platform ranks the best credit cards available in August 2026 against your 
 
 Upload Chase transaction statements and get ranked credit card recommendations.
 
-[Check out the product here!](https://newcardforme.vercel.app/)
+[Check out the product here!](https://newcardforme.vercel.app/) 
+
+P.S. sadly backend servers need a minute to warm-up after hitting "login" or "register" b/c of Render free tier limits  
 
 [API Swagger Docs](https://cards-api-ke5n.onrender.com/api/docs/)
 ## Tech stack
