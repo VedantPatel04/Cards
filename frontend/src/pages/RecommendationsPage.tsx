@@ -129,7 +129,7 @@ function RecommendationItem({ card }: { card: RecommendationCard }) {
 
       <details className="mt-4">
         <summary className="cursor-pointer text-sm font-medium">
-          Category explanation
+          Categorical Spending
         </summary>
         <ul className="mt-3 flex flex-col gap-2 text-sm">
           {card.explanation.map((line) => (
@@ -139,8 +139,8 @@ function RecommendationItem({ card }: { card: RecommendationCard }) {
             >
               <span className="capitalize">{line.category}</span>
               <span className="text-[var(--color-muted)]">
-                {line.effective_rate}% on {formatMoney(line.annualized_spend)} →{' '}
-                {formatMoney(line.value)}
+                {line.effective_rate}% on projected annual {formatMoney(line.annualized_spend)} →{' '}
+                {formatMoney(line.value)} saved
               </span>
             </li>
           ))}
